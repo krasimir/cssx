@@ -4,7 +4,7 @@
   "description": "A JSX-ish CSS for the browser",
   "main": "src/index.js",
   "scripts": {
-    
+    "test": "mocha --compilers js:babel-core/register --colors -w ./test/*.spec.js"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,14 @@
   "bugs": {
     "url": "https://github.com/krasimir/cssx/issues"
   },
-  "homepage": "https://github.com/krasimir/cssx"
+  "homepage": "https://github.com/krasimir/cssx",
+  "devDependencies": {
+    "babel": "6.3.13",
+    "babel-core": "6.1.18",
+    "babel-preset-es2015": "6.3.13",
+    "chai": "3.4.1",
+    "mocha": "2.3.4",
+    "sinon": "1.17.2",
+    "sinon-chai": "2.8.0"
+  }
 }
