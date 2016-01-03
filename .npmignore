@@ -1,2 +1,6 @@
 src
 webpack.conf.js
+examples
+*.log
+node_modules
+test
