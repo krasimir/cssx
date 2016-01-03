@@ -8,7 +8,7 @@ Manage CSS styles with JavaScript.
 
   var applyStyles = cssx.compile();
   var small = cssx.rule('small', { 'text-decoration': 'underline' });
-  var h1 = cssx.rule('h1', { 'color': color }, small);
+  var h1 = cssx.rule('h1', { 'color': '#F00' }, small);
 
   cssx.generate(h1);
   // outputs:
