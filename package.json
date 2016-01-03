@@ -1,6 +1,6 @@
 {
   "name": "cssx",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A JSX-ish CSS for the browser",
   "main": "src/index.js",
   "scripts": {
