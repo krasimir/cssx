@@ -14,22 +14,19 @@
 
     var componentId = null;
     var color = '#000';
+    var applyStyles = cssx.compile();
 
     var render = function () {
-      componentId = cssx(
-        cssx.rule('h1', { 'color': color }),
-        componentId
-      );
+      applyStyles(cssx.rule('h1', { 'color': color }));
     };
 
-    window.onload = function () {
-      [].slice.call(document.querySelectorAll("button")).forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          color = btn.getAttribute('data-color');
-          render();
-        });
+    [].slice.call(document.querySelectorAll("button")).forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        color = btn.getAttribute('data-color');
+        render();
       });
-    };
+    });
+
   </script>
 </body>
 </html>

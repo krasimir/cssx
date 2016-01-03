@@ -11,9 +11,15 @@ const expect = chai.expect;
 
 describe('Given the cssx library', function () {
 
-  describe('when we call cssx function', function () {
-    it('should return a new id if we don\'t provide one', () => {
-      var result = [cssx(), cssx(), cssx(), cssx(), cssx()];
+  describe('when we have multiple compilers', function () {
+    it('should return a new id every time', () => {
+      var result = [
+        cssx.compile()(), 
+        cssx.compile()(), 
+        cssx.compile()(), 
+        cssx.compile()(), 
+        cssx.compile()()
+      ];
       var status = false;
 
       for (let i=0; i<result.length; i++) {
@@ -24,6 +30,12 @@ describe('Given the cssx library', function () {
       expect(status).to.be.false;
     });
   });
-  
+
+  describe('when we have only one compiler', function () {
+    it('should return the same id every time', () => {
+      var styles = cssx.compile();
+      expect([styles(), styles(), styles()]).to.be.deep.equal([styles(), styles(), styles()]);
+    });
+  });  
 
 });

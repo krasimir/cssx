@@ -39,10 +39,16 @@ var qs = function (selector) {
   return document.querySelector(selector);
 };
 
-module.exports = function (rule, id) {
+var cssx = function (rule, id) {
   if (!id) id = getId();
   if (rule) applyToDOM(CSSFactory.generate(rule), id);
   return id;
 };
 
+module.exports.compile = function () {
+  var id = cssx();
+  return function (rule) {
+    return cssx(rule, id);
+  };
+};
 module.exports.rule = CSSFactory.rule;
