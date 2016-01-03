@@ -2,7 +2,7 @@
 
 Manage CSS styles with JavaScript.
 
-```
+```html
 <script src="cssx.min.js"></script>
 <script>
 
