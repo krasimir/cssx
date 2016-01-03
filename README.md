@@ -1,2 +1,3 @@
-# cssx
-The JSX-ish CSS in the browser
+# CSSX
+
+The JSX-ish CSS
