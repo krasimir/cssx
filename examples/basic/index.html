@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CSSX</title>
+</head>
+<body>
+  <h1>Hello CSSX world!</h1>
+  <button data-color="#F00">red</button>
+  <button data-color="#0F0">green</button>
+  <button data-color="#00F">blue</button>
+  <script src="../../lib/cssx.js"></script>
+  <script>
+
+    var componentId = null;
+    var color = '#000';
+
+    var render = function () {
+      componentId = cssx(
+        cssx.rule('h1', { 'color': color }),
+        componentId
+      );
+    };
+
+    window.onload = function () {
+      [].slice.call(document.querySelectorAll("button")).forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          color = btn.getAttribute('data-color');
+          render();
+        });
+      });
+    };
+  </script>
+</body>
+</html>
