@@ -1,3 +1,5 @@
 # CSSX
 
-The JSX-ish CSS
+Manage CSS styles with JavaScript.
+
+

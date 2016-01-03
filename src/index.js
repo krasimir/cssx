@@ -52,3 +52,4 @@ module.exports.compile = function () {
   };
 };
 module.exports.rule = CSSFactory.rule;
+module.exports.generate = CSSFactory.generate;

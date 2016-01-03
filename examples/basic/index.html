@@ -5,10 +5,11 @@
   <title>CSSX</title>
 </head>
 <body>
-  <h1>Hello CSSX world!</h1>
+  <h1>Hello <small>CSSX</small> world!</h1>
   <button data-color="#F00">red</button>
   <button data-color="#0F0">green</button>
   <button data-color="#00F">blue</button>
+  <pre></pre>
   <script src="../../lib/cssx.js"></script>
   <script>
 
@@ -17,7 +18,11 @@
     var applyStyles = cssx.compile();
 
     var render = function () {
-      applyStyles(cssx.rule('h1', { 'color': color }));
+      var small = cssx.rule('small', { 'text-decoration': 'underline' });
+      var styles = cssx.rule('h1', { 'color': color }, small);
+      applyStyles(styles);
+
+      document.querySelector('pre').innerHTML = 'Applied CSS: ' + cssx.generate(styles);
     };
 
     [].slice.call(document.querySelectorAll("button")).forEach(function (btn) {
