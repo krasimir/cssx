@@ -1,0 +1,28 @@
+{
+  "name": "cssx",
+  "version": "0.1.0",
+  "description": "A JSX-ish CSS for the browser",
+  "main": "src/index.js",
+  "scripts": {
+    
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krasimir/cssx.git"
+  },
+  "keywords": [
+    "css",
+    "jsx",
+    "cssx"
+  ],
+  "author": {
+    "name": "Krasimir Tsonev",
+    "email": "info@krasimirtsonev.com",
+    "url": "http://krasimirtsonev.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/krasimir/cssx/issues"
+  },
+  "homepage": "https://github.com/krasimir/cssx"
+}
