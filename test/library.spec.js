@@ -103,9 +103,9 @@ describe('Given the cssx library', function () {
       expect(document.createElement).to.not.be.called;
     });
   });
-  describe('when using an object for the second add', function () {
-    it('should compile the styles properly', function () {
-      var body = cssx.add('body').add({
+  describe('when using an object for selector parameter', function () {
+    it('should compile the styles', function () {
+      cssx.add({
         'a:hover': {
           'font-size': '20px'
         },
@@ -113,12 +113,12 @@ describe('Given the cssx library', function () {
           'font-size': '22px'
         }
       });
-      expect(cssx.compile()).to.be.equal('body a:hover{font-size:20px;}body p > a:hover{font-size:22px;}');
+      expect(cssx.compile()).to.be.equal('a:hover{font-size:20px;}p > a:hover{font-size:22px;}');
     });
   });
-  describe('when using an array for the second add', function () {
-    it('should compile the styles properly', function () {
-      var body = cssx.add('body').add({
+  describe('when using nested styles', function () {
+    it('should compile the styles', function () {
+      cssx.add('@media screen').add({
         'a:hover': {
           'font-size': '20px'
         },
@@ -126,7 +126,7 @@ describe('Given the cssx library', function () {
           'font-size': '22px'
         }
       });
-      expect(cssx.compile()).to.be.equal('body a:hover{font-size:20px;}body p > a:hover{font-size:22px;}');
+      expect(cssx.compile()).to.be.equal('@media screen{a:hover{font-size:20px;}p > a:hover{font-size:22px;}}');
     });
   });
 

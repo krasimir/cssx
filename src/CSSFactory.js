@@ -12,25 +12,25 @@ module.exports = function () {
   var _rules = [];
   var _remove = null;
 
-  var register = function (parent, selector, props) {
+  var register = function (parent, selector, props, isWrapper) {
     var rule;
 
     rule = CSSRule(selector, props);
 
     if (parent !== null) {
-      parent.addChild(rule);
+      parent.addChild(rule, isWrapper);
     } else {
       _rules.push(rule);
     }
     return {
       add: function (selector, props) {
-        var result = [], sel;
+        var sel;
 
         if (isObject(selector)) {
           for (sel in selector) {
-            result.push(register(rule, sel, selector[sel]));
+            register(rule, sel, selector[sel], true);
           }
-          return result;
+          return this;
         }
         return register(rule, selector, props);
       }
@@ -40,20 +40,23 @@ module.exports = function () {
   _api.id = function () {
     return _id;
   };
+
   _api.add = function (selector, props) {
     var result = [], sel;
 
     if (isObject(selector)) {
       for (sel in selector) {
-        result.push(register(sel, selector[sel]));
+        result.push(this.add(sel, selector[sel]));
       }
       return result;
     }
     return register(null, selector, props);
   };
+
   _api.rules = function () {
     return _rules;
   };
+
   _api.compile = function (noDOM) {
     var css = generate(_rules);
 
@@ -62,6 +65,7 @@ module.exports = function () {
     }
     return css;
   };
+
   _api.clear = function () {
     _rules = [];
     if (_remove !== null) {
