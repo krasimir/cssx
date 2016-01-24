@@ -80,7 +80,7 @@ It returns a CSS string based on the added rules.
 
 #### `clear()`
 
-It removes all the added rules.
+It removes all the added rules and the added `<style>` tag (if any).
 
 #### `rules()`
 
