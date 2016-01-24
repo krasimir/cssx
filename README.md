@@ -92,6 +92,33 @@ Returns the unique id of the current factory.
 
 ---
 
+## The concept of having different stylesheets
+
+If you use CSSX for a while you'll notice that the styles are added into none specific `<style>` tag. Let's say that this is one stylesheet. The library provides a mechanism for defining multiple stylesheets. The result is having different `<style>` tags and they are controlled separately.
+
+```
+var header = cssx.stylesheet();
+header.add('.header', { margin: '20px' });
+
+var content = cssx.stylesheet();
+content.add('p', { 'font-size': '18px' });
+content.add('section', { 'border-top': 'solid 1px #000' });
+
+header.compile();
+content.compile();
+```
+
+In the code above the styles for the header could be compiled independently of the content styles. 
+
+Actually, the global `cssx` object IS a stylesheet. If we open the entry point of the library we'll see:
+
+```js
+module.exports = CSSFactory();
+module.exports.stylesheet = CSSFactory;
+```
+
+So we, by default, have one global stylesheet that could be accessed via `cssx` and we may create other independent stylesheet with `cssx.stylesheet()`.
+
 ## Testing
 
 ```
