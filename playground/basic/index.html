@@ -13,22 +13,20 @@
   <script src="../../lib/cssx.js"></script>
   <script>
 
-    var componentId = null;
-    var color = '#000';
-    var applyStyles = cssx.compile();
+    var h1Styles = { 'color': '#C679F2' };
 
-    var render = function () {
-      var small = cssx.rule('small', { 'text-decoration': 'underline' });
-      var styles = cssx.rule('h1', { 'color': color }, small);
-      applyStyles(styles);
+    cssx
+      .add('body')
+        .add('h1', h1Styles)
+          .add('small', { 'font-size': '0.3em' });
 
-      document.querySelector('pre').innerHTML = 'Applied CSS: ' + cssx.generate(styles);
-    };
+    
+    cssx.build();
 
     [].slice.call(document.querySelectorAll("button")).forEach(function (btn) {
       btn.addEventListener('click', function () {
-        color = btn.getAttribute('data-color');
-        render();
+        h1Styles.color = btn.getAttribute('data-color');
+        cssx.build()
       });
     });
 
