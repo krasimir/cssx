@@ -1,7 +1,7 @@
 var CSSRule = require('./CSSRule');
 var applyToDOM = require('./helpers/applyToDOM');
-var isArray = require('./helpers/isArray');
-var isEmpty = require('./helpers/isEmpty');
+var isObject = require('./helpers/isObject');
+var generate = require('./core/generate');
 
 var ids = 0;
 var getId = function () { return 'x' + (++ids); };
@@ -12,47 +12,8 @@ module.exports = function () {
   var _rules = [];
   var _remove = null;
 
-  var toDOM = function (css) {
-    return applyToDOM(css, _id);
-  };
-  var generate = function (rs, parent) {
-    var i, rule, props, prop, children, selector, firstRun = typeof rs === 'undefined';
-    var rules = firstRun ? _rules : rs;
-    var css = '';
-
-    for (i = 0; i < rules.length; i++) {
-      rule = rules[i];
-      children = rule.getChildren();
-      selector = (parent ? parent + ' ' : '');
-      selector += typeof rule.selector === 'function' ? rule.selector() : rule.selector;
-      props = typeof rule.props === 'function' ? rule.props() : rule.props;
-      if (!isEmpty(props)) {
-        css += selector + '{';
-        if (props) {
-          for (prop in props) {
-            css += prop + ':' + props[prop] + ';';
-          }
-        }
-        css += '}';
-      }
-      if (children.length > 0) {
-        css += generate(children, selector);
-      }
-    };
-    return css;
-  };
-
-  _api.id = function () {
-    return _id;
-  };
-  _api.add = function (parent, selector, props) {
-    var rule, i, args = Array.prototype.slice.call(arguments);
-
-    if (arguments.length <= 2) {
-      selector = args[0];
-      props = args[1];
-      parent = null;
-    }
+  var register = function (parent, selector, props) {
+    var rule;
 
     rule = CSSRule(selector, props);
 
@@ -63,26 +24,41 @@ module.exports = function () {
     }
     return {
       add: function (selector, props) {
-        var result = [];
+        var result = [], sel;
 
-        if (isArray(selector)) {
-          for (i = 0; i < selector.length; i++) {
-            result.push(this.add(selector[i], props));
+        if (isObject(selector)) {
+          for (sel in selector) {
+            result.push(register(rule, sel, selector[sel]));
           }
           return result;
         }
-        return _api.add(rule, selector, props);
+        return register(rule, selector, props);
       }
     };
+  };
+
+  _api.id = function () {
+    return _id;
+  };
+  _api.add = function (selector, props) {
+    var result = [], sel;
+
+    if (isObject(selector)) {
+      for (sel in selector) {
+        result.push(register(sel, selector[sel]));
+      }
+      return result;
+    }
+    return register(null, selector, props);
   };
   _api.rules = function () {
     return _rules;
   };
   _api.compile = function (noDOM) {
-    var css = generate();
+    var css = generate(_rules);
 
     if (!noDOM) {
-      _remove = toDOM(css);
+      _remove = applyToDOM(css, _id);
     }
     return css;
   };

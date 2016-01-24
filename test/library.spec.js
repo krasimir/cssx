@@ -103,5 +103,31 @@ describe('Given the cssx library', function () {
       expect(document.createElement).to.not.be.called;
     });
   });
+  describe('when using an object for the second add', function () {
+    it('should compile the styles properly', function () {
+      var body = cssx.add('body').add({
+        'a:hover': {
+          'font-size': '20px'
+        },
+        'p > a:hover': {
+          'font-size': '22px'
+        }
+      });
+      expect(cssx.compile()).to.be.equal('body a:hover{font-size:20px;}body p > a:hover{font-size:22px;}');
+    });
+  });
+  describe('when using an array for the second add', function () {
+    it('should compile the styles properly', function () {
+      var body = cssx.add('body').add({
+        'a:hover': {
+          'font-size': '20px'
+        },
+        'p > a:hover': {
+          'font-size': '22px'
+        }
+      });
+      expect(cssx.compile()).to.be.equal('body a:hover{font-size:20px;}body p > a:hover{font-size:22px;}');
+    });
+  });
 
 });
