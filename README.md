@@ -96,7 +96,7 @@ Returns the unique id of the current factory.
 
 If you use CSSX for a while you'll notice that the styles are added into none specific `<style>` tag. Let's say that this is one stylesheet. The library provides a mechanism for defining multiple stylesheets. The result is having different `<style>` tags and they are controlled separately.
 
-```
+```js
 var header = cssx.stylesheet();
 header.add('.header', { margin: '20px' });
 
