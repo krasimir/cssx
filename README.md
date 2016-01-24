@@ -117,7 +117,7 @@ module.exports = CSSFactory();
 module.exports.stylesheet = CSSFactory;
 ```
 
-So we, by default, have one global stylesheet that could be accessed via `cssx` and we may create other independent stylesheet with `cssx.stylesheet()`.
+So, we by default have one global stylesheet that could be accessed via `cssx` and we may create other independent stylesheet with `cssx.stylesheet()`.
 
 ## Testing
 
