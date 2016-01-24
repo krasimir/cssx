@@ -21,12 +21,12 @@
           .add('small', { 'font-size': '0.3em' });
 
     
-    cssx.build();
+    cssx.compile();
 
     [].slice.call(document.querySelectorAll("button")).forEach(function (btn) {
       btn.addEventListener('click', function () {
         h1Styles.color = btn.getAttribute('data-color');
-        cssx.build()
+        cssx.compile()
       });
     });
 

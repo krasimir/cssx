@@ -20,7 +20,7 @@ var remove = function (id) {
   return function () {
     if (cache[id]) {
       cache[id].el.parentNode.removeChild(cache[id].el);
-      cache[id];
+      delete cache[id];
     }
   };
 };
