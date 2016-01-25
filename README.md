@@ -56,7 +56,7 @@ If the passed CSS value is a string then we have static styles. Then can't be ch
 
 ## Installation
 
-Drop `cssx.min.js` on your page or run `npm i cssx -D` in node.
+Drop `cssx.min.js` on your page or run `npm i cssx` in node.
 
 ---
 
