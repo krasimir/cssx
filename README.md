@@ -159,7 +159,7 @@ cssx.add('a').add({
 */
 ```
 
-If it's not supported then why this library provides such functionality. It's because of the [media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries). Here is how to generate one:
+*If it's not supported then why this library provides such functionality?* It's because of the [media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries). Here is how to generate one:
 
 ```js
 cssx
