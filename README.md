@@ -108,7 +108,7 @@ Returns the added rules in a raw js format.
 
 #### `id()`
 
-Returns the unique id of the current factory.
+Returns the unique id of the current stylesheet.
 
 ---
 
