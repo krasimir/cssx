@@ -1,7 +1,7 @@
 var isEmpty = require('../helpers/isEmpty');
 
 module.exports = function generate(rules, parent) {
-  var i, j, rule, props, prop, children, nestedChildren, selector, cssValue, cssProp;
+  var i, j, rule, props, prop, children, nestedChildren, selector, cssValue;
   var css = '';
 
   for (i = 0; i < rules.length; i++) {
