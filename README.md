@@ -6,7 +6,23 @@
 
 ## How it works
 
-CSSX is a tiny library that provides a JavaScript API for defining CSS styles. Once the rules are registered we may call the `compile` method which will generate valid CSS and will inject it to the page in the form of a `<style>` tag. Every next call of `compile` will update the content of the tag and not create a new one.
+CSSX is a tiny library that provides a JavaScript API for defining CSS styles. We register rules and then `compile` them. The library generates valid CSS and injects it into the page as a `<style>` tag. Every next call of `compile` will update the content of the tag and not create a new one.
+
+*Why is this useful?*. Well, JavaScript is a rich language that gives us more flexibility. There are parts of our application which require different styles. In such cases we normally use different CSS classes that are added or removed. This could be frustrating because we have to amend too different parts of our codebase. CSSX could help solve that problem. For example:
+
+```js
+cssx.add('container', { 'background-color': getRandomColor });
+button.addEventListener('click', function () {
+  cssx.compile();
+});
+
+function getRandomColor () {
+  return ...; // a random color
+}
+
+```
+
+If the passed CSS value is a string then we have static styles. Then can't be changed. However, if we send an object or a function then the CSS becomes a dynamic thing. Every time when we call `cssx.compile()` we get a different style applied to the page. In the example above we set a random background color on every button click.
 
 ---
 
@@ -61,13 +77,13 @@ body > p span {
 }
 ```
 
-and not in
+and NOT in
 
 ```css
 body > p {
   
 }
-span{
+span {
   font-size:10px;
 }
 ```
@@ -118,6 +134,46 @@ module.exports.stylesheet = CSSFactory;
 ```
 
 So, we by default have one global stylesheet that could be accessed via `cssx` and we may create other independent stylesheet with `cssx.stylesheet()`.
+
+## Nesting rules (media queries)
+
+Nesting of rules is not supported in CSS. However CSSX could generate such code. For example:
+
+```js
+cssx.add('a').add({
+  'span': {
+    'font-size': '10px'
+  }
+});
+
+/*
+  a {
+    span {
+      font-size:10px;
+    }
+  }
+*/
+```
+
+If it's not supported then why this library provides such functionality. It's because of the [media queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries). Here is how to generate one:
+
+```js
+cssx
+  .add('@media screen and (max-width: 200px)')
+  .add({
+    '.header': {
+      'width': '400px'
+    }
+  });
+
+/*
+  @media screen and (max-width: 200px) {
+    .header{
+      width:400px;
+    }
+  }
+*/
+```
 
 ## Testing
 

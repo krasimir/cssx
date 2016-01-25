@@ -117,7 +117,7 @@ describe('Given the cssx library', function () {
     });
   });
   describe('when using nested styles', function () {
-    it('should compile the styles', function () {
+    it('should compile the styles properly', function () {
       cssx.add('@media screen').add({
         'a:hover': {
           'font-size': '20px'
@@ -127,6 +127,27 @@ describe('Given the cssx library', function () {
         }
       });
       expect(cssx.compile()).to.be.equal('@media screen{a:hover{font-size:20px;}p > a:hover{font-size:22px;}}');
+    });
+  });
+  describe('when using deeply nested styles', function () {
+    it('should compile the styles properly', function () {
+      var a = cssx.add('a', { 'e': 1 });
+      var b = a.add({
+        'b': { 'f': 1 }
+      })[0];
+      b.add({
+        'c': { d: 1 }
+      });
+      expect(cssx.compile()).to.be.equal('a{e:1;b{f:1;c{d:1;}}}');
+    });
+  });
+  describe('when using a function as a css value', function () {
+    it('should compile the styles properly', function () {
+      var color = function () {
+        return '#F00';
+      };
+      cssx.add('button', { color: color });
+      expect(cssx.compile()).to.be.equal('button{color:#F00;}');
     });
   });
 

@@ -1,7 +1,7 @@
 var isEmpty = require('../helpers/isEmpty');
 
 module.exports = function generate(rules, parent) {
-  var i, j, rule, props, prop, children, nestedChildren, selector;
+  var i, j, rule, props, prop, children, nestedChildren, selector, cssValue, cssProp;
   var css = '';
 
   for (i = 0; i < rules.length; i++) {
@@ -15,10 +15,11 @@ module.exports = function generate(rules, parent) {
       css += selector + '{';
       if (props) {
         for (prop in props) {
-          css += prop + ':' + props[prop] + ';';
+          cssValue = typeof props[prop] === 'function' ? props[prop]() : props[prop];
+          css += prop + ':' + cssValue + ';';
         }
       }
-      for(j = 0; j < nestedChildren.length; j++) {        
+      for (j = 0; j < nestedChildren.length; j++) {
         css += generate([nestedChildren[j]]);
       }
       css += '}';

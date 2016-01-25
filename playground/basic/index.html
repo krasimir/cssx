@@ -10,9 +10,12 @@
   <button data-color="#0F0">green</button>
   <button data-color="#00F">blue</button>
   <pre></pre>
+  <br /><br />
+  <button id="colorize">click me</button>
   <script src="../../lib/cssx.js"></script>
   <script>
 
+    // first
     var h1Styles = { 'color': '#C679F2' };
 
     cssx
@@ -20,15 +23,34 @@
         .add('h1', h1Styles)
           .add('small', { 'font-size': '0.3em' });
 
-    
-    cssx.compile();
-
-    [].slice.call(document.querySelectorAll("button")).forEach(function (btn) {
+    [].slice.call(document.querySelectorAll('button[data-color]')).forEach(function (btn) {
       btn.addEventListener('click', function () {
         h1Styles.color = btn.getAttribute('data-color');
-        cssx.compile()
+        showGeneratedCSS(cssx.compile());
       });
     });
+
+    // second
+    cssx.add('#colorize', { 'background-color': getRandomColor });
+    document.querySelector('#colorize').addEventListener('click', function () {
+      showGeneratedCSS(cssx.compile());
+    });
+
+    // helpers
+    function getRandomColor() {
+      var letters = '0123456789ABCDEF'.split('');
+      var color = '#';
+      for (var i = 0; i < 6; i++ ) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    };
+    function showGeneratedCSS(css) {
+      document.querySelector('pre').innerHTML = css;
+    };
+
+    // first run
+    showGeneratedCSS(cssx.compile());
 
   </script>
 </body>

@@ -24,13 +24,13 @@ module.exports = function () {
     }
     return {
       add: function (selector, props) {
-        var sel;
+        var result = [], sel;
 
         if (isObject(selector)) {
           for (sel in selector) {
-            register(rule, sel, selector[sel], true);
+            result.push(register(rule, sel, selector[sel], true));
           }
-          return this;
+          return result;
         }
         return register(rule, selector, props);
       }
