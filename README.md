@@ -52,6 +52,8 @@ If the passed CSS value is a string then we have static styles. Then can't be ch
 </script>
 ```
 
+A demo JSBin here [http://jsbin.com/kilevu/edit?js,output](http://jsbin.com/kilevu/edit?js,output).
+
 ---
 
 ## Installation
