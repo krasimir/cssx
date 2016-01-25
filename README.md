@@ -52,7 +52,11 @@ If the passed CSS value is a string then we have static styles. Then can't be ch
 </script>
 ```
 
-The library is available via npm too - `npm i cssx`.
+---
+
+## Installation
+
+Drop `cssx.min.js` on your page or run `npm i cssx -D` in node.
 
 ---
 
