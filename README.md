@@ -24,6 +24,8 @@ function getRandomColor () {
 
 If the passed CSS value is a string then we have static styles. Then can't be changed. However, if we send an object or a function then the CSS becomes a dynamic thing. Every time when we call `cssx.compile()` we get a different style applied to the page. In the example above we set a random background color on every button click.
 
+**Nota bene!** CSSX is not meant to be used for all the styles in our pages. Of course that we need a basic styles for typography, layout, coloring etc. It's purpose is to make the *dynamic* parts of our CSS more flexible and easy to control.
+
 ---
 
 ## Simple usage
