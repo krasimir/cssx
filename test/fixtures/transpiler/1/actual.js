@@ -1,1 +1,1 @@
-cssx(body {});
+var a = cssx(body {});
