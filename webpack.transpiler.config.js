@@ -3,7 +3,7 @@ var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 var env = require('yargs').argv.mode;
 var path = require('path');
 
-var appName = 'cssx.transpiler';
+var appName = 'cssxler';
 
 var plugins = [], outputFile;
 

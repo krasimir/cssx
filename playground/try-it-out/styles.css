@@ -1,0 +1,57 @@
+html {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Arial, Verdana;
+  color: #000;
+  background: #fff;
+  font-size: 16px;
+}
+.container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.left, .right {
+  width: 50%;
+  height: 100%;
+}
+.left {
+  float: left;
+  border-right: 1px solid #999;
+}
+.right {
+  font-size: 0.7em;
+  float: right;
+}
+.right .output {
+  height: calc(100% - 30px);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.error {
+  color: #9f0000;
+  font-weight: bold;
+}
+.CodeMirror {
+  height: auto;
+}
+
+/* output navigation */
+.nav-output {
+  height: 30px;
+  border-top: 1px solid #ddd;
+  padding: 5px;
+}
+.nav-output label {
+  cursor: pointer;
+}

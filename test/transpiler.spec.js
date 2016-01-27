@@ -1,4 +1,4 @@
-var CSSXTranspiler = require('../lib/cssx.transpiler');
+var CSSXTranspiler = require('../lib/cssxler');
 var path = require('path');
 var fs = require('fs');
 var babylon = require('../src/transpiler/vendor/babylon');
@@ -20,15 +20,20 @@ glob.sync(__dirname + '/fixtures/transpiler/**/actual.js').forEach(function (act
   });
 });
 
-describe.only('Given the cssx transpiler', function () {
+describe.skip('Given the cssx transpiler', function () {
   tests.forEach(function (test) {
     describe('when running ' + test.name, function () {
       it('should pass actual and receive expected code', function () {
-        var result, astFile = test.testDir + '/ast.json';
+        var result;
+        var astFile = test.testDir + '/ast.json';
+        var resultFile = test.testDir + '/expect.result.js';
+
         fs.writeFileSync(astFile, json(test.actual));
         result = CSSXTranspiler(file(test.actual));
+        fs.writeFileSync(resultFile, result);
         expect(result).to.be.equal(file(test.expected));
         fs.unlinkSync(astFile);
+        fs.unlinkSync(resultFile);
       });
     });
   });

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CSSX playground</title>
+  <link rel="stylesheet" href="./vendor/codemirror/codemirror.css">
+  <link rel="stylesheet" href="./vendor/codemirror/addon/fold/foldgutter.css" />
+  <link rel="stylesheet" type="text/css" href="./styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="left js-code-editor"></div>
+    <div class="right">
+      <div class="output js-output-editor"></div>
+      <div class="nav-output">
+        <label for="view-ast">
+          <input type="checkbox" id="view-ast"/> View AST
+        </label>
+      </div>
+    </div>
+  </div>
+  <script src="../../lib/cssx.js"></script>
+  <script src="../../lib/cssxler.js"></script>
+  <script src="../../src/transpiler/vendor/babylon.js"></script>
+  <script src="./vendor/codemirror/codemirror.js"></script>
+  <script src="./vendor/codemirror/javascript.js"></script>
+  <script src="./vendor/codemirror/addon/fold/foldcode.js"></script>
+  <script src="./vendor/codemirror/addon/fold/foldgutter.js"></script>
+  <script src="./vendor/codemirror/addon/fold/brace-fold.js"></script>
+  <script src="./vendor/codemirror/addon/fold/xml-fold.js"></script>
+  <script src="./vendor/codemirror/addon/fold/markdown-fold.js"></script>
+  <script src="./vendor/codemirror/addon/fold/comment-fold.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>

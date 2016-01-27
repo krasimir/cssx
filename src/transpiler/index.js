@@ -3,14 +3,15 @@ var traverse = require('./core/traverse');
 var generate = require('babel-generator').default;
 
 var visitors = {
-  CSSXDefinition: require('./visitors/CSSXDefinition')
+  CSSXDefinition: require('./visitors/CSSXDefinition'),
+  CSSXRules: require('./visitors/CSSXRules')
 };
 
 module.exports = function (code) {
   var ast = AST(code);
 
   traverse(ast.program, visitors);
-  // console.log(generate);
+  return generate(ast).code;
 };
 
 module.exports.ast = AST;

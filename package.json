@@ -6,8 +6,9 @@
   "scripts": {
     "test": "mocha --colors ./test/*.spec.js",
     "test-watch": "mocha --colors -w ./test/*.spec.js",
+    "test-debug": "mocha debug ./test/*.spec.js",
     "dev": "webpack --progress --colors --watch --mode=dev",
-    "make": "npm run test && webpack --mode=dev && webpack --mode=build"
+    "make": "webpack --mode=dev && webpack --mode=build && npm run test"
   },
   "repository": {
     "type": "git",
