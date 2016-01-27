@@ -36,6 +36,10 @@
     "sinon": "1.17.2",
     "sinon-chai": "2.8.0",
     "webpack": "1.12.9",
-    "yargs": "3.32.0"
+    "yargs": "3.32.0",
+    "glob": "6.0.3",
+    "babel-generator": "6.4.5",
+    "babel-traverse": "6.4.5",
+    "babel-types": "6.4.5"
   }
 }
