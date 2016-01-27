@@ -4,10 +4,10 @@
   "description": "CSS in JavaScript",
   "main": "src/index.js",
   "scripts": {
-    "test-dev": "mocha --colors -w ./test/*.spec.js",
     "test": "mocha --colors ./test/*.spec.js",
-    "make": "npm run test && webpack --mode=build",
-    "dev": "webpack --progress --colors --watch --mode=dev"
+    "test-watch": "mocha --colors -w ./test/*.spec.js",
+    "dev": "webpack --progress --colors --watch --mode=dev",
+    "make": "npm run test && webpack --mode=dev && webpack --mode=build"
   },
   "repository": {
     "type": "git",
