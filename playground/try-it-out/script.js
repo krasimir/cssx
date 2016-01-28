@@ -62,7 +62,7 @@ var init = function () {
       print();
     } catch(err) {
       console.log(err);
-      printText('Error while parsing:\n' + err.message);
+      printText(err.message);
     }
   });
 

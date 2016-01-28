@@ -30,7 +30,6 @@ body {
   border-right: 1px solid #999;
 }
 .right {
-  font-size: 0.7em;
   float: right;
 }
 .right .output {
@@ -48,6 +47,7 @@ body {
 
 /* output navigation */
 .nav-output {
+  font-size: 0.7em;
   height: 30px;
   border-top: 1px solid #ddd;
   padding: 9px;
