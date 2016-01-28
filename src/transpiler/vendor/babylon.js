@@ -2946,7 +2946,7 @@ var registerInOut = function registerInOut(name, context) {
     var curContext = this.curContext();
 
     if (curContext !== context) {
-      this.raise(this.state.start, 'Not in ' + context.token + ' context');
+      this.raise(this.state.start, 'CSSX: Not in ' + context.token + ' context');
     };
     this.state.context.length -= 1;
   };
@@ -2978,7 +2978,7 @@ pp.cssxExpressionRegister = function (expressions) {
     this.state._cssxExpressions = expressions;
   }
 };
-pp.cssExpressionSet = function (node) {
+pp.cssxExpressionSet = function (node) {
   // istanbul ignore next
 
   var _this = this;
@@ -2995,7 +2995,7 @@ pp.cssExpressionSet = function (node) {
       try {
         exprNode = _.parse(codeStr, PARSER_OPTIONS);
       } catch (err) {
-        _this.raise(expr.start, err.toString().split('(')[0]);
+        _this.raise(expr.start, 'CSSX: ' + err.toString().split('(')[0]);
       }
       return {
         start: expr.start,
@@ -3382,7 +3382,7 @@ pp.cssxEntryPoint = function (code) {
     this.cssxSyncEndTokenStateToCurPos();
     this.cssxStoreCurrentToken();
     if (this.cssxMatchNextToken(_tokenizerTypes.types.parenR)) {
-      this.raise(this.state.pos, 'Empty CSSX definition');
+      this.raise(this.state.pos, 'CSSX: empty definition');
     }
     return true;
   }
@@ -3457,7 +3457,7 @@ pp.cssxParseElement = function () {
   selectorNode = this.startNodeAt(this.state.start, this.state.startLoc);
 
   selectorNode.value = this.state.value;
-  this.cssExpressionSet(selectorNode);
+  this.cssxExpressionSet(selectorNode);
   elementNode.selector = this.finishNodeAt(selectorNode, 'CSSXSelector', this.state.end, this.state.endLoc);
   this.next();
   elementNode.body = this.parseBlock();
@@ -3473,13 +3473,13 @@ pp.cssxParseMediaQueryElement = function () {
   mediaQueryElement = this.startNodeAt(this.state.start, this.state.startLoc);
   mediaQueryElement.query = this.state.value;
 
-  this.cssExpressionSet(mediaQueryElement);
+  this.cssxExpressionSet(mediaQueryElement);
   this.cssxMediaQueryIn();
   this.cssxFinishTokenAt(_tokenizerTypes.types.cssxMediaQuery, this.state.value, this.state.end, this.state.endLoc);
   this.cssxStoreCurrentToken();
 
   if (!this.cssxMatchNextToken(_tokenizerTypes.types.braceL)) {
-    this.raise(this.state.pos, 'Expected { after query definition');
+    this.raise(this.state.pos, 'CSSX: expected { after query definition');
   }
 
   ++this.state.pos;
@@ -3502,7 +3502,7 @@ pp.cssxParseMediaQueryElement = function () {
         mediaQueryElement.body.push(this.cssxParseElement());
       }
     } else {
-      this.raise(this.state.pos, "Expected css selector after media query definition");
+      this.raise(this.state.pos, "CSSX: expected css selector after media query definition");
     }
   }
 
@@ -3532,7 +3532,7 @@ pp.cssxParseRule = function (propertyNode, valueNode) {
 pp.cssxParseRuleChild = function (type, value, pos, loc) {
   var node = this.startNodeAt(pos, loc);
 
-  this.cssExpressionSet(node);
+  this.cssxExpressionSet(node);
   node.name = value;
   return this.finishNodeAt(node, type, this.state.lastTokEnd, this.state.lastTokEndLoc);
 };
@@ -3621,13 +3621,13 @@ pp.cssxReadWord = function (readUntil) {
 
       if (this.input.charCodeAt(++this.state.pos) !== 117) {
         // "u"
-        this.raise(this.state.pos, "Expecting Unicode escape sequence \\uXXXX");
+        this.raise(this.state.pos, "CSSX: expecting Unicode escape sequence \\uXXXX");
       }
 
       ++this.state.pos;
       var esc = this.readCodePoint();
       if (!(first ? _utilIdentifier.isIdentifierStart : _utilIdentifier.isIdentifierChar)(esc, true)) {
-        this.raise(escStart, "Invalid Unicode escape");
+        this.raise(escStart, "CSSX: invalid Unicode escape");
       }
 
       word += codePointToString(esc);
@@ -3676,6 +3676,10 @@ pp.cssxReadProperty = function () {
   word = this.cssxReadWord(pp.cssxReadPropCharUntil);
   property = word.str;
 
+  if (property === '') {
+    this.raise(this.state.pos, 'CSSX: missing CSS property');
+  }
+
   this.cssxExpressionRegister(word.expressions);
   this.state.startLoc = loc;
   this.state.start = pos;
@@ -3703,6 +3707,10 @@ pp.cssxReadValue = function () {
   // if value is a string like \"<something here>\"
   if (value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
     value = value.substr(1, value.length - 2);
+  }
+
+  if (value === '') {
+    this.raise(this.state.pos, 'CSSX: missing CSS value');
   }
 
   this.cssxExpressionRegister(word.expressions);
