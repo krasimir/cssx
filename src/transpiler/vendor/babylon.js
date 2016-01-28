@@ -3273,6 +3273,9 @@ function CSSX(instance) {
       if (this.match(_tokenizerTypes.types.cssxSelector) && this.cssxMatchNextToken(_tokenizerTypes.types.braceL)) {
         ++this.state.pos;
         return this.finishToken(_tokenizerTypes.types.cssxRulesStart);
+      } else if (this.match(_tokenizerTypes.types.cssxSelector) && this.cssxMatchNextToken(_tokenizerTypes.types.parenR)) {
+        this.finishToken(_tokenizerTypes.types.cssxRulesEnd);
+        return;
       } else if (this.match(_tokenizerTypes.types.cssxRulesStart)) {
         // no styles
         if (this.cssxMatchNextToken(_tokenizerTypes.types.braceR)) {
@@ -3463,7 +3466,9 @@ pp.cssxParseElement = function () {
   this.cssxExpressionSet(selectorNode);
   elementNode.selector = this.finishNodeAt(selectorNode, 'CSSXSelector', this.state.end, this.state.endLoc);
   this.next();
-  elementNode.body = this.parseBlock();
+  if (!this.match(_tokenizerTypes.types.cssxRulesEnd)) {
+    elementNode.body = this.parseBlock();
+  }
   lastToken = this.cssxGetPreviousToken();
   result = this.finishNodeAt(elementNode, 'CSSXElement', lastToken.end, lastToken.loc.end);
   this.nextToken();
@@ -3571,9 +3576,11 @@ pp.cssxReadWord = function (readUntil) {
       cut = undefined,
       toggle = undefined;
   var readingDataURI = false;
+  var readingNth = false;
   var readingExpression = false;
   var dataURIPattern = ['url(data:', 41]; // 41 = )
   var expressionPattern = [96, 96]; // 96 = `
+  var nthPattern = [40, 41]; // 40 = (, 41 = )
   var expression = false;
   var expressions = [];
   var numOfCharRead = 0;
@@ -3590,12 +3597,14 @@ pp.cssxReadWord = function (readUntil) {
     if (cut() === dataURIPattern[0]) readingDataURI = true;
     if (ch === dataURIPattern[1]) readingDataURI = false;
 
-    if (readUntil.call(this, ch) || readingDataURI || ch === expressionPattern[0] || expression !== false) {
+    if (ch === nthPattern[0]) readingNth = true;
+
+    if (readUntil.call(this, ch) || readingDataURI || readingNth || ch === expressionPattern[0] || expression !== false) {
 
       var inc = ch <= 0xffff ? 1 : 2;
       this.state.pos += inc;
 
-      // expression block end detaction
+      // expression block end detection
       if (ch === expressionPattern[1] && expression) {
         expression.end = this.state.pos;
         expression.inner.end = numOfCharRead + 1;
@@ -3638,6 +3647,7 @@ pp.cssxReadWord = function (readUntil) {
     } else {
       break;
     }
+    if (ch === nthPattern[1]) readingNth = false;
     first = false;
     ++numOfCharRead;
   }
@@ -3753,7 +3763,7 @@ var CSSXPropertyAllowedCodes = ['-'].map(_utilities.stringToCode);
 
 var CSSXValueAllowedCodes = [' ', '\n', '\t', '#', '.', '-', '(', ')', '[', ']', '\'', '"', '%', ',', ':', '/', '\\'].map(_utilities.stringToCode);
 
-var CSSXSelectorAllowedCodes = [' ', '*', '>', '+', '~', '.', ':', '(', ')', '=', '[', ']', '"', '-', '!', '?', '@', '#', '$', '%', '^', '&', '\'', '|', ',', '\n'].map(_utilities.stringToCode);
+var CSSXSelectorAllowedCodes = [' ', '*', '>', '+', '~', '.', ':', '=', '[', ']', '"', '-', '!', '?', '@', '#', '$', '%', '^', '&', '\'', '|', ',', '\n'].map(_utilities.stringToCode);
 
 exports['default'] = {
   CSSXPropertyAllowedCodes: CSSXPropertyAllowedCodes,
