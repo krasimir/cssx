@@ -3242,8 +3242,8 @@ function CSSX(instance) {
         if (this.match(_tokenizerTypes.types.cssxRulesStart) && this.lookahead().type === _tokenizerTypes.types.braceR) {
           this.next();
         } else {
-          // reading the style
-          while (!this.match(_tokenizerTypes.types.cssxRulesEnd)) {
+          // reading the style         
+          while (!this.match(_tokenizerTypes.types.cssxRulesEnd) && !this.match(_tokenizerTypes.types.eof)) {
             rules.push(this.cssxParseRule(this.cssxReadProperty(), this.cssxReadValue()));
           }
           if (this.state.pos >= this.input.length) this.finishToken(_tokenizerTypes.types.eof);
@@ -3370,20 +3370,23 @@ pp.cssxEntryPoint = function (code) {
   var nextToken = this.lookahead();
   var name = undefined,
       parenL = undefined,
-      future = undefined;
+      future = undefined,
+      cState = undefined;
 
   if (nextToken.type === _tokenizerTypes.types.name && nextToken.value === 'cssx' && this.cssxMatchNextToken(_tokenizerTypes.types.name, _tokenizerTypes.types.parenL)) {
-    this.cssxIn();
+    cState = this.state.clone();
     future = this.cssxLookahead(2);
     name = future.first;
     parenL = future.last;
+    this.cssxIn();
     this.state.pos = parenL.end;
     this.finishToken(_tokenizerTypes.types.cssxStart);
     this.cssxSyncEndTokenStateToCurPos();
-    this.cssxStoreCurrentToken();
     if (this.cssxMatchNextToken(_tokenizerTypes.types.parenR)) {
-      this.raise(this.state.pos, 'CSSX: empty definition');
+      this.state = cState;
+      return false;
     }
+    this.cssxStoreCurrentToken();
     return true;
   }
   return false;
@@ -3676,9 +3679,9 @@ pp.cssxReadProperty = function () {
   word = this.cssxReadWord(pp.cssxReadPropCharUntil);
   property = word.str;
 
-  if (property === '') {
-    this.raise(this.state.pos, 'CSSX: missing CSS property');
-  }
+  // if (property === '') {
+  //   this.raise(this.state.pos, 'CSSX: missing CSS property');
+  // }
 
   this.cssxExpressionRegister(word.expressions);
   this.state.startLoc = loc;
@@ -3707,10 +3710,6 @@ pp.cssxReadValue = function () {
   // if value is a string like \"<something here>\"
   if (value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
     value = value.substr(1, value.length - 2);
-  }
-
-  if (value === '') {
-    this.raise(this.state.pos, 'CSSX: missing CSS value');
   }
 
   this.cssxExpressionRegister(word.expressions);
