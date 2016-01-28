@@ -50,8 +50,12 @@ body {
 .nav-output {
   height: 30px;
   border-top: 1px solid #ddd;
-  padding: 5px;
+  padding: 9px;
 }
-.nav-output label {
-  cursor: pointer;
+.nav-output a {
+  color: #000;
+  text-decoration: none;
+}
+.nav-output a:hover {
+  text-decoration: underline;
 }

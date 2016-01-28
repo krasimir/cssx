@@ -27,17 +27,41 @@ var renderOutput = function () {
   output = CodeMirror(el('.js-output-editor'), settings);
   return output;
 };
+var toggling = function (container, label, callback) {
+  var storageKey = 'cssx-' + label;
+  var is = localStorage && localStorage.getItem(storageKey) === 'true';
+  var render = function () {
+    container.innerHTML = (is ? '&#x2714;' : '&#x2718;') + ' ' + label;
+    callback(is);
+  };
+
+  container.addEventListener('click', function () {
+    localStorage && localStorage.setItem(storageKey, is = !is);
+    render();
+  });
+  render();
+};
 
 var init = function () {
+  var ast, transpiled;
   var output = renderOutput();
-  var print = output.setValue.bind(output);
+  var printIfNotEmpty = function (value) { output.setValue(!!value ? value : ''); };
+  var printAST = function () { printIfNotEmpty(JSON.stringify(ast, null, 2)); };
+  var printTranspiled = function () { printIfNotEmpty(transpiled); };
+  var print = printAST;
   var editor = renderEditor(function (value) {
     try {
       ast = babylon.parse(value);
-      print(JSON.stringify(ast, null, 2));
+      // TODO: use cssxler here
+      print();
     } catch(err) {
       print('Error while parsing:\n' + err.message);
     }
+  });
+
+  toggling(el('.js-view-ast'), 'View AST', function (value) {
+    print = value ? printAST : printTranspiled;
+    print();
   });
 };
 
