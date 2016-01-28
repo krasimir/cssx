@@ -44,6 +44,12 @@ body {
 .CodeMirror {
   height: auto;
 }
+.output[data-status="error"] {
+  border: 1px solid #F00;
+}
+.output[data-status="error"] .CodeMirror{
+  opacity: 0.3;
+}
 
 /* output navigation */
 .nav-output {
@@ -60,4 +66,13 @@ body {
 }
 .nav-output a:hover {
   text-decoration: underline;
+}
+
+/* message */
+.message {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  max-width: 50%;
+  background: #FFF;
 }

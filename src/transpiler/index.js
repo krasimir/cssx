@@ -18,7 +18,7 @@ module.exports = function (code, generateOptions) {
 
   traverse(ast.program, visitors);
   return generate(
-    ast, 
+    ast,
     merge({
       minified: false,
       compact: false,
