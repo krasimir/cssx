@@ -46,16 +46,18 @@ var init = function () {
   var ast, transpiled;
   var output = renderOutput();
   var printIfNotEmpty = function (value) { output.setValue(!!value ? value : ''); };
+  var printText = function (text) { printIfNotEmpty(text); };
+  var printTranspiled = function () { printText(transpiled); };
   var printAST = function () { printIfNotEmpty(JSON.stringify(ast, null, 2)); };
-  var printTranspiled = function () { printIfNotEmpty(transpiled); };
   var print = printAST;
   var editor = renderEditor(function (value) {
     try {
-      ast = babylon.parse(value);
-      // TODO: use cssxler here
+      ast = cssxler.ast(value);
+      transpiled = cssxler(value);
       print();
     } catch(err) {
-      print('Error while parsing:\n' + err.message);
+      console.log(err);
+      printText('Error while parsing:\n' + err.message);
     }
   });
 

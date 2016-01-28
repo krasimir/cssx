@@ -20,7 +20,7 @@ glob.sync(__dirname + '/fixtures/transpiler/**/actual.js').forEach(function (act
   });
 });
 
-describe.skip('Given the cssx transpiler', function () {
+describe.only('Given the cssx transpiler', function () {
   tests.forEach(function (test) {
     describe('when running ' + test.name, function () {
       it('should pass actual and receive expected code', function () {

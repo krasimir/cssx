@@ -1,1 +1,3 @@
-var c = a + b;
+var a = cssx("body", {
+  "margin": "10px"
+});

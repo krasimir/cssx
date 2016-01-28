@@ -4,7 +4,12 @@ var generate = require('babel-generator').default;
 
 var visitors = {
   CSSXDefinition: require('./visitors/CSSXDefinition'),
-  CSSXRules: require('./visitors/CSSXRules')
+  CSSXElement: require('./visitors/CSSXElement'),
+  CSSXProperty: require('./visitors/CSSXProperty'),
+  CSSXRule: require('./visitors/CSSXRule'),
+  CSSXRules: require('./visitors/CSSXRules'),
+  CSSXSelector: require('./visitors/CSSXSelector'),
+  CSSXValue: require('./visitors/CSSXValue')
 };
 
 module.exports = function (code) {
