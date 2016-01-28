@@ -12,10 +12,15 @@ var CODEMIRROR_SETTINGS = {
 };
 
 var renderEditor = function (onChange) {
-  var editor = CodeMirror(el('.js-code-editor'), CODEMIRROR_SETTINGS);
+  var container = el('.js-code-editor');
+  var editor = CodeMirror(container, CODEMIRROR_SETTINGS);
 
   editor.on('change', function () {
     onChange(editor.getValue());
+  });
+
+  container.addEventListener('click', function () {
+    editor.focus();
   });
   return editor;
 };
