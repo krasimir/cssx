@@ -1,5 +1,7 @@
 var t = require('babel-types');
-var CSSXCallee = 'cssx';
+
+var CSSXCalleeObj = 'cssx';
+var CSSXCalleeProp = 'add';
 
 module.exports = {
   enter: function (node, parent, index) {},
@@ -8,6 +10,13 @@ module.exports = {
 
     node.selector ? args.push(node.selector) : null;
     node.body ? args.push(node.body) : null;
-    parent[index] = t.callExpression(t.identifier(CSSXCallee), args);
+
+    parent[index] = t.callExpression(
+      t.MemberExpression(
+        t.identifier(CSSXCalleeObj),
+        t.identifier(CSSXCalleeProp)
+      ),
+      args
+    );
   }
 };

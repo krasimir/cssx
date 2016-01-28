@@ -55,20 +55,28 @@ var init = function () {
   var printTranspiled = function () { printText(transpiled); };
   var printAST = function () { printIfNotEmpty(JSON.stringify(ast, null, 2)); };
   var print = printAST;
-  var editor = renderEditor(function (value) {
+  var transpilerOpts = {
+    minified: false
+  };
+  var render = function (value) {
     try {
       ast = cssxler.ast(value);
-      transpiled = cssxler(value);
+      transpiled = cssxler(value, transpilerOpts);
       print();
     } catch(err) {
-      console.log(err);
+      // console.log(err);
       printText(err.message);
     }
-  });
+  };
+  var editor = renderEditor(render);
 
   toggling(el('.js-view-ast'), 'View AST', function (value) {
     print = value ? printAST : printTranspiled;
     print();
+  });
+  toggling(el('.js-minify'), 'Minify', function (value) {
+    transpilerOpts.minified = value;
+    render(editor.getValue());
   });
 };
 

@@ -53,6 +53,8 @@ body {
   padding: 9px;
 }
 .nav-output a {
+  display: inline-block;
+  margin-right: 0.6em;
   color: #000;
   text-decoration: none;
 }

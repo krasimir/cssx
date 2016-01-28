@@ -1,6 +1,7 @@
 var AST = require('./core/AST');
 var traverse = require('./core/traverse');
 var generate = require('babel-generator').default;
+var merge = require('./helpers/merge');
 
 var visitors = {
   CSSXDefinition: require('./visitors/CSSXDefinition'),
@@ -12,11 +13,21 @@ var visitors = {
   CSSXValue: require('./visitors/CSSXValue')
 };
 
-module.exports = function (code) {
+module.exports = function (code, generateOptions) {
   var ast = AST(code);
 
   traverse(ast.program, visitors);
-  return generate(ast).code;
+  return generate(
+    ast, 
+    merge({
+      minified: false,
+      compact: false,
+      concise: false,
+      quotes: 'single',
+      sourceMaps: false
+    }, generateOptions || {}),
+    code
+  ).code;
 };
 
 module.exports.ast = AST;

@@ -1,2 +1,2 @@
-cssx("header")
+cssx.add('header')
 ;

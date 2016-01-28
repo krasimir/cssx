@@ -1,3 +1,3 @@
-var a = cssx("body", {
-  "margin": "10px"
+var a = cssx.add('body', {
+  'margin': '10px'
 });
