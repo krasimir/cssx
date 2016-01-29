@@ -14,32 +14,56 @@ var CODEMIRROR_SETTINGS = {
 // ********************************************************************
 // Helpers
 
-var toggling = function (container, label, callback) {
-  var storageKey = 'cssx-' + label;
-  var is = localStorage && localStorage.getItem(storageKey) === 'true';
-  var render = function () {
+var lsGetItem = function (key) {
+  if (typeof localStorage !== 'undefined') {
+    return localStorage.getItem(key);
+  }
+  return null;
+};
+var lsSetItem = function (key, value) {
+  if (typeof localStorage !== 'undefined') {
+    localStorage.setItem(key, value);
+  }
+};
+
+var toggling = function (container, label, callback, group) {
+  var storageKey = 'cssx-' + label, oldValue;
+  var is = lsGetItem(storageKey) === 'true';
+  var updateUI = function () {
     container.innerHTML = (is ? '&#x2714;' : '&#x2718;') + ' ' + label;
-    callback(is);
   };
 
   container.addEventListener('click', function () {
-    localStorage && localStorage.setItem(storageKey, is = !is);
-    render();
+    oldValue = is;
+    if (group) toggling.disableAllExcept();
+    lsSetItem(storageKey, is = !oldValue);
+    updateUI();
+    callback(is);
   });
-  render();
+  if (group) {
+    toggling.toggles[storageKey] = function () {
+      lsSetItem(storageKey, is = false);
+      updateUI();
+      callback(is);
+    };
+  }
+  updateUI();
 };
+toggling.toggles = {};
+toggling.disableAllExcept = function (storageKey) {
+  for (var key in toggling.toggles) {
+    if (key !== storageKey) toggling.toggles[key]();
+  }
+};
+
 var el = function (sel) { return document.querySelector(sel); };
 var clone = function (o) { return JSON.parse(JSON.stringify(o)); };
 var saveCode = function (code) {
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem('cssx-playground-code', code);
-  }
+  lsSetItem('cssx-playground-code', code);
   return code;
 };
 var getCode = function () {
-  if (typeof localStorage !== 'undefined') {
-    return localStorage.getItem('cssx-playground-code') || '';
-  }
+  return lsGetItem('cssx-playground-code') || '';
 };
 
 // ********************************************************************
@@ -50,7 +74,7 @@ var renderEditor = function (onChange) {
   var editor = CodeMirror(container, CODEMIRROR_SETTINGS);
 
   editor.on('change', function () {
-    onChange(saveCode(editor.getValue()));
+    onChange(editor.getValue());
   });
   editor.setValue(getCode());
 
@@ -92,37 +116,55 @@ var renderOutError = function () {
 // Boot
 
 var init = function () {
-  var ast, transpiled;
-  var output = renderOutput();
-  var printIfNotEmpty = function (value) { output.setValue(!!value ? value : ''); };
-  var printText = function (text) { printIfNotEmpty(text); };
-  var printTranspiled = function () { printText(transpiled); };
-  var printAST = function () { printIfNotEmpty(JSON.stringify(ast, null, 2)); };
-  var print = printAST;
-  var transpilerOpts = {
-    minified: false
+  var ast, transpiled, output, editor;
+  var transpilerOpts = { minified: false };
+
+  // printing
+  var printIfValid = function (value) { output.setValue(!!value ? value : ''); };
+  var printText = function (text) { printIfValid(text); };
+  var printJS = function () { printText(transpiled); };
+  var printAST = function () { printIfValid(JSON.stringify(ast, null, 2)); };
+  var printCompiledCSS = function () {
+    var css = transpiled;
+    var c = cssx.stylesheet();
+    var func = new Function('cssx', transpiled + ';return cssx.compileImmediate().getCSS();');
+
+    c.minify = false;
+    func(c);
+    printIfValid(c.getCSS());
   };
-  var render = function (value) {
+  var print = printCompiledCSS;
+
+  output = renderOutput();
+  editor = renderEditor(updateOutput);
+
+  // render in the right part of the screen
+  function updateOutput(value) {
     try {
       ast = cssxler.ast(value);
       transpiled = cssxler(value, transpilerOpts);
       print();
       renderOutError();
+      saveCode(value);
     } catch(err) {
-      // console.log(err);
+      console.log(err);
       renderError(err.message);
     }
   };
-  var editor = renderEditor(render);
 
+  // toggles
   toggling(el('.js-view-ast'), 'View AST', function (value) {
-    print = value ? printAST : printTranspiled;
+    print = value ? printAST : printCompiledCSS;
     print();
-  });
+  }, true);
+  toggling(el('.js-view-js'), 'View JS', function (value) {    
+    print = value ? printJS : printCompiledCSS;
+    print();
+  }, true);
   toggling(el('.js-minify'), 'Minify', function (value) {
     transpilerOpts.minified = value;
-    render(editor.getValue());
-  });
+    updateOutput(editor.getValue());
+  }, false);
 };
 
 window.onload = init;

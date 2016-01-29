@@ -3401,7 +3401,15 @@ pp.cssxRulesEntryPoint = function (code) {
 
 /* useful watchers
 
-watch('this.state.type.label'),watch('this.state.pos'),watch('this.state.start'),watch('this.state.end'),watch('this.state.startLoc'),watch('this.state.endLoc'),watch('this.state.input.substr(0, this.state.pos)'),watch('this.state.context.map(function(i){return i.token}).join(",")'),watch('this.lookahead().type.label')
+watch('this.state.type.label')
+watch('this.state.pos')
+watch('this.state.start')
+watch('this.state.end')
+watch('this.state.startLoc')
+watch('this.state.endLoc')
+watch('this.state.input.substr(0, this.state.pos)')
+watch('this.state.context.map(function(i){return i.token}).join(",")')
+watch('this.lookahead().type.label')
 
 watch('String.fromCharCode(ch) + " / " + ch')
 
@@ -3686,18 +3694,23 @@ pp.cssxReadProperty = function () {
 
   loc = this.state.curPosition();
   pos = this.state.pos;
+
   word = this.cssxReadWord(pp.cssxReadPropCharUntil);
   property = word.str;
 
-  // if (property === '') {
-  //   this.raise(this.state.pos, 'CSSX: missing CSS property');
-  // }
+  if (property === '') {
+    this.raise(this.state.pos, 'CSSX: no CSS property provided');
+  }
 
   this.cssxExpressionRegister(word.expressions);
   this.state.startLoc = loc;
   this.state.start = pos;
 
   this.finishToken(_tokenizerTypes.types.cssxProperty, property);
+
+  if (this.lookahead().type !== _tokenizerTypes.types.colon) {
+    this.raise(this.state.pos, 'CSSX: expecting a colon after CSS property');
+  }
   this.next();
   node = this.cssxParseRuleChild('CSSXProperty', property, pos, loc);
 

@@ -1,6 +1,6 @@
 src
-webpack.conf.js
-examples
+webpack.*.js
+playground
 *.log
 node_modules
 test

@@ -1,32 +1,42 @@
 var isEmpty = require('../helpers/isEmpty');
 
-module.exports = function generate(rules, parent) {
-  var i, j, rule, props, prop, children, nestedChildren, selector, cssValue;
-  var css = '';
+module.exports = function (rules, minify) {
+  var processed = {};
 
-  for (i = 0; i < rules.length; i++) {
-    rule = rules[i];
-    children = rule.getChildren();
-    nestedChildren = rule.getNestedChildren();
-    selector = (parent ? parent + ' ' : '');
-    selector += typeof rule.selector === 'function' ? rule.selector() : rule.selector;
-    props = typeof rule.props === 'function' ? rule.props() : rule.props;
-    if (!isEmpty(props) || nestedChildren.length > 0) {
-      css += selector + '{';
-      if (props) {
-        for (prop in props) {
-          cssValue = typeof props[prop] === 'function' ? props[prop]() : props[prop];
-          css += prop + ':' + cssValue + ';';
+  return (function generate(rules, parent, minify, nesting) {
+    var i, j, rule, props, prop, children, nestedChildren, selector, cssValue, tab;
+    var css = '';
+    var newLine = minify ? '' : '\n';
+    var interval = minify ? '' : ' ';
+
+    nesting = typeof nesting !== 'undefined' ? nesting : '';
+    tab = minify ? '' : nesting + '  ';
+
+    for (i = 0; i < rules.length; i++) {
+      rule = rules[i];
+      children = rule.getChildren();
+      nestedChildren = rule.getNestedChildren();
+      selector = (parent ? parent + ' ' : '');
+      selector += typeof rule.selector === 'function' ? rule.selector() : rule.selector;
+      props = typeof rule.props === 'function' ? rule.props() : rule.props;
+      if ((!isEmpty(props) || nestedChildren.length > 0) && !processed[rule.id()]) {
+        processed[rule.id()] = true;
+        css += nesting + selector + interval + '{' + newLine;
+        if (props) {
+          for (prop in props) {
+            cssValue = typeof props[prop] === 'function' ? props[prop]() : props[prop];
+            css += tab + prop + ':' + interval + cssValue + ';' + newLine;
+          }
         }
+        for (j = 0; j < nestedChildren.length; j++) {
+          css += generate([nestedChildren[j]], null, minify, tab);
+        }
+        css += nesting + '}' + newLine;
       }
-      for (j = 0; j < nestedChildren.length; j++) {
-        css += generate([nestedChildren[j]]);
+      if (children.length > 0) {
+        css += generate(children, selector, minify);
       }
-      css += '}';
-    }
-    if (children.length > 0) {
-      css += generate(children, selector);
-    }
-  };
-  return css;
+    };
+    return css;
+  })(rules, null, minify);
 };

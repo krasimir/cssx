@@ -1,6 +1,6 @@
 var CSSRule = require('./CSSRule');
 var applyToDOM = require('./helpers/applyToDOM');
-var isObject = require('./helpers/isObject');
+var nextTick = require('./helpers/nextTick');
 var generate = require('./core/generate');
 
 var ids = 0;
@@ -11,68 +11,45 @@ module.exports = function () {
   var _api = {};
   var _rules = [];
   var _remove = null;
+  var _css = '';
 
-  var register = function (parent, selector, props, isWrapper) {
-    var rule;
-
-    rule = CSSRule(selector, props);
-
-    if (parent !== null) {
-      parent.addChild(rule, isWrapper);
-    } else {
-      _rules.push(rule);
-    }
-    return {
-      add: function (selector, props) {
-        var result = [], sel;
-
-        if (isObject(selector)) {
-          for (sel in selector) {
-            result.push(register(rule, sel, selector[sel], true));
-          }
-          return result;
-        }
-        return register(rule, selector, props);
-      }
-    };
-  };
-
+  _api.minify = true;
   _api.id = function () {
     return _id;
   };
+  _api.add = function (selector, props, parent, isWrapper) {
+    var rule = CSSRule(selector, props, _api);
 
-  _api.add = function (selector, props) {
-    var result = [], sel;
-
-    if (isObject(selector)) {
-      for (sel in selector) {
-        result.push(this.add(sel, selector[sel]));
-      }
-      return result;
+    _rules.push(rule);
+    if (parent) {
+      parent.addChild(rule, isWrapper);
     }
-    return register(null, selector, props);
+    this.compile();
+    return rule;
   };
-
   _api.rules = function () {
     return _rules;
   };
-
-  _api.compile = function (noDOM) {
-    var css = generate(_rules);
-
-    if (!noDOM) {
-      _remove = applyToDOM(css, _id);
-    }
-    return css;
+  _api.compile = function () {
+    nextTick(_api.compileImmediate, _id);
+    return _api;
   };
-
+  _api.compileImmediate = function () {
+    _css = generate(_rules, _api.minify);
+    _remove = applyToDOM(_css, _id);
+    return _api;
+  };
   _api.clear = function () {
     _rules = [];
+    _css = '';
     if (_remove !== null) {
       _remove();
       _remove = null;
     }
     return _api;
+  };
+  _api.getCSS = function () {
+    return _css;
   };
 
   return _api;

@@ -1,4 +1,8 @@
-module.exports = function (selector, props) {
+var ids = 0;
+var getId = function () { return 'r' + (++ids); };
+
+module.exports = function (selector, props, stylesheet) {
+  var _id = getId();
   var _children = [];
   var _nestedChildren = [];
 
@@ -7,12 +11,28 @@ module.exports = function (selector, props) {
     props: props,
     addChild: function (c, isWrapper) {
       (isWrapper ? _nestedChildren : _children).push(c);
+      return this;
     },
     getChildren: function () {
       return _children;
     },
     getNestedChildren: function () {
       return _nestedChildren;
+    },
+    descendant: function (s, p) {
+      return stylesheet.add(s, p, this, false);
+    },
+    nested: function (s, p) {
+      return stylesheet.add(s, p, this, true);
+    },
+    update: function (s, p) {
+      if (!s) this.selector = s;
+      if (!p) this.props = p;
+      stylesheet.compile();
+      return this;
+    },
+    id: function () {
+      return _id;
     }
   };
 

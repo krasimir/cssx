@@ -2,10 +2,15 @@ var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 var cssx = require('../lib/cssx');
+var path = require('path');
+var fs = require('fs');
+var glob = require("glob");
 
 chai.expect();
 chai.use(sinonChai);
+cssx.minify = false;
 
+// var only = '1'.split(',');
 var expect = chai.expect;
 var document = {
   querySelector: sinon.stub().returns({
@@ -18,6 +23,18 @@ var document = {
     }
   })
 };
+var expectInNextTick = function (message, work, expectations) {
+  it(message, function (done) {
+    work();
+    setTimeout(function () {
+      expectations();
+      done();
+    }, 4);  
+  });  
+};
+var file = function (f) {
+  return fs.readFileSync(f, 'utf8')
+};
 
 global.document = document;
 
@@ -28,126 +45,66 @@ describe('Given the cssx library', function () {
     cssx.clear();
   });
 
-  describe('when we call build several times within the global namespace', function () {
-    it('should create only one <style> element', function () {
-      cssx.compile();
-      cssx.compile();
-      cssx.compile();
-      cssx.compile();
-      cssx.compile();
-      expect(document.createElement).to.be.calledOnce;
-    });
+  describe('when we compile several times within the global namespace', function () {
+    expectInNextTick('should create only one <style> element',
+      function () {
+        cssx.compile();
+        cssx.compile();
+        cssx.compile();
+        cssx.compile();
+        cssx.compile();
+      },
+      function () {
+        expect(document.createElement).to.be.calledOnce;
+      }
+    );
   });
   describe('when we create multiple stylesheets', function () {
-    it('should create multiple <style> element', function () {
-      cssx.stylesheet().compile();
-      cssx.stylesheet().compile();
-      cssx.compile();
-      cssx.compile();
-      cssx.compile();
-      expect(document.createElement).to.be.calledThrice;
-    });
+    expectInNextTick('should create multiple <style> element',
+      function () {
+        cssx.stylesheet().compile();
+        cssx.stylesheet().compile();
+        cssx.compile();
+        cssx.compile();
+        cssx.compile();
+      },
+      function () {
+        expect(document.createElement).to.be.calledThrice;
+      }
+    );
   });
-  describe('when we add a rule', function () {
-    it('should build the css correctly', function () {
-      cssx.add('body', { 'margin': '10px' });
-      expect(cssx.compile()).to.be.equal('body{margin:10px;}');
-    });
-  });
-  describe('when we have nested rules', function () {
-    it('should build the css correctly', function () {
-      cssx
-      .add('body')
-        .add('h1', { 'padding': '.1em' })
-          .add('small', { 'font-size': '0.3em' });
-      expect(cssx.compile()).to.be.equal('body h1{padding:.1em;}body h1 small{font-size:0.3em;}');
-    });
-  });
-  describe('when we add multiple rules to same scope', function () {
-    it('should build the css correctly', function () {
-      var body = cssx.add('body', { 'a': 1 });
-      cssx.add('footer', { 'b': 2 })
-      body.add('h1', { 'c': 3 });
-      body.add('p', { 'd': 4 });
-      expect(cssx.compile()).to.be.equal('body{a:1;}body h1{c:3;}body p{d:4;}footer{b:2;}');
-    });
-  });
-  describe('when we add a rule without props', function () {
-    it('should NOT create a css entry for it', function () {
-      var body = cssx.add('body');
-      expect(cssx.compile()).to.be.equal('');
-    });
-  });
-  describe('when we send a function for selector', function () {
-    it('should NOT create a css entry for it', function () {
-      var selector = function () {
-        return 'body > p';
-      };
-      var body = cssx.add(selector, { a: 1 });
-      expect(cssx.compile()).to.be.equal('body > p{a:1;}');
-    });
-  });
-  describe('when we send a function for props', function () {
-    it('should NOT create a css entry for it', function () {
-      var styles = function () {
-        return { b: 2 };
-      };
-      var body = cssx.add('a', styles);
-      expect(cssx.compile()).to.be.equal('a{b:2;}');
-    });
-  });
-  describe('when build is called with doNotApplyToPage=true', function () {
-    it('should NOT create a <style> element', function () {
-      var body = cssx.add('body', { a: 1 });
-      cssx.compile(true);
-      expect(document.createElement).to.not.be.called;
-    });
-  });
-  describe('when using an object for selector parameter', function () {
-    it('should compile the styles', function () {
-      cssx.add({
-        'a:hover': {
-          'font-size': '20px'
-        },
-        'p > a:hover': {
-          'font-size': '22px'
-        }
+  describe('when we add rules', function () {
+    var tests = [], testDir, testDirParts, testCaseDirName, testName;
+
+    glob.sync(__dirname + '/fixtures/client/**/actual.js').forEach(function (actual) {
+      testDir = path.dirname(actual);
+      testDirParts = testDir.split('/');
+      testCaseDirName = testDirParts[testDirParts.length-1];
+      testName = 'test/fixtures/client/' + testCaseDirName;
+
+      if (typeof only !== 'undefined' && only.length > 0 && only.indexOf(testCaseDirName.toString()) < 0) return;
+      tests.push({
+        name: testName,
+        actual: actual,
+        expected: testDir + '/expected.css',
+        testDir: testDir
       });
-      expect(cssx.compile()).to.be.equal('a:hover{font-size:20px;}p > a:hover{font-size:22px;}');
     });
-  });
-  describe('when using nested styles', function () {
-    it('should compile the styles properly', function () {
-      cssx.add('@media screen').add({
-        'a:hover': {
-          'font-size': '20px'
-        },
-        'p > a:hover': {
-          'font-size': '22px'
-        }
+
+    tests.forEach(function (test) {
+      describe('and when are running ' + test.name, function () {
+        expectInNextTick('should compile the css correctly',
+          function () {
+            cssx.clear();
+            require(test.actual)(cssx);
+          },
+          function () {
+            fs.writeFileSync(test.expected + '.result', cssx.getCSS());
+            expect(cssx.getCSS()).to.be.equal(file(test.expected));
+            fs.unlinkSync(test.expected + '.result');
+          }
+        );
       });
-      expect(cssx.compile()).to.be.equal('@media screen{a:hover{font-size:20px;}p > a:hover{font-size:22px;}}');
-    });
-  });
-  describe('when using deeply nested styles', function () {
-    it('should compile the styles properly', function () {
-      var a = cssx.add('a', { 'e': 1 });
-      var b = a.add({
-        'b': { 'f': 1 }
-      })[0];
-      b.add({
-        'c': { d: 1 }
-      });
-      expect(cssx.compile()).to.be.equal('a{e:1;b{f:1;c{d:1;}}}');
-    });
-  });
-  describe('when using a function as a css value', function () {
-    it('should compile the styles properly', function () {
-      var color = function () {
-        return '#F00';
-      };
-      cssx.add('button', { color: color });
-      expect(cssx.compile()).to.be.equal('button{color:#F00;}');
     });
   });
 
