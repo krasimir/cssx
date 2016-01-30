@@ -3730,11 +3730,6 @@ pp.cssxReadValue = function () {
   word = this.cssxReadWord(pp.cssxReadValueCharUntil);
   value = this.cssxClearSpaceAtTheEnd(word.str); // changes state.pos
 
-  // if value is a string like \"<something here>\"
-  if (value.charAt(0) === '"' && value.charAt(value.length - 1) === '"') {
-    value = value.substr(1, value.length - 2);
-  }
-
   this.cssxExpressionRegister(word.expressions);
   this.state.start = pos;
   this.state.startLoc = startLoc;
