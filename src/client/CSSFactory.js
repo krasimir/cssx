@@ -14,6 +14,7 @@ module.exports = function () {
   var _css = '';
 
   _api.minify = true;
+  _api.disableDOMChanges = false;
   _api.id = function () {
     return _id;
   };
@@ -31,12 +32,16 @@ module.exports = function () {
     return _rules;
   };
   _api.compile = function () {
-    nextTick(_api.compileImmediate, _id);
+    nextTick(function () {
+      _api.compileImmediate();
+    }, _id);
     return _api;
   };
   _api.compileImmediate = function () {
     _css = generate(_rules, _api.minify);
-    _remove = applyToDOM(_css, _id);
+    if (!this.disableDOMChanges) {
+      _remove = applyToDOM(_css, _id);
+    }
     return _api;
   };
   _api.clear = function () {

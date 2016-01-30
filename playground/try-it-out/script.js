@@ -129,6 +129,7 @@ var init = function () {
     var c = cssx.stylesheet();
     var func = new Function('cssx', transpiled + ';return cssx.compileImmediate().getCSS();');
 
+    c.disableDOMChanges = true;
     c.minify = false;
     func(c);
     printIfValid(c.getCSS());
@@ -147,7 +148,7 @@ var init = function () {
       renderOutError();
       saveCode(value);
     } catch(err) {
-      console.log(err);
+      // console.log(err);
       renderError(err.message);
     }
   };
