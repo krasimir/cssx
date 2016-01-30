@@ -1,12 +1,11 @@
 var t = require('babel-types');
+var settings = require('../settings');
 
-var CSSXCalleeObj = 'cssx';
-var CSSXCalleeProp = 'add';
 var formCSSXElement = function (args) {
   return t.callExpression(
     t.MemberExpression(
-      t.identifier(CSSXCalleeObj),
-      t.identifier(CSSXCalleeProp)
+      t.identifier(settings.CSSXCalleeObj),
+      t.identifier(settings.CSSXCalleeProp)
     ),
     args
   );

@@ -3,6 +3,7 @@ var formCSSXElement = CSSXElement.formCSSXElement;
 var t = require('babel-types');
 var injectAt = require('../helpers/injectAt');
 var isArray = require('../helpers/isArray');
+var settings = require('../settings');
 
 var ids = 0;
 var getID = function () { return '_m' + (++ids); };
@@ -25,7 +26,7 @@ module.exports = {
     ));
     lines = lines.concat(node.body.map(function (cssxElementNode) {
       cssxElementNode.callee.object.name = id;
-      cssxElementNode.callee.property.name = 'nested';
+      cssxElementNode.callee.property.name = settings.CSSXClientNestedMethodName;
       return t.expressionStatement(cssxElementNode);
     }));
     if (isArray(parent)) {
