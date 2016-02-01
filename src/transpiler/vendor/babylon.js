@@ -3515,6 +3515,9 @@ pp.cssxParseMediaQueryElement = function () {
         if (this.match(_tokenizerTypes.types.cssxRulesEnd)) {
           this.cssxReadSelector();
         }
+        if (this.cssxMatchNextToken(_tokenizerTypes.types.parenR)) {
+          this.raise(this.state.pos, 'CSSX: unclosed media query block');
+        }
         mediaQueryElement.body.push(this.cssxParseElement());
       }
     } else {
