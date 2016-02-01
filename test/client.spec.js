@@ -8,7 +8,6 @@ var glob = require("glob");
 
 chai.expect();
 chai.use(sinonChai);
-cssx.minify = false;
 
 // var only = '1'.split(',');
 var expect = chai.expect;
@@ -35,6 +34,7 @@ var expectInNextTick = function (message, work, expectations) {
 var file = function (f) {
   return fs.readFileSync(f, 'utf8')
 };
+var styles;
 
 global.document = document;
 
@@ -42,17 +42,32 @@ describe('Given the cssx library', function () {
 
   beforeEach(function () {
     document.createElement.reset();
-    cssx.clear();
+    cssx.minify(false);
   });
 
+  describe('when we use disableDOMChanges and enableDOMChanges', function () {
+    expectInNextTick('should create multiple <style> element',
+      function () {
+        cssx.domChanges(false);
+        cssx.stylesheet().compile();
+        cssx.stylesheet().compile();
+        cssx.stylesheet().compile();
+      },
+      function () {
+        expect(document.createElement).to.not.be.called;
+        cssx.domChanges(true);
+      }
+    );
+  });
   describe('when we compile several times within the global namespace', function () {
     expectInNextTick('should create only one <style> element',
       function () {
-        cssx.compile();
-        cssx.compile();
-        cssx.compile();
-        cssx.compile();
-        cssx.compile();
+        styles = cssx.stylesheet();
+        styles.compile();
+        styles.compile();
+        styles.compile();
+        styles.compile();
+        styles.compile();
       },
       function () {
         expect(document.createElement).to.be.calledOnce;
@@ -64,9 +79,7 @@ describe('Given the cssx library', function () {
       function () {
         cssx.stylesheet().compile();
         cssx.stylesheet().compile();
-        cssx.compile();
-        cssx.compile();
-        cssx.compile();
+        cssx.stylesheet().compile();
       },
       function () {
         expect(document.createElement).to.be.calledThrice;
@@ -95,12 +108,12 @@ describe('Given the cssx library', function () {
       describe('and when are running ' + test.name, function () {
         expectInNextTick('should compile the css correctly',
           function () {
-            cssx.clear();
-            require(test.actual)(cssx);
+            styles = cssx.stylesheet();
+            require(test.actual)(styles);
           },
           function () {
-            fs.writeFileSync(test.expected + '.result', cssx.getCSS());
-            expect(cssx.getCSS()).to.be.equal(file(test.expected));
+            fs.writeFileSync(test.expected + '.result', styles.getCSS());
+            expect(styles.getCSS()).to.be.equal(file(test.expected));
             fs.unlinkSync(test.expected + '.result');
           }
         );

@@ -1,8 +1,16 @@
-cssx.add('body', {
-  'margin': '10px',
-  'font-size': '20px'
-})
-cssx.add('.header p > span', {
-  'padding-top': '1em'
-})
+(function () {
+  var _1 = cssx.s();
+
+  _1.add('body', {
+    'margin': '10px',
+    'font-size': '20px'
+  });
+
+  _1.add('.header p > span', {
+    'padding-top': '1em'
+  });
+
+  return _1;
+})();
+
 ;

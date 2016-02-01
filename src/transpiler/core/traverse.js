@@ -36,3 +36,5 @@ module.exports = function (tree, visitors) {
 
   traverse(tree, null, null);
 };
+
+module.exports.isIgnored = isIgnored;

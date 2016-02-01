@@ -2,6 +2,7 @@ var AST = require('./core/AST');
 var traverse = require('./core/traverse');
 var generate = require('babel-generator').default;
 var merge = require('./helpers/merge');
+var randomId = require('./helpers/randomId');
 
 var visitors = {
   CSSXDefinition: require('./visitors/CSSXDefinition'),
@@ -32,3 +33,7 @@ module.exports = function (code, generateOptions) {
 };
 
 module.exports.ast = AST;
+
+module.exports.reset = function () {
+  randomId.resetIDs();
+};

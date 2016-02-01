@@ -4,9 +4,7 @@ var t = require('babel-types');
 var injectAt = require('../helpers/injectAt');
 var isArray = require('../helpers/isArray');
 var settings = require('../settings');
-
-var ids = 0;
-var getID = function () { return '_m' + (++ids); };
+var getID = require('../helpers/randomId');
 
 module.exports = {
   enter: function (node, parent, index) {},

@@ -48,6 +48,9 @@ var toggling = function (container, label, callback, group) {
     };
   }
   updateUI();
+  if (is) {
+    callback(is);
+  }
 };
 toggling.toggles = {};
 toggling.disableAllExcept = function (storageKey) {
@@ -119,20 +122,29 @@ var init = function () {
   var ast, transpiled, output, editor;
   var transpilerOpts = { minified: false };
 
+  // cssx gobal settings
+  cssx.domChanges(false);
+  cssx.minify(false);
+
   // printing
   var printIfValid = function (value) { output.setValue(!!value ? value : ''); };
   var printText = function (text) { printIfValid(text); };
   var printJS = function () { printText(transpiled); };
   var printAST = function () { printIfValid(JSON.stringify(ast, null, 2)); };
   var printCompiledCSS = function () {
-    var css = transpiled;
-    var c = cssx.stylesheet();
-    var func = new Function('cssx', transpiled + ';return cssx.compileImmediate().getCSS();');
+    var func, css;
 
-    c.disableDOMChanges = true;
-    c.minify = false;
-    func(c);
-    printIfValid(c.getCSS());
+    cssx.clear();
+    try {
+      func = new Function(transpiled);
+      func();
+      css = cssx.getStylesheets().map(function (stylesheet) {
+        return stylesheet.compileImmediate().getCSS();
+      }).join('');
+    } catch(err) {
+      renderError('I can\'t compile the transpiled JavaScript.<br />' + err.message);
+    }
+    printIfValid(css);
   };
   var print = printCompiledCSS;
 
@@ -142,6 +154,7 @@ var init = function () {
   // render in the right part of the screen
   function updateOutput(value) {
     try {
+      cssxler.reset();
       ast = cssxler.ast(value);
       transpiled = cssxler(value, transpilerOpts);
       print();
@@ -158,7 +171,7 @@ var init = function () {
     print = value ? printAST : printCompiledCSS;
     print();
   }, true);
-  toggling(el('.js-view-js'), 'View JS', function (value) {    
+  toggling(el('.js-view-js'), 'View JS', function (value) {
     print = value ? printJS : printCompiledCSS;
     print();
   }, true);

@@ -31,6 +31,7 @@ describe('Given the cssx transpiler', function () {
         var astFile = test.testDir + '/ast.json';
         var resultFile = test.testDir + '/expect.result.js';
 
+        CSSXTranspiler.reset();
         fs.writeFileSync(astFile, json(test.actual));
         result = CSSXTranspiler(file(test.actual));
         fs.writeFileSync(resultFile, result);

@@ -1,5 +1,6 @@
 module.exports = {
   CSSXCalleeObj: 'cssx',
   CSSXCalleeProp: 'add',
-  CSSXClientNestedMethodName: 'n'
+  CSSXClientNestedMethodName: 'n',
+  CSSXNewStylesheet: 's'
 };
