@@ -6,4 +6,4 @@ var a = (function () {
   });
 
   return _1;
-})();;
+}).apply(this);;

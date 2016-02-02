@@ -63,8 +63,11 @@ module.exports = {
 
     funcBody = t.blockStatement(funcLines);
     funcExpr = t.callExpression(
-      t.functionExpression(null, [], funcBody),
-      []
+      t.memberExpression(
+        t.functionExpression(null, [], funcBody),
+        t.identifier('apply')
+      ),
+      [t.thisExpression()]
     );
     selfInvoke = t.expressionStatement(funcExpr);
 
