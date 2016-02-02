@@ -32,23 +32,29 @@ body {
 .right {
   float: right;
 }
-.right .output {
+.output {
   height: calc(100% - 30px);
   overflow-y: auto;
   overflow-x: hidden;
+  transition: opacity 300ms, border-top 300ms;
+  -webkit-transition: opacity 300ms, border-top 300ms;
+  border-top: 0px solid #F00;
 }
 .error {
   color: #9f0000;
   font-weight: bold;
 }
+.output[data-status="error"] {
+  border-top: 26px solid #F00;
+}
 .CodeMirror {
   height: auto;
-}
-.output[data-status="error"] {
-  border: 1px solid #F00;
+  transition: opacity 300ms;
+  -webkit-transition: opacity 300ms;
+  opacity: 1;
 }
 .output[data-status="error"] .CodeMirror{
-  opacity: 0.3;
+  opacity: 0.2;
 }
 
 /* output navigation */
@@ -70,9 +76,13 @@ body {
 
 /* message */
 .message {
+  display: none;
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  max-width: 50%;
-  background: #FFF;
+  top: 4px;
+  right: 0;
+  width: 50%;
+  text-align: center;
+  padding-left: 10px;
+  color: #fff;
+  font-size: 0.8em;
 }

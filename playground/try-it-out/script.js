@@ -108,7 +108,7 @@ var renderOutMessage = function () {
 };
 var renderError = function (message) {
   el('.js-output-editor').setAttribute('data-status', 'error');
-  renderMessage('<span style="color:#F00">Error: ' + message + '</span>');
+  renderMessage(message);
 };
 var renderOutError = function () {
   el('.js-output-editor').setAttribute('data-status', '');
@@ -134,7 +134,6 @@ var init = function () {
   var printCompiledCSS = function () {
     var func, css;
 
-    cssx.clear();
     try {
       func = new Function(transpiled);
       func();
@@ -177,6 +176,7 @@ var init = function () {
   }, true);
   toggling(el('.js-minify'), 'Minify', function (value) {
     transpilerOpts.minified = value;
+    cssx.minify(value);
     updateOutput(editor.getValue());
   }, false);
 };

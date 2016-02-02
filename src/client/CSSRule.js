@@ -9,6 +9,7 @@ module.exports = function (selector, props, stylesheet) {
   var record = {
     selector: selector,
     props: props,
+    parent: null,
     addChild: function (c, isWrapper) {
       (isWrapper ? _nestedChildren : _children).push(c);
       return this;
@@ -32,9 +33,14 @@ module.exports = function (selector, props, stylesheet) {
       return this.nested(s, p);
     },
     update: function (s, p) {
-      if (!s) this.selector = s;
-      if (!p) this.props = p;
-      stylesheet.compile();
+      var propName;
+
+      if (s) this.selector = s;
+      if (p) {
+        for (propName in p) {
+          this.props[propName] = p[propName];
+        }
+      }
       return this;
     },
     id: function () {

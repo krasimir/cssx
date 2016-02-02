@@ -47,7 +47,7 @@ module.exports = {
               t.identifier(settings.CSSXCalleeObj),
               t.identifier(settings.CSSXNewStylesheet)
             ),
-            []
+            [t.stringLiteral(stylesheetId)]
           )
         )
       ]

@@ -5,11 +5,15 @@ var cssx = require('../lib/cssx');
 var path = require('path');
 var fs = require('fs');
 var glob = require("glob");
+var minifyCSS = require('./helpers/minifyCSS');
 
 chai.expect();
 chai.use(sinonChai);
 
-// var only = '1'.split(',');
+cssx.minify(false);
+cssx.nextTick(false);
+
+// var only = '2'.split(',');
 var expect = chai.expect;
 var document = {
   querySelector: sinon.stub().returns({
@@ -22,19 +26,9 @@ var document = {
     }
   })
 };
-var expectInNextTick = function (message, work, expectations) {
-  it(message, function (done) {
-    work();
-    setTimeout(function () {
-      expectations();
-      done();
-    }, 4);  
-  });  
-};
-var file = function (f) {
+var styles, file = function (f) {
   return fs.readFileSync(f, 'utf8')
 };
-var styles;
 
 global.document = document;
 
@@ -42,49 +36,86 @@ describe('Given the cssx library', function () {
 
   beforeEach(function () {
     document.createElement.reset();
-    cssx.minify(false);
+    cssx.clear();
   });
 
   describe('when we use disableDOMChanges and enableDOMChanges', function () {
-    expectInNextTick('should create multiple <style> element',
-      function () {
-        cssx.domChanges(false);
-        cssx.stylesheet().compile();
-        cssx.stylesheet().compile();
-        cssx.stylesheet().compile();
-      },
-      function () {
-        expect(document.createElement).to.not.be.called;
-        cssx.domChanges(true);
-      }
-    );
+    it('should create multiple <style> element', function () {
+      cssx.domChanges(false);
+      cssx.stylesheet().compile();
+      cssx.stylesheet().compile();
+      cssx.stylesheet().compile();
+      expect(document.createElement).to.not.be.called;
+      cssx.domChanges(true);
+    });
   });
   describe('when we compile several times within the global namespace', function () {
-    expectInNextTick('should create only one <style> element',
-      function () {
-        styles = cssx.stylesheet();
-        styles.compile();
-        styles.compile();
-        styles.compile();
-        styles.compile();
-        styles.compile();
-      },
-      function () {
-        expect(document.createElement).to.be.calledOnce;
-      }
-    );
+    it('should create only one <style> element', function () {
+      styles = cssx.stylesheet();
+      styles.compile();
+      styles.compile();
+      styles.compile();
+      styles.compile();
+      styles.compile();
+      expect(document.createElement).to.be.calledOnce;
+    });
   });
   describe('when we create multiple stylesheets', function () {
-    expectInNextTick('should create multiple <style> element',
-      function () {
-        cssx.stylesheet().compile();
-        cssx.stylesheet().compile();
-        cssx.stylesheet().compile();
-      },
-      function () {
-        expect(document.createElement).to.be.calledThrice;
-      }
-    );
+    it('should create multiple <style> element', function () {
+      cssx.stylesheet().compile();
+      cssx.stylesheet().compile();
+      cssx.stylesheet().compile();
+      expect(document.createElement).to.be.calledThrice;
+    });
+  });
+  describe('when we pass an id to the factory', function () {
+    it('should create only one stylesheet', function () {
+      cssx.stylesheet('something');
+      cssx.stylesheet('something');
+      cssx.stylesheet('something');
+      expect(cssx.getStylesheets().length).to.be.equal(1);
+    });
+    describe('and when we pass same id multiple times', function () {
+      it('should update the values 1', function () {
+        var EXPECTED = 'a{b:10;c:10;d:10;}';
+        var A = cssx.stylesheet('something');
+        var B = cssx.stylesheet('something');
+        A.add('a', { b: 1, c: 2 });
+        A.add('a', { c: 10 });
+        B.add('a', { b: 10, d: 10 });
+        expect(cssx.getStylesheets().length).to.be.equal(1);
+        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+      });
+      it('should update the values 2', function () {
+        var EXPECTED = 'a{b:1;c:2;}a{b:10;d:10;}';
+        var A = cssx.stylesheet('A');
+        var B = cssx.stylesheet('B');
+        A.add('a', { b: 1, c: 2 });
+        B.add('a', { b: 10, d: 10 });
+        expect(cssx.getStylesheets().length).to.be.equal(2);
+        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+      });
+      it('should update the values 3', function () {
+        var EXPECTED = 'a{b:10;c:10;e:10;}a{b:1;c:2;}';
+        var A = cssx.stylesheet('A');
+        var B = cssx.stylesheet('A');
+        var C = cssx.stylesheet('B');
+        A.add('a', { b: 1, c: 2 });
+        B.add('a', { b: 10, c: 10, e: 10 });
+        C.add('a', { b: 1, c: 2 });
+        expect(cssx.getStylesheets().length).to.be.equal(2);
+        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+      });
+      it('should update the values 4', function () {
+        var EXPECTED = 'body p{a:2;}p{a:1;}';
+        var A = cssx.stylesheet('A');
+        var body = A.add('body');
+        A.add('p', { a: 1 });
+        body.d('p', { a: 2 });
+        expect(cssx.getStylesheets().length).to.be.equal(1);
+        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+      });
+    });
   });
   describe('when we add rules', function () {
     var tests = [], testDir, testDirParts, testCaseDirName, testName;
@@ -106,12 +137,9 @@ describe('Given the cssx library', function () {
 
     tests.forEach(function (test) {
       describe('and when are running ' + test.name, function () {
-        expectInNextTick('should compile the css correctly',
-          function () {
+        it('should compile the css correctly', function () {
             styles = cssx.stylesheet();
             require(test.actual)(styles);
-          },
-          function () {
             fs.writeFileSync(test.expected + '.result', styles.getCSS());
             expect(styles.getCSS()).to.be.equal(file(test.expected));
             fs.unlinkSync(test.expected + '.result');

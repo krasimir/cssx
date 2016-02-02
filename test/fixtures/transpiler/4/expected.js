@@ -1,5 +1,5 @@
 (function () {
-  var _2 = cssx.s();
+  var _2 = cssx.s('_2');
 
   _2.add('section::after', {
     'content': '" "',

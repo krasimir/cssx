@@ -1,4 +1,4 @@
-* Allow different stylesheets in the cssx code
+* Dynamic parts in the cssx definitions
 * Documentation
 * A complete end-to-end test suite
 * Examples in the playground

@@ -38,10 +38,10 @@
     "glob": "6.0.3",
     "json-loader": "0.5.4",
     "mocha": "2.3.4",
+    "setimmediate": "1.0.4",
     "sinon": "1.17.2",
     "sinon-chai": "2.8.0",
     "webpack": "1.12.9",
-    "yargs": "3.32.0",
-    "setimmediate": "1.0.4"
+    "yargs": "3.32.0"
   }
 }
