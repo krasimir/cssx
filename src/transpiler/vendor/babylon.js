@@ -2962,8 +2962,6 @@ var _parser = require("../../parser");
 
 var _parser2 = _interopRequireDefault(_parser);
 
-var _ = require("../../");
-
 var pp = _parser2["default"].prototype;
 
 var PARSER_OPTIONS = {
@@ -2990,19 +2988,13 @@ pp.cssxExpressionSet = function (node) {
       length = expr.end - expr.start;
       codeStr = _this.state.input.substr(expr.start, length).substr(1, length - 2);
       if (codeStr === '') return false;
-      try {
-        exprNode = _.parse(codeStr, PARSER_OPTIONS);
-      } catch (err) {
-        _this.raise(expr.start, 'CSSX: ' + err.toString().split('(')[0]);
-      }
       return {
         start: expr.start,
         end: expr.end,
-        inSelector: {
+        contextLoc: {
           start: expr.inner.start,
           end: expr.inner.end
-        },
-        body: exprNode.program.body
+        }
       };
     }).filter(function (expr) {
       return expr !== false;
@@ -3010,7 +3002,7 @@ pp.cssxExpressionSet = function (node) {
   }
   this.state._cssxExpressions = false;
 };
-},{"../../":1,"../../parser":5,"babel-runtime/helpers/interop-require-default":35}],13:[function(require,module,exports){
+},{"../../parser":5,"babel-runtime/helpers/interop-require-default":35}],13:[function(require,module,exports){
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];

@@ -1,4 +1,3 @@
-* Keeping the scope
 * Dynamic parts in the cssx definitions
 * Documentation
 * A complete end-to-end test suite

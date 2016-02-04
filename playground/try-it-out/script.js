@@ -141,7 +141,7 @@ var init = function () {
         return stylesheet.compileImmediate().getCSS();
       }).join('');
     } catch(err) {
-      renderError('I can\'t compile the transpiled JavaScript.<br />' + err.message);
+      renderError(err.message);
     }
     printIfValid(css);
   };
