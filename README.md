@@ -14,17 +14,22 @@
 ---
 
 ```js
-var updateStyles = function (size) {
-  var stylesheet = cssx.stylesheet('my-styles');
-  var body = stylesheet.add('body', { 'font-size': size + 'px' });
-
-  body.descendant('h1', { 'font-size': '2em' });
-  body.descendant('small', { 'font-size': '0.8em' });
+var updateStyles = function(size) {
+  cssx(
+    body {
+      font-size: `size`px;
+    }
+    body h1 {
+      font-size: 2em;
+    }
+    body small {
+      font-size: 0.8em;
+    }
+  );
 }
-
 updateStyles(18);
 
-/* results in the following <style> tag:
+/* results in the following:
 
 <style id="my-styles2" type="text/css">
 body {
