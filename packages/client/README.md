@@ -36,7 +36,6 @@ body small {
 </style>
 
 */
-
 ```
 
 **Nota bene!** CSSX is not meant to be used for all the styles in our pages. Of course that we need a basic styles for typography, layout, coloring etc. It's purpose is to make the *dynamic* parts of our CSS more flexible and easy to control.
