@@ -4,6 +4,10 @@
 
 ---
 
+[Demo!](http://krasimir.github.io/cssx/playground/try-it-out/)
+
+---
+
 * [cssx client-side library](./packages/client) ([download](./packages/client/lib))
 * [cssx-transpiler](./packages/transpiler) ([download](./packages/transpiler/lib))
 
