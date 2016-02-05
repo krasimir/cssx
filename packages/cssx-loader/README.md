@@ -1,15 +1,20 @@
+# cssx-loader
+
+A CSSX loader for webpack.
+
+## Usage
+
+Install the loader with `npm i cssx-loader -D` and then add it to your `webpack.config.js` file:
+
+```js
 var webpack = require('webpack');
-var path = require('path');
 
 module.exports = {
-  entry: __dirname + '/src/app.js',
+  entry: '...',
   devtool: 'source-map',
   output: {
-    path: __dirname + '/dist',
-    filename: 'bundle.js',
-    library: 'MyApp',
-    libraryTarget: 'umd',
-    umdNamedDefine: true
+    path: '...',
+    filename: 'bundle.js'
   },
   module: {
     loaders: [
@@ -21,3 +26,5 @@ module.exports = {
     ]
   }
 };
+
+```
