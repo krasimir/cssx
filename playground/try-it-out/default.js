@@ -1,0 +1,1 @@
+var DefaultStyles = 'var updateStyles = function(size) {\n  cssx(\n    body {\n      font-size: `size`px;\n    }\n    body h1 {\n      font-size: 2em;\n    }\n    body small {\n      font-size: 0.8em;\n    }\n  );\n}\nupdateStyles(18);';

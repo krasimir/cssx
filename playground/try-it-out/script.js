@@ -151,6 +151,7 @@ var init = function () {
 
   output = renderOutput();
   editor = renderEditor(updateOutput);
+  editor.setValue(DefaultStyles);
 
   // render in the right part of the screen
   function updateOutput(value) {
