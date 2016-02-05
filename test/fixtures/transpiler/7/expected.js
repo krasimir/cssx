@@ -1,10 +1,10 @@
 (function () {
   var _2 = {};
-  _2['margin'] = '10px';
+  _2[a + b + "-to-" + (a + b) + "-from-" + (a + b)] = '10px';
 
   var _1 = cssx.s('_1');
 
-  _1.add(a + b + "-to-" + (c + d) + "-from-" + (e + f), _2);
+  _1.add('body', _2);
 
   return _1;
 }).apply(this);

@@ -1,4 +1,4 @@
-* Dynamic parts in the cssx definitions
+* The playground continue to display duplicated classes
 * Documentation
 * A complete end-to-end test suite
 * Examples in the playground

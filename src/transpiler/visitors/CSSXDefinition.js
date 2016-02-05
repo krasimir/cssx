@@ -32,10 +32,19 @@ var updateStyleSheet = function (node, stylesheetId) {
   return node;
 };
 
+var funcLines, stylesheetId, funcBody, funcExpr, selfInvoke;
+
 module.exports = {
-  enter: function (node, parent, index) {},
-  exit: function (node, parent, index) {
-    var funcLines = [], stylesheetId = getID(), funcBody, funcExpr, selfInvoke;
+  enter: function (node, parent, index, context) {
+    funcLines = [];
+    stylesheetId = getID();
+    context.addToCSSXSelfInvoke = function (item) {
+      funcLines = [item].concat(funcLines);
+    };
+  },
+  exit: function (node, parent, index, context) {
+
+    delete context.addToCSSXSelfInvoke;
 
     funcLines.push(t.variableDeclaration(
       'var',

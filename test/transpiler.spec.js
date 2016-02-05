@@ -7,7 +7,7 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var tests = [];
-// var only = '6'.split(',');
+// var only = '9'.split(',');
 
 glob.sync(__dirname + '/fixtures/transpiler/**/actual.js').forEach(function (actual) {
   var testDir = path.dirname(actual), testDirParts = testDir.split('/');

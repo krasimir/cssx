@@ -1,32 +1,33 @@
 (function () {
-  var _2 = cssx.s('_2');
+  var _7 = {};
+  _7['background'] = 'url("../public/bg.jpg") no-repeat';
+  _7['text-decoration'] = 'none';
+  var _5 = {};
+  _5['color'] = '#000';
+  _5['text-decoration'] = 'underline';
+  var _4 = {};
+  _4['font-size'] = '0.8em';
+  var _3 = {};
+  _3['font-size'] = '.2em';
+  var _2 = {};
+  _2['clear'] = 'both';
+  _2['display'] = 'table';
+  _2['content'] = '" "';
 
-  _2.add('section::after', {
-    'content': '" "',
-    'display': 'table',
-    'clear': 'both'
-  });
+  var _1 = cssx.s('_1');
 
-  _2.add('section small', {
-    'font-size': '.2em'
-  });
+  _1.add('section::after', _2);
 
-  var _1 = _2.add('@media screen and (max-width: 1000px)');
+  _1.add('section small', _3);
 
-  _1.n('p', {
-    'font-size': '0.8em'
-  });
+  var _6 = _1.add('@media screen and (max-width: 1000px)');
 
-  _1.n('p > a', {
-    'text-decoration': 'underline',
-    'color': '#000'
-  });
+  _6.n('p', _4);
 
-  _2.add('section p > a', {
-    'text-decoration': 'none',
-    'background': 'url("../public/bg.jpg") no-repeat'
-  });
+  _6.n('p > a', _5);
 
-  return _2;
+  _1.add('section p > a', _7);
+
+  return _1;
 }).apply(this);
 ;

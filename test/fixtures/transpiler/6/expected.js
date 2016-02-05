@@ -2,11 +2,12 @@ var getSelector = function () {
   return 'omg';
 };
 (function () {
+  var _2 = {};
+  _2['margin'] = '10px';
+
   var _1 = cssx.s('_1');
 
-  _1.add(getSelector, {
-    'margin': '10px'
-  });
+  _1.add(getSelector, _2);
 
   return _1;
 }).apply(this);

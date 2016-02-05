@@ -1,5 +1,5 @@
 var t = require('babel-types');
-var parseExpressions = require('../core/expressions');
+var parseExpressions = require('../core/parseExpressions');
 
 module.exports = {
   enter: function (node, parent, index) {},

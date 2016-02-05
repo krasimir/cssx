@@ -132,14 +132,15 @@ var init = function () {
   var printJS = function () { printText(transpiled); };
   var printAST = function () { printIfValid(JSON.stringify(ast, null, 2)); };
   var printCompiledCSS = function () {
-    var func, css;
+    var func, generatedCSS, css;
 
     try {
       func = new Function(transpiled);
       func();
-      css = cssx.getStylesheets().map(function (stylesheet) {
+      generatedCSS = cssx.getStylesheets().map(function (stylesheet) {
         return stylesheet.compileImmediate().getCSS();
-      }).join('');
+      });
+      css = generatedCSS.join('');
     } catch(err) {
       renderError(err.message);
     }

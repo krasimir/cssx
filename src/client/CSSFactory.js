@@ -1,6 +1,7 @@
 var CSSRule = require('./CSSRule');
 var applyToDOM = require('./helpers/applyToDOM');
 var nextTick = require('./helpers/nextTick');
+var resolveSelector = require('./helpers/resolveSelector');
 var generate = require('./core/generate');
 
 var ids = 0;
@@ -20,7 +21,7 @@ module.exports = function (id) {
       rule = _rules[i];
       areParentsMatching = (rule.parent && typeof parent !== 'undefined' && parent.selector === rule.parent.selector);
       areThereNoParents = !rule.parent && !parent;
-      if (rule.selector === selector && (areParentsMatching || areThereNoParents)) {
+      if (resolveSelector(rule.selector) === resolveSelector(selector) && (areParentsMatching || areThereNoParents)) {
         return rule;
       }
     }

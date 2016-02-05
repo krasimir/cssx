@@ -1,5 +1,5 @@
 cssx(
-  `a+b`-to-`a+b`-from-`a+b` {
+  `a+b`-to-`c+d`-from-`e+f` {
     margin: 10px;
   }
 )

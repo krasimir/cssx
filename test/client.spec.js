@@ -13,7 +13,7 @@ chai.use(sinonChai);
 cssx.minify(false);
 cssx.nextTick(false);
 
-// var only = '2'.split(',');
+// var only = '7'.split(',');
 var expect = chai.expect;
 var document = {
   querySelector: sinon.stub().returns({
@@ -113,6 +113,15 @@ describe('Given the cssx library', function () {
         A.add('p', { a: 1 });
         body.d('p', { a: 2 });
         expect(cssx.getStylesheets().length).to.be.equal(1);
+        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+      });
+      it('should update the values 5', function () {
+        var EXPECTED = 'a{b:1;}';
+        var selector = function () { return 'a'; };
+        var A = cssx.stylesheet('A');
+        var B = cssx.stylesheet('A');
+        A.add(selector, { b: 1 });
+        B.add(selector, { b: 1 });
         expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
       });
     });

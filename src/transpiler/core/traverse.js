@@ -11,13 +11,14 @@ var getType = function (node) {
 };
 
 module.exports = function (tree, visitors) {
+  var context = {};
 
   var traverse = function (node, parent, index) {
     var key, i;
     var type = getType(node);
     var visitor = visitors[type];
 
-    visitor && visitor.enter ? visitor.enter(node, parent, index) : null;
+    visitor && visitor.enter ? visitor.enter(node, parent, index, context) : null;
     if (isArray(node)) {
       for (i = 0; i < node.length; i++) {
         traverse(node[i], node, i);
@@ -31,7 +32,7 @@ module.exports = function (tree, visitors) {
         }
       }
     }
-    visitor && visitor.exit ? visitor.exit(node, parent, index) : null;
+    visitor && visitor.exit ? visitor.exit(node, parent, index, context) : null;
   };
 
   traverse(tree, null, null);

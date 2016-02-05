@@ -1,4 +1,5 @@
 var isEmpty = require('../helpers/isEmpty');
+var resolveSelector = require('../helpers/resolveSelector');
 
 module.exports = function (rules, minify) {
   var processed = {};
@@ -17,7 +18,7 @@ module.exports = function (rules, minify) {
       children = rule.getChildren();
       nestedChildren = rule.getNestedChildren();
       selector = (parent ? parent + ' ' : '');
-      selector += typeof rule.selector === 'function' ? rule.selector() : rule.selector;
+      selector += resolveSelector(rule.selector);
       props = typeof rule.props === 'function' ? rule.props() : rule.props;
       if ((!isEmpty(props) || nestedChildren.length > 0) && !processed[rule.id()]) {
         processed[rule.id()] = true;
