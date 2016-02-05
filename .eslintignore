@@ -1,2 +1,2 @@
-./src/transpiler/vendor
+./packages/transpiler/src/vendor
 ./node_modules

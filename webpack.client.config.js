@@ -15,10 +15,10 @@ if (env === 'build') {
 }
 
 var config = {
-  entry: __dirname + '/src/client/index.js',
+  entry: __dirname + '/packages/client/src/index.js',
   devtool: 'source-map',
   output: {
-    path: __dirname + '/lib',
+    path: __dirname + '/packages/client/lib',
     filename: outputFile,
     library: appName,
     libraryTarget: 'umd',
@@ -38,7 +38,7 @@ var config = {
     ]
   },
   resolve: {
-    root: path.resolve('./src'),
+    root: path.resolve('./packages'),
     extensions: ['', '.js', '.json']
   },
   plugins: plugins

@@ -1,14 +1,12 @@
 {
-  "name": "cssx",
-  "version": "2.0.1",
   "description": "CSS in JavaScript",
-  "main": "lib/cssx.js",
   "scripts": {
     "test": "mocha --colors ./test/*.spec.js",
     "test-watch": "mocha --colors -w ./test/*.spec.js --watch-extensions css",
     "test-debug": "mocha debug ./test/*.spec.js",
     "dev": "webpack --progress --colors --watch --mode=dev",
-    "make": "webpack --mode=build && npm run test"
+    "make": "webpack --mode=dev && webpack --mode=build && npm run test",
+    "release": "node ./scripts/release.js"
   },
   "repository": {
     "type": "git",
@@ -16,8 +14,8 @@
   },
   "keywords": [
     "css",
-    "jsx",
-    "cssx"
+    "cssx",
+    "transpiler"
   ],
   "author": {
     "name": "Krasimir Tsonev",

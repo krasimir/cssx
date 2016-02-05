@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("cssxler", [], factory);
+		define("cssx-transpiler", [], factory);
 	else if(typeof exports === 'object')
-		exports["cssxler"] = factory();
+		exports["cssx-transpiler"] = factory();
 	else
-		root["cssxler"] = factory();
+		root["cssx-transpiler"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
@@ -42318,4 +42318,4 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ ])
 });
 ;
-//# sourceMappingURL=cssxler.js.map
+//# sourceMappingURL=cssx-transpiler.js.map

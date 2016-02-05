@@ -3,7 +3,7 @@ var UglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 var env = require('yargs').argv.mode;
 var path = require('path');
 
-var appName = 'cssxler';
+var appName = 'cssx-transpiler';
 
 var plugins = [], outputFile;
 
@@ -15,10 +15,10 @@ if (env === 'build') {
 }
 
 var config = {
-  entry: __dirname + '/src/transpiler/index.js',
+  entry: __dirname + '/packages/transpiler/src/index.js',
   devtool: 'source-map',
   output: {
-    path: __dirname + '/lib',
+    path: __dirname + '/packages/transpiler/lib',
     filename: outputFile,
     library: appName,
     libraryTarget: 'umd',
@@ -38,7 +38,7 @@ var config = {
     ]
   },
   resolve: {
-    root: path.resolve('./src'),
+    root: path.resolve('./packages'),
     extensions: ['', '.js', '.json']
   },
   plugins: plugins
