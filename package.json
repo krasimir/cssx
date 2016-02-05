@@ -6,7 +6,7 @@
     "test-debug": "mocha debug ./test/*.spec.js",
     "dev": "webpack --progress --colors --watch --mode=dev",
     "make": "webpack --mode=dev && webpack --mode=build && npm run test",
-    "release": "node ./scripts/release.js"
+    "release": "node ./scripts/release.js && cd ./packages/client && npm publish && cd ../transpiler && npm publish && cd ../../"
   },
   "repository": {
     "type": "git",
