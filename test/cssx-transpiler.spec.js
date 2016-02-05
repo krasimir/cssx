@@ -1,7 +1,7 @@
-var CSSXTranspiler = require('../packages/transpiler/lib/cssx-transpiler');
+var CSSXTranspiler = require('../packages/cssx-transpiler/lib/cssx-transpiler');
 var path = require('path');
 var fs = require('fs');
-var babylon = require('../packages/transpiler/src/vendor/babylon');
+var babylon = require('../packages/cssx-transpiler/src/vendor/babylon');
 var glob = require("glob");
 var chai = require('chai');
 var expect = chai.expect;
@@ -9,10 +9,10 @@ var expect = chai.expect;
 var tests = [];
 // var only = '9'.split(',');
 
-glob.sync(__dirname + '/fixtures/transpiler/**/actual.js').forEach(function (actual) {
+glob.sync(__dirname + '/fixtures/cssx-transpiler/**/actual.js').forEach(function (actual) {
   var testDir = path.dirname(actual), testDirParts = testDir.split('/');
   var testCaseDirName = testDirParts[testDirParts.length-1];
-  var testName = 'test/fixtures/transpiler/' + testCaseDirName;
+  var testName = 'test/fixtures/cssx-transpiler/' + testCaseDirName;
 
   if (typeof only !== 'undefined' && only.length > 0 && only.indexOf(testCaseDirName.toString()) < 0) return;
   tests.push({

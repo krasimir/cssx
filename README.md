@@ -8,8 +8,8 @@
 
 ---
 
-* [cssx client-side library](./packages/client) ([download](./packages/client/lib))
-* [cssx-transpiler](./packages/transpiler) ([download](./packages/transpiler/lib))
+* [cssx client-side library](./packages/cssx) ([download](./packages/cssx/lib))
+* [cssx-transpiler](./packages/cssx-transpiler) ([download](./packages/cssx-transpiler/lib))
 
 ---
 

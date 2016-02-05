@@ -1,7 +1,7 @@
 var chai = require('chai');
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
-var cssx = require('../packages/client/lib/cssx');
+var cssx = require('../packages/cssx/lib/cssx');
 var path = require('path');
 var fs = require('fs');
 var glob = require("glob");
@@ -129,11 +129,11 @@ describe('Given the cssx library', function () {
   describe('when we add rules', function () {
     var tests = [], testDir, testDirParts, testCaseDirName, testName;
 
-    glob.sync(__dirname + '/fixtures/client/**/actual.js').forEach(function (actual) {
+    glob.sync(__dirname + '/fixtures/cssx/**/actual.js').forEach(function (actual) {
       testDir = path.dirname(actual);
       testDirParts = testDir.split('/');
       testCaseDirName = testDirParts[testDirParts.length-1];
-      testName = 'test/fixtures/client/' + testCaseDirName;
+      testName = 'test/fixtures/cssx/' + testCaseDirName;
 
       if (typeof only !== 'undefined' && only.length > 0 && only.indexOf(testCaseDirName.toString()) < 0) return;
       tests.push({

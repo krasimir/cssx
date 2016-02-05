@@ -1,16 +1,16 @@
 {
-  "name": "cssx-transpiler",
-  "version": "2.0.5",
-  "description": "Transpiler for CSSX syntax",
-  "main": "lib/cssx-transpiler.js",
+  "name": "cssx",
+  "version": "2.0.51",
+  "description": "CSS in JavaScript",
+  "main": "lib/cssx.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/krasimir/cssx.git"
   },
   "keywords": [
     "css",
-    "cssx",
-    "transpiler"
+    "jsx",
+    "cssx"
   ],
   "author": {
     "name": "Krasimir Tsonev",

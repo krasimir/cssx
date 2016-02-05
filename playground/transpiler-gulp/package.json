@@ -1,0 +1,17 @@
+{
+  "name": "transpiler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cssx-transpiler": "2.0.5",
+    "gulp": "3.9.0",
+    "gulp-util": "3.0.7",
+    "map-stream": "0.0.6"
+  }
+}

@@ -1,30 +1,63 @@
 var readline = require('readline');
 var fs = require('fs');
 
-var clientFile = __dirname + '/../packages/client/package.json';
-var transpilerFile = __dirname + '/../packages/transpiler/package.json';
+var currentVersion;
+var packages = ['cssx', 'cssx-transpiler', 'gulp-cssx'].map(function (p) {
+  var pJSONPath = __dirname + '/../packages/' + p + '/package.json';
 
-var client = require(clientFile);
-var transpiler = require(transpilerFile);
+  return {
+    name: p,
+    path: pJSONPath,
+    json: require(pJSONPath)
+  }
+});
 
-if (client.version !== transpiler.version) {
-  throw new Error('Client and Transpiler have different versions: ' + client.version + ', ' + transpiler.version);
-}
+currentVersion = checkVersions(packages);
 
 var reader = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
 
-reader.question('Type a new version. The current one is ' + client.version + '.\nversion: ', function(answer) {
+reader.question('Type a new version. The current one is ' + currentVersion + '.\nversion: ', function(answer) {
 
-  client.version = answer;
-  transpiler.version = answer;
-
-  fs.writeFileSync(clientFile, JSON.stringify(client, null, 2));
-  fs.writeFileSync(transpilerFile, JSON.stringify(transpiler, null, 2));
+  packages.forEach(function (package) {
+    package.json.version = answer;
+    dependencies(packages, answer, package.json, 'dependencies');
+    dependencies(packages, answer, package.json, 'devDependencies');
+    fs.writeFileSync(package.path, JSON.stringify(package.json, null, 2));
+  });
 
   console.log('The version changed to ' + answer);
   reader.close();
   process.stdin.destroy();
 });
+
+function checkVersions(packages) {
+  var report;
+  var areEq = packages.reduce(function (version, package) {
+    if (version === '') return package.json.version;
+    if (version === false) return false;
+    return version === package.json.version ? version : false;
+  }, '');
+
+  if (areEq === false) {
+    report = packages.map(function (package) {
+      return package.name + ': ' + package.json.version;
+    }).join(', ');
+    throw new Error('Mismatching versions: ' + report);
+  } else {
+    return areEq;
+  }
+};
+
+function dependencies(packages, newVersion, json, key) {
+  var packagesNames = packages.map(function(p) { return p.name; });
+  if (json[key]) {
+    Object.keys(json[key]).forEach(function (dep) {
+      if (packagesNames.indexOf(dep) >= 0) {
+        json.dependencies[dep] = newVersion;
+      }
+    });
+  }
+};

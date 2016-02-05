@@ -15,10 +15,10 @@ if (env === 'build') {
 }
 
 var config = {
-  entry: __dirname + '/packages/transpiler/src/index.js',
+  entry: __dirname + '/packages/cssx-transpiler/src/index.js',
   devtool: 'source-map',
   output: {
-    path: __dirname + '/packages/transpiler/lib',
+    path: __dirname + '/packages/cssx-transpiler/lib',
     filename: outputFile,
     library: 'CSSXTranspiler',
     libraryTarget: 'umd',

@@ -1,0 +1,32 @@
+{
+  "name": "cssx-transpiler",
+  "version": "2.0.51",
+  "description": "Gulp plugin for transpiling cssx syntax",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krasimir/cssx.git"
+  },
+  "keywords": [
+    "css",
+    "cssx",
+    "transpiler",
+    "gulp"
+  ],
+  "author": {
+    "name": "Krasimir Tsonev",
+    "email": "info@krasimirtsonev.com",
+    "url": "http://krasimirtsonev.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/krasimir/cssx/issues"
+  },
+  "homepage": "https://github.com/krasimir/cssx",
+  "dependencies": {
+    "cssx-transpiler": "2.0.51",
+    "gulp": "3.9.0",
+    "gulp-util": "3.0.7",
+    "map-stream": "0.0.6"
+  }
+}

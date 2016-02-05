@@ -15,10 +15,10 @@ if (env === 'build') {
 }
 
 var config = {
-  entry: __dirname + '/packages/client/src/index.js',
+  entry: __dirname + '/packages/cssx/src/index.js',
   devtool: 'source-map',
   output: {
-    path: __dirname + '/packages/client/lib',
+    path: __dirname + '/packages/cssx/lib',
     filename: outputFile,
     library: appName,
     libraryTarget: 'umd',

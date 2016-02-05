@@ -1,2 +1,2 @@
-./packages/transpiler/src/vendor
+./packages/cssx-transpiler/src/vendor
 ./node_modules
