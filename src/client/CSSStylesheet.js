@@ -75,6 +75,7 @@ module.exports = function (id) {
     return _api;
   };
   _api.getCSS = function () {
+    this.compileImmediate();
     return _css;
   };
 

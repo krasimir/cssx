@@ -1,4 +1,4 @@
-var factory = require('./CSSFactory');
+var factory = require('./CSSStylesheet');
 
 var stylesheets = [];
 var api = function () {};
