@@ -1,8 +1,8 @@
 {
   "name": "cssx",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "CSS in JavaScript",
-  "main": "src/index.js",
+  "main": "lib/cssx.js",
   "scripts": {
     "test": "mocha --colors ./test/*.spec.js",
     "test-watch": "mocha --colors -w ./test/*.spec.js --watch-extensions css",
