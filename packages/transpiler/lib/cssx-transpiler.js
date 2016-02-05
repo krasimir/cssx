@@ -2,11 +2,11 @@
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
 	else if(typeof define === 'function' && define.amd)
-		define("cssx-transpiler", [], factory);
+		define("CSSXTranspiler", [], factory);
 	else if(typeof exports === 'object')
-		exports["cssx-transpiler"] = factory();
+		exports["CSSXTranspiler"] = factory();
 	else
-		root["cssx-transpiler"] = factory();
+		root["CSSXTranspiler"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache

@@ -20,7 +20,7 @@ var config = {
   output: {
     path: __dirname + '/packages/transpiler/lib',
     filename: outputFile,
-    library: appName,
+    library: 'CSSXTranspiler',
     libraryTarget: 'umd',
     umdNamedDefine: true
   },

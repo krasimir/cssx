@@ -155,9 +155,9 @@ var init = function () {
   // render in the right part of the screen
   function updateOutput(value) {
     try {
-      cssxler.reset();
-      ast = cssxler.ast(value);
-      transpiled = cssxler(value, transpilerOpts);
+      CSSXTranspiler.reset();
+      ast = CSSXTranspiler.ast(value);
+      transpiled = CSSXTranspiler(value, transpilerOpts);
       print();
       renderOutError();
       saveCode(value);
