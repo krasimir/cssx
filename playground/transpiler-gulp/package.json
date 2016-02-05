@@ -9,8 +9,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cssx-transpiler": "2.0.5",
     "gulp": "3.9.0",
+    "gulp-cssx": "2.1.1",
+    "gulp-plumber": "1.0.1",
     "gulp-util": "3.0.7",
     "map-stream": "0.0.6"
   }

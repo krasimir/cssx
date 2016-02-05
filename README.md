@@ -1,15 +1,21 @@
 # CSSX - CSS in JavaScript
 
-> Generate and/or apply CSS with JavaScript. 
+> Generate and/or apply CSS with JavaScript. Check out the demo [here](http://krasimir.github.io/cssx/playground/try-it-out/).
 
 ---
 
-[Demo!](http://krasimir.github.io/cssx/playground/try-it-out/)
-
----
+Packages:
 
 * [cssx client-side library](./packages/cssx) ([download](./packages/cssx/lib))
-* [cssx-transpiler](./packages/cssx-transpiler) ([download](./packages/cssx-transpiler/lib))
+* [cssx-transpiler](./packages/cssx-transpiler) ([download](./packages/cssx-transpiler/lib) or `npm i cssx-transpiler`)
+* [gulp plugin](./packages/gulp-cssx) (`npm i gulp-cssx -D`)
+
+Examples:
+
+* [Try it out](./playground/try-it-out)
+* [Basic](./playground/basic)
+* [Transpiling](./playground/transpiler)
+* [Transpiling with gulp](./playground/transpiler-gulp)
 
 ---
 

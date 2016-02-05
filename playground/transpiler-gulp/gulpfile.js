@@ -1,9 +1,11 @@
 var gulp = require('gulp');
-var plugin = require('./plugin');
+var cssx = require('gulp-cssx');
+var plumber = require('gulp-plumber');
 
 gulp.task('cssx', function() {
   gulp.src('src/*.js')
-    .pipe(plugin())
+    .pipe(plumber())
+    .pipe(cssx())
     .pipe(gulp.dest('./dist/'));
 });
 

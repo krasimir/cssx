@@ -1,12 +1,18 @@
-(function () {
-  var _4 = {};
-  _4['font-size'] = '20px';
-  _4['padding'] = '0';
-  _4['margin'] = '0';
+var a = (function () {
+  var _7 = {};
+  _7['margin'] = '6px';
+  var _6 = {};
+  _6['font-size'] = '20px';
+  _6['padding'] = '0';
+  _6['margin'] = '0';
 
-  var _3 = cssx.s('_3');
+  var _5 = cssx.s('_5');
 
-  _3.add('body', _4);
+  _5.add('body', _6);
 
-  return _3;
-}).apply(this);
+  var _8 = _5.add('@media screen and (max-width: 200px)');
+
+  _8.n('body', _7);
+
+  return _5;
+}).apply(this);;
