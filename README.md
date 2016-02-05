@@ -4,8 +4,8 @@
 
 ---
 
-* [Client](./packages/client)
-* [Transpiler](./packages/transpiler)
+* [cssx client-side library](./packages/client) ([download](./packages/client/lib))
+* [cssx-transpiler](./packages/transpiler) ([download](./packages/transpiler/lib))
 
 ---
 
