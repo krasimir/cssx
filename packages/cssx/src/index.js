@@ -1,4 +1,5 @@
 var factory = require('./CSSStylesheet');
+var goGlobal = require('./helpers/goGlobal');
 
 var stylesheets = [];
 var api = function () {};
@@ -52,3 +53,5 @@ api.getCSS = function () {
 
 api.stylesheet = api.s = createStyleSheet;
 module.exports = api;
+
+goGlobal(module.exports);

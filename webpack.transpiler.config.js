@@ -28,7 +28,7 @@ var config = {
     loaders: [
       {
         test: /(\.js)$/,
-        loader: "eslint-loader",
+        loader: 'eslint-loader',
         exclude: /node_modules/
       },
       {

@@ -55,6 +55,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var factory = __webpack_require__(1);
+	var goGlobal = __webpack_require__(11);
 	
 	var stylesheets = [];
 	var api = function () {};
@@ -108,6 +109,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	api.stylesheet = api.s = createStyleSheet;
 	module.exports = api;
+	
+	goGlobal(module.exports);
 
 
 /***/ },
@@ -769,6 +772,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return true;
 	};
 
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {module.exports = function (api) {
+	  if (typeof global !== 'undefined') {
+	    global.cssx = api;
+	  }
+	  if (typeof window !== 'undefined') {
+	    window.cssx = api;
+	  }
+	};
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }
 /******/ ])
