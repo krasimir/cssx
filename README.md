@@ -6,23 +6,38 @@
 
 ## How it works
 
-CSSX is a tiny library that provides a JavaScript API for defining CSS styles. We register rules and then `compile` them. The library generates valid CSS and injects it into the page as a `<style>` tag. Every next call of `compile` will update the content of the tag and not create a new one.
+CSSX is a tiny library that provides a JavaScript API for defining CSS styles. We create stylesheet and register rules same as we do with the regular CSS files. The library generates valid CSS and injects it into the page as a `<style>` tag automatically. Once your code is rerun it makes the same transformation but changes the `<style>` tag only if there any changes.
 
-*Why is this useful?*. Well, JavaScript is a rich language that gives us more flexibility. There are parts of our application which require different styles. In such cases we normally use different CSS classes that are added or removed. This could be frustrating because we have to amend too different parts of our codebase. CSSX could help solve that problem. For example:
+*Why is this useful?*. Well, JavaScript is a rich language that gives us more flexibility. There are parts of our application which require different styles. In such cases we normally use different CSS classes that are added or removed. This could be frustrating because we have to amend too different parts of our codebase. For example:
 
 ```js
-cssx.add('container', { 'background-color': getRandomColor });
-button.addEventListener('click', function () {
-  cssx.compile();
-});
+var updateStyles = function (size) {
+  var stylesheet = cssx.stylesheet('my-styles');
+  var body = stylesheet.add('body', { 'font-size': size + 'px' });
 
-function getRandomColor () {
-  return ...; // a random color
+  body.descendant('h1', { 'font-size': '2em' });
+  body.descendant('small', { 'font-size': '0.8em' });
 }
 
-```
+updateStyles(18);
 
-If the passed CSS value is a string then we have static styles. Then can't be changed. However, if we send an object or a function then the CSS becomes a dynamic thing. Every time when we call `cssx.compile()` we get a different style applied to the page. In the example above we set a random background color on every button click.
+/* results in the following <style> tag:
+
+<style id="my-styles2" type="text/css">
+body {
+  font-size: 18px;
+}
+body h1 {
+  font-size: 2em;
+}
+body small {
+  font-size: 0.8em;
+}
+</style>
+
+*/
+
+```
 
 **Nota bene!** CSSX is not meant to be used for all the styles in our pages. Of course that we need a basic styles for typography, layout, coloring etc. It's purpose is to make the *dynamic* parts of our CSS more flexible and easy to control.
 
@@ -34,23 +49,15 @@ If the passed CSS value is a string then we have static styles. Then can't be ch
 <script src="cssx.min.js"></script>
 <script>
 
-  cssx
-    .add('body')
-      .add('h1', { 'color': '#C679F2' })
-        .add('small', { 'font-size': '0.3em' });
+  var updateStyles = function (size) {
+    var stylesheet = cssx.stylesheet('my-styles');
+    var body = stylesheet.add('body', { 'font-size': size + 'px' });
 
-    
-  cssx.compile();
+    body.descendant('h1', { 'font-size': '2em' });
+    body.descendant('small', { 'font-size': '0.8em' });
+  }
 
-  /*
-    body h1 {
-      color: #C679F2;
-    }
-    body h1 small{
-      font-size:0.3em;
-    }
-
-  */
+  updateStyles(18);
 </script>
 ```
 

@@ -42,16 +42,16 @@ describe('Given the cssx library', function () {
   describe('when we use disableDOMChanges and enableDOMChanges', function () {
     it('should create multiple <style> element', function () {
       cssx.domChanges(false);
-      cssx.stylesheet().compile();
-      cssx.stylesheet().compile();
-      cssx.stylesheet().compile();
+      cssx.stylesheet('A').compile();
+      cssx.stylesheet('B').compile();
+      cssx.stylesheet('C').compile();
       expect(document.createElement).to.not.be.called;
       cssx.domChanges(true);
     });
   });
   describe('when we compile several times within the global namespace', function () {
     it('should create only one <style> element', function () {
-      styles = cssx.stylesheet();
+      styles = cssx.stylesheet('A');
       styles.compile();
       styles.compile();
       styles.compile();
@@ -62,9 +62,9 @@ describe('Given the cssx library', function () {
   });
   describe('when we create multiple stylesheets', function () {
     it('should create multiple <style> element', function () {
-      cssx.stylesheet().compile();
-      cssx.stylesheet().compile();
-      cssx.stylesheet().compile();
+      cssx.stylesheet('A').compile();
+      cssx.stylesheet('B').compile();
+      cssx.stylesheet('C').compile();
       expect(document.createElement).to.be.calledThrice;
     });
   });
@@ -147,7 +147,7 @@ describe('Given the cssx library', function () {
     tests.forEach(function (test) {
       describe('and when are running ' + test.name, function () {
         it('should compile the css correctly', function () {
-            styles = cssx.stylesheet();
+            styles = cssx.stylesheet('A');
             require(test.actual)(styles);
             fs.writeFileSync(test.expected + '.result', styles.getCSS());
             expect(styles.getCSS()).to.be.equal(file(test.expected));

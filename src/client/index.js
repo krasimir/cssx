@@ -6,6 +6,10 @@ var api = function () {};
 function createStyleSheet(id) {
   var s, i;
 
+  if (typeof id === 'undefined') {
+    throw new Error('`stylesheet` method expects ID as an argument');
+  }
+
   for (i = 0; i < stylesheets.length; i++) {
     if (stylesheets[i].id() === id) {
       return stylesheets[i];

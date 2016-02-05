@@ -127,7 +127,7 @@ var init = function () {
   cssx.minify(false);
 
   // printing
-  var printIfValid = function (value) { output.setValue(!!value ? value : ''); };
+  var printIfValid = function (value, fallback) { output.setValue(!!value ? value : fallback || ''); };
   var printText = function (text) { printIfValid(text); };
   var printJS = function () { printText(transpiled); };
   var printAST = function () { printIfValid(JSON.stringify(ast, null, 2)); };
@@ -135,6 +135,7 @@ var init = function () {
     var func, generatedCSS, css;
 
     try {
+      cssx.clear();
       func = new Function(transpiled);
       func();
       generatedCSS = cssx.getStylesheets().map(function (stylesheet) {
@@ -144,7 +145,7 @@ var init = function () {
     } catch(err) {
       renderError(err.message);
     }
-    printIfValid(css);
+    printIfValid(css, 'The generated JavaScript do not produce any CSS.');
   };
   var print = printCompiledCSS;
 

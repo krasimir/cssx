@@ -15,25 +15,34 @@
   <script src="../../lib/cssx.js"></script>
   <script>
 
-    // first
-    var h1Styles = { 'color': '#C679F2' };
+    cssx.minify(false);
 
-    cssx
-      .add('body')
-        .add('h1', h1Styles)
-          .add('small', { 'font-size': '0.3em' });
+    var h1Color = '#000';
+    var randomColor = '#000';
 
+    var updateStyles = function () {
+      var stylesheet = cssx.stylesheet('my-styles');
+      var body = stylesheet.add('body');
+      var h1 = body.descendant('h1', { 'color': h1Color });
+
+      h1.descendant('small', { 'font-size': '0.3em' });
+      stylesheet.add('#colorize', { color: randomColor });
+
+      showGeneratedCSS();
+    };
+
+    // buttons
     [].slice.call(document.querySelectorAll('button[data-color]')).forEach(function (btn) {
       btn.addEventListener('click', function () {
-        h1Styles.color = btn.getAttribute('data-color');
-        showGeneratedCSS(cssx.compile());
+        h1Color = btn.getAttribute('data-color');
+        updateStyles();
       });
     });
 
-    // second
-    cssx.add('#colorize', { 'background-color': getRandomColor });
+    // random
     document.querySelector('#colorize').addEventListener('click', function () {
-      showGeneratedCSS(cssx.compile());
+      randomColor = getRandomColor();
+      updateStyles();
     });
 
     // helpers
@@ -46,11 +55,11 @@
       return color;
     };
     function showGeneratedCSS(css) {
-      document.querySelector('pre').innerHTML = css;
+      document.querySelector('pre').innerHTML = cssx.getCSS();
     };
 
     // first run
-    showGeneratedCSS(cssx.compile());
+    updateStyles();
 
   </script>
 </body>
