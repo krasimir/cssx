@@ -57,8 +57,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	__webpack_require__(1);
 	
 	var styles = __webpack_require__(2);
-	
-	console.log(styles.getCSS());
 
 /***/ },
 /* 1 */
@@ -121,6 +119,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/***/ function(module, exports, __webpack_require__) {
 	
 		var factory = __webpack_require__(1);
+		var goGlobal = __webpack_require__(11);
 		
 		var stylesheets = [];
 		var api = function () {};
@@ -174,6 +173,8 @@ return /******/ (function(modules) { // webpackBootstrap
 		
 		api.stylesheet = api.s = createStyleSheet;
 		module.exports = api;
+		
+		goGlobal(module.exports);
 	
 	
 	/***/ },
@@ -836,6 +837,21 @@ return /******/ (function(modules) { // webpackBootstrap
 		};
 	
 	
+	/***/ },
+	/* 11 */
+	/***/ function(module, exports) {
+	
+		/* WEBPACK VAR INJECTION */(function(global) {module.exports = function (api) {
+		  if (typeof global !== 'undefined') {
+		    global.cssx = api;
+		  }
+		  if (typeof window !== 'undefined') {
+		    window.cssx = api;
+		  }
+		};
+		
+		/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+	
 	/***/ }
 	/******/ ])
 	});
@@ -847,22 +863,22 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	module.exports = (function () {
-	  var _3 = {};
-	  _3['margin'] = '6px';
-	  var _2 = {};
-	  _2['font-size'] = '20px';
-	  _2['padding'] = '0';
-	  _2['margin'] = '0';
+	  var _7 = {};
+	  _7['margin'] = '6px';
+	  var _6 = {};
+	  _6['font-size'] = '20px';
+	  _6['padding'] = '0';
+	  _6['margin'] = '0';
 	
-	  var _1 = cssx.s('_1');
+	  var _5 = cssx.s('_5');
 	
-	  _1.add('body', _2);
+	  _5.add('body', _6);
 	
-	  var _4 = _1.add('@media screen and (max-width: 200px)');
+	  var _8 = _5.add('@media screen and (max-width: 200px)');
 	
-	  _4.n('body', _3);
+	  _8.n('body', _7);
 	
-	  return _1;
+	  return _5;
 	}).apply(this);;
 
 /***/ }

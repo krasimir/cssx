@@ -1,8 +1,8 @@
 {
-  "name": "cssx-transpiler",
+  "name": "cssx-loader",
   "version": "2.1.12",
-  "description": "Transpiler for CSSX syntax",
-  "main": "lib/cssx-transpiler.js",
+  "description": "Webpack loader for CSSX",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/krasimir/cssx.git"
@@ -10,7 +10,9 @@
   "keywords": [
     "css",
     "cssx",
-    "transpiler"
+    "transpiler",
+    "webpack",
+    "loader"
   ],
   "author": {
     "name": "Krasimir Tsonev",
@@ -21,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/krasimir/cssx/issues"
   },
-  "homepage": "https://github.com/krasimir/cssx"
+  "homepage": "https://github.com/krasimir/cssx",
+  "dependencies": {
+    "cssx-transpiler": "2.1.12"
+  }
 }
