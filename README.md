@@ -176,7 +176,7 @@ media.nested('p', { margin: '10px' });
 */
 ```
 
-In theory could be used to produce nested rules which doesn't make any sense right now because it is not supported by the browser. It may be useful though for generating SASS or LESS.
+In theory it could be used for producing nested rules which doesn't make any sense right now because it is not supported by the browsers. It may be useful though for generating SASS or LESS.
 
 ```js
 var stylesheet = cssx.stylesheet('test2');
