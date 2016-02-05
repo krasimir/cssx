@@ -4,7 +4,7 @@ Gulp plugin for [CSSX](https://github.com/krasimir/cssx) syntax.
 
 ## Installation
 
-`npm i gulp-cssx`
+`npm i gulp-cssx -D`
 
 ## Usage
 
