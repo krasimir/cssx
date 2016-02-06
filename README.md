@@ -17,6 +17,7 @@ Examples:
 * [Basic](./playground/basic)
 * [Transpiling](./playground/transpiler)
 * [Transpiling with gulp](./playground/transpiler-gulp)
+* [Transpiling with webpack](./playground/transpiler-webpack)
 
 ---
 

@@ -1,3 +1,5 @@
 require('cssx');
 
-var styles = require('./styles.js');
+var buttonStyle = require('./buttonStyle.js');
+
+document.querySelector('button').addEventListener('click', buttonStyle);

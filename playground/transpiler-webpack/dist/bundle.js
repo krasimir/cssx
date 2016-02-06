@@ -56,7 +56,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	__webpack_require__(1);
 	
-	var styles = __webpack_require__(2);
+	var buttonStyle = __webpack_require__(2);
+	
+	document.querySelector('button').addEventListener('click', buttonStyle);
 
 /***/ },
 /* 1 */
@@ -862,24 +864,29 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 2 */
 /***/ function(module, exports) {
 
-	module.exports = (function () {
-	  var _3 = {};
-	  _3['margin'] = '6px';
-	  var _2 = {};
-	  _2['font-size'] = '20px';
-	  _2['padding'] = '0';
-	  _2['margin'] = '0';
+	var enabled = true;
 	
-	  var _1 = cssx.s('_1');
+	module.exports = function (e) {
+	  var button = e.target;
+	  var input = document.querySelector('input');
 	
-	  _1.add('body', _2);
+	  enabled = !enabled;
+	  button.innerText = enabled ? 'disable input' : 'enable input';
 	
-	  var _4 = _1.add('@media screen and (max-width: 200px)');
+	  (function () {
+	    var _25 = {};
+	    _25['color'] = enabled ? '#000' : '#ccc';
+	    _25['border'] = "solid " + (enabled ? '2px #999' : '1px #B0B0B0');
 	
-	  _4.n('body', _3);
+	    var _24 = cssx.s('_24');
 	
-	  return _1;
-	}).apply(this);;
+	    _24.add('input', _25);
+	
+	    return _24;
+	  }).apply(this);
+	  ;
+	  input.disabled = !enabled;
+	};
 
 /***/ }
 /******/ ])

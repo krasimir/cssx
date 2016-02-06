@@ -1,4 +1,4 @@
-* A complete end-to-end test suite
+* A complete end-to-end test suite + testing of the scope keeping
 * Examples in the playground
 * Better distribution of client and transpiler
 * Provide jsbin

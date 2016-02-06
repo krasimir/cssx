@@ -1,4 +1,32 @@
-<script src="bundle.js"></script>
-<script>
-  
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CSSX</title>
+  <style>
+    body {
+      font-family: Verdana;
+      font-size: 20px;
+      padding: 1em;
+    }
+    input, button {
+      display: block;
+    }
+    input {
+      border: solid 2px #999;
+      padding: 8px;
+      margin-bottom: 1em;
+    }
+    button {
+      padding: 8px;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+  <input type="text" placeholder="Type something" value="That's my text" />
+  <button>disable input</button>
+  <div class="message js-message"></div>
+  <script src="./bundle.js"></script>
+</body>
+</html>
