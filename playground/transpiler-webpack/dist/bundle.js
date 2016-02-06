@@ -874,15 +874,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  button.innerText = enabled ? 'disable input' : 'enable input';
 	
 	  (function () {
-	    var _25 = {};
-	    _25['color'] = enabled ? '#000' : '#ccc';
-	    _25['border'] = "solid " + (enabled ? '2px #999' : '1px #B0B0B0');
+	    var _2 = {};
+	    _2['color'] = enabled ? '#000' : '#ccc';
+	    _2['border'] = "solid " + (enabled ? '2px #999' : '1px #B0B0B0');
 	
-	    var _24 = cssx.s('_24');
+	    var _1 = cssx.s('_1');
 	
-	    _24.add('input', _25);
+	    _1.add('input', _2);
 	
-	    return _24;
+	    return _1;
 	  }).apply(this);
 	  ;
 	  input.disabled = !enabled;
