@@ -54,11 +54,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var factory = __webpack_require__(1);
-	var goGlobal = __webpack_require__(11);
+	var factory, goGlobal, stylesheets, api;
 	
-	var stylesheets = [];
-	var api = function () {};
+	__webpack_require__(14);
+	
+	factory = __webpack_require__(2);
+	goGlobal = __webpack_require__(13);
+	
+	stylesheets = [];
+	api = function () {};
 	
 	function createStyleSheet(id) {
 	  var s, i;
@@ -115,13 +119,52 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 1 */
+/***/ function(module, exports) {
+
+	if (!Array.prototype.filter) {
+	  Array.prototype.filter = function(fun/*, thisArg*/) {
+	    'use strict';
+	
+	    if (this === void 0 || this === null) {
+	      throw new TypeError();
+	    }
+	
+	    var t = Object(this);
+	    var len = t.length >>> 0;
+	    if (typeof fun !== 'function') {
+	      throw new TypeError();
+	    }
+	
+	    var res = [];
+	    var thisArg = arguments.length >= 2 ? arguments[1] : void 0;
+	    for (var i = 0; i < len; i++) {
+	      if (i in t) {
+	        var val = t[i];
+	
+	        // NOTE: Technically this should Object.defineProperty at
+	        //       the next index, as push can be affected by
+	        //       properties on Object.prototype and Array.prototype.
+	        //       But that method's new, and collisions should be
+	        //       rare, so use the more-compatible alternative.
+	        if (fun.call(thisArg, val, i, t)) {
+	          res.push(val);
+	        }
+	      }
+	    }
+	
+	    return res;
+	  };
+	}
+
+/***/ },
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CSSRule = __webpack_require__(2);
-	var applyToDOM = __webpack_require__(3);
-	var nextTick = __webpack_require__(4);
-	var resolveSelector = __webpack_require__(8);
-	var generate = __webpack_require__(9);
+	var CSSRule = __webpack_require__(3);
+	var applyToDOM = __webpack_require__(4);
+	var nextTick = __webpack_require__(5);
+	var resolveSelector = __webpack_require__(9);
+	var generate = __webpack_require__(10);
 	
 	var ids = 0;
 	var getId = function () { return 'x' + (++ids); };
@@ -207,13 +250,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports) {
 
 	var ids = 0;
 	var getId = function () { return 'r' + (++ids); };
 	
-	module.exports = function (selector, props, stylesheet) {
+	var CSSRule = function (selector, props, stylesheet) {
 	  var _id = getId();
 	  var _children = [];
 	  var _nestedChildren = [];
@@ -229,8 +272,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    getChildren: function () {
 	      return _children;
 	    },
+	    setChildren: function (c) {
+	      _children = c;
+	    },
 	    getNestedChildren: function () {
 	      return _nestedChildren;
+	    },
+	    setNestedChildren: function (c) {
+	      _nestedChildren = c;
 	    },
 	    descendant: function (s, p) {
 	      return stylesheet.add(s, p, this, false);
@@ -257,15 +306,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    },
 	    id: function () {
 	      return _id;
+	    },
+	    clone: function () {
+	      var rule = CSSRule(this.selector, this.props);
+	
+	      rule.parent = this.parent;
+	      rule.setChildren(this.getChildren());
+	      rule.setNestedChildren(this.getNestedChildren());
+	
+	      return rule;
 	    }
 	  };
 	
 	  return record;
 	};
+	
+	module.exports = CSSRule;
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	var cache = {};
@@ -319,12 +379,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {var cache = {};
 	
-	__webpack_require__(7);
+	__webpack_require__(8);
 	
 	module.exports = function (work, id) {
 	  if (!cache[id]) {
@@ -336,13 +396,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	};
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).setImmediate))
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(6).nextTick;
+	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(7).nextTick;
 	var apply = Function.prototype.apply;
 	var slice = Array.prototype.slice;
 	var immediateIds = {};
@@ -418,10 +478,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5).setImmediate, __webpack_require__(5).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).setImmediate, __webpack_require__(6).clearImmediate))
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -518,7 +578,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, clearImmediate, process) {(function (global, undefined) {
@@ -697,10 +757,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    attachTo.clearImmediate = clearImmediate;
 	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(5).clearImmediate, __webpack_require__(6)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(6).clearImmediate, __webpack_require__(7)))
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports) {
 
 	module.exports = function (selector) {
@@ -709,16 +769,24 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isEmpty = __webpack_require__(10);
-	var resolveSelector = __webpack_require__(8);
+	var isEmpty = __webpack_require__(11);
+	var resolveSelector = __webpack_require__(9);
+	var prefix = __webpack_require__(12);
 	
 	module.exports = function (rules, minify) {
-	  var processed = {};
 	
-	  return (function generate(rules, parent, minify, nesting) {
+	  // at the top level, use only those which has no parent
+	  rules = rules.filter(function (rule) {
+	    return rule.parent === null;
+	  });
+	
+	  // duplicate those that need prefixing
+	  rules = prefix.selector(rules);
+	
+	  return (function generate(rules, parent, minify, nesting, nested) {
 	    var i, j, rule, props, prop, children, nestedChildren, selector, cssValue, tab;
 	    var css = '';
 	    var newLine = minify ? '' : '\n';
@@ -726,7 +794,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    nesting = typeof nesting !== 'undefined' ? nesting : '';
 	    tab = minify ? '' : nesting + '  ';
-	
 	    for (i = 0; i < rules.length; i++) {
 	      rule = rules[i];
 	      children = rule.getChildren();
@@ -734,9 +801,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      selector = (parent ? parent + ' ' : '');
 	      selector += resolveSelector(rule.selector);
 	      props = typeof rule.props === 'function' ? rule.props() : rule.props;
-	      if ((!isEmpty(props) || nestedChildren.length > 0) && !processed[rule.id()]) {
-	        processed[rule.id()] = true;
+	      if (!isEmpty(props) || nestedChildren.length > 0) {
 	        css += nesting + selector + interval + '{' + newLine;
+	        props = prefix.property(props);
 	        if (props) {
 	          for (prop in props) {
 	            cssValue = typeof props[prop] === 'function' ? props[prop]() : props[prop];
@@ -744,7 +811,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        }
 	        for (j = 0; j < nestedChildren.length; j++) {
-	          css += generate([nestedChildren[j]], null, minify, tab);
+	          css += generate([nestedChildren[j]], null, minify, tab, true);
 	        }
 	        css += nesting + '}' + newLine;
 	      }
@@ -758,7 +825,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	module.exports = function (obj) {
@@ -774,7 +841,76 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var resolveSelector = __webpack_require__(9);
+	var SELECTORS = {
+	  '@keyframes': [
+	    '@-webkit-keyframes',
+	    '@-moz-keyframes',
+	    '@-o-keyframes'
+	  ]
+	};
+	var prefixProperty = function (list) {
+	  return list.split('').map(function (ch) {
+	    if (ch === 's') return '-ms-'; // Microsoft
+	    if (ch === 'z') return 'mso- '; // icrosoft Office
+	    if (ch === 'm') return '-moz-'; // Mozilla Foundation (Gecko-based browsers)
+	    if (ch === 'o') return '-o-'; //  -xv- Opera Software
+	    if (ch === 't') return '-atsc-'; // Advanced Television Standards Committee
+	    if (ch === 'p') return '-wap-'; // The WAP Forum
+	    if (ch === 'w') return '-webkit-'; // Safari, Chrome (and other WebKit-based browsers)
+	    if (ch === 'k') return '-khtml-'; // Konqueror browser
+	    if (ch === 'a') return '-apple-'; // Webkit supports properties using the -apple- prefixes as well
+	    if (ch === 'e') return 'prince- '; // esLogic
+	    if (ch === 'n') return '-ah-'; // Antenna House
+	    if (ch === 'h') return '-hp-'; // Hewlett Packard
+	    if (ch === 'r') return '-ro-'; // Real Objects
+	    if (ch === 'i') return '-rim-'; // Research In Motion
+	    if (ch === 'c') return '-tc-'; // Tall Components
+	    return [];
+	  });
+	};
+	
+	module.exports = {
+	  selector: function (rules) {
+	    var result = [], keyword, newRule;
+	
+	    rules.forEach(function (rule) {
+	      keyword = resolveSelector(rule.selector).split(' ')[0];
+	      result.push(rule);
+	      if (SELECTORS[keyword]) {
+	        SELECTORS[keyword].forEach(function (prefixed) {
+	          newRule = rule.clone();
+	          newRule.selector = rule.selector.replace(keyword, prefixed);
+	          result.push(newRule);
+	        });
+	      }
+	    });
+	    return result;
+	  },
+	  property: function (props) {
+	    var prop, match, cleanProp;
+	
+	    for (prop in props) {
+	      match = prop.match(/^\(([szmotpwkaenhric]+)\)/);
+	      if (match) {
+	        cleanProp = prop.replace(match[0], '');
+	        props[cleanProp] = props[prop];
+	        prefixProperty(match[1]).forEach(function (prefix) {
+	          props[prefix + cleanProp] = props[prop];
+	        });
+	        delete props[prop];
+	      }
+	    }
+	    return props;
+	  }
+	};
+
+
+/***/ },
+/* 13 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {module.exports = function (api) {
@@ -787,6 +923,172 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(1);
+	__webpack_require__(15);
+	__webpack_require__(16);
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	// Production steps of ECMA-262, Edition 5, 15.4.4.18
+	// Reference: http://es5.github.io/#x15.4.4.18
+	if (!Array.prototype.forEach) {
+	
+	  Array.prototype.forEach = function(callback, thisArg) {
+	
+	    var T, k;
+	
+	    if (this == null) {
+	      throw new TypeError(' this is null or not defined');
+	    }
+	
+	    // 1. Let O be the result of calling ToObject passing the |this| value as the argument.
+	    var O = Object(this);
+	
+	    // 2. Let lenValue be the result of calling the Get internal method of O with the argument "length".
+	    // 3. Let len be ToUint32(lenValue).
+	    var len = O.length >>> 0;
+	
+	    // 4. If IsCallable(callback) is false, throw a TypeError exception.
+	    // See: http://es5.github.com/#x9.11
+	    if (typeof callback !== "function") {
+	      throw new TypeError(callback + ' is not a function');
+	    }
+	
+	    // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+	    if (arguments.length > 1) {
+	      T = thisArg;
+	    }
+	
+	    // 6. Let k be 0
+	    k = 0;
+	
+	    // 7. Repeat, while k < len
+	    while (k < len) {
+	
+	      var kValue;
+	
+	      // a. Let Pk be ToString(k).
+	      //   This is implicit for LHS operands of the in operator
+	      // b. Let kPresent be the result of calling the HasProperty internal method of O with argument Pk.
+	      //   This step can be combined with c
+	      // c. If kPresent is true, then
+	      if (k in O) {
+	
+	        // i. Let kValue be the result of calling the Get internal method of O with argument Pk.
+	        kValue = O[k];
+	
+	        // ii. Call the Call internal method of callback with T as the this value and
+	        // argument list containing kValue, k, and O.
+	        callback.call(T, kValue, k, O);
+	      }
+	      // d. Increase k by 1.
+	      k++;
+	    }
+	    // 8. return undefined
+	  };
+	}
+
+/***/ },
+/* 16 */
+/***/ function(module, exports) {
+
+	// Production steps of ECMA-262, Edition 5, 15.4.4.19
+	// Reference: http://es5.github.io/#x15.4.4.19
+	if (!Array.prototype.map) {
+	
+	  Array.prototype.map = function(callback, thisArg) {
+	
+	    var T, A, k;
+	
+	    if (this == null) {
+	      throw new TypeError(' this is null or not defined');
+	    }
+	
+	    // 1. Let O be the result of calling ToObject passing the |this| 
+	    //    value as the argument.
+	    var O = Object(this);
+	
+	    // 2. Let lenValue be the result of calling the Get internal 
+	    //    method of O with the argument "length".
+	    // 3. Let len be ToUint32(lenValue).
+	    var len = O.length >>> 0;
+	
+	    // 4. If IsCallable(callback) is false, throw a TypeError exception.
+	    // See: http://es5.github.com/#x9.11
+	    if (typeof callback !== 'function') {
+	      throw new TypeError(callback + ' is not a function');
+	    }
+	
+	    // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+	    if (arguments.length > 1) {
+	      T = thisArg;
+	    }
+	
+	    // 6. Let A be a new array created as if by the expression new Array(len) 
+	    //    where Array is the standard built-in constructor with that name and 
+	    //    len is the value of len.
+	    A = new Array(len);
+	
+	    // 7. Let k be 0
+	    k = 0;
+	
+	    // 8. Repeat, while k < len
+	    while (k < len) {
+	
+	      var kValue, mappedValue;
+	
+	      // a. Let Pk be ToString(k).
+	      //   This is implicit for LHS operands of the in operator
+	      // b. Let kPresent be the result of calling the HasProperty internal 
+	      //    method of O with argument Pk.
+	      //   This step can be combined with c
+	      // c. If kPresent is true, then
+	      if (k in O) {
+	
+	        // i. Let kValue be the result of calling the Get internal 
+	        //    method of O with argument Pk.
+	        kValue = O[k];
+	
+	        // ii. Let mappedValue be the result of calling the Call internal 
+	        //     method of callback with T as the this value and argument 
+	        //     list containing kValue, k, and O.
+	        mappedValue = callback.call(T, kValue, k, O);
+	
+	        // iii. Call the DefineOwnProperty internal method of A with arguments
+	        // Pk, Property Descriptor
+	        // { Value: mappedValue,
+	        //   Writable: true,
+	        //   Enumerable: true,
+	        //   Configurable: true },
+	        // and false.
+	
+	        // In browsers that support Object.defineProperty, use the following:
+	        // Object.defineProperty(A, k, {
+	        //   value: mappedValue,
+	        //   writable: true,
+	        //   enumerable: true,
+	        //   configurable: true
+	        // });
+	
+	        // For best browser support, use the following:
+	        A[k] = mappedValue;
+	      }
+	      // d. Increase k by 1.
+	      k++;
+	    }
+	
+	    // 9. return A
+	    return A;
+	  };
+	}
 
 /***/ }
 /******/ ])

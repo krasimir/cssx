@@ -1,7 +1,7 @@
 var ids = 0;
 var getId = function () { return 'r' + (++ids); };
 
-module.exports = function (selector, props, stylesheet) {
+var CSSRule = function (selector, props, stylesheet) {
   var _id = getId();
   var _children = [];
   var _nestedChildren = [];
@@ -17,8 +17,14 @@ module.exports = function (selector, props, stylesheet) {
     getChildren: function () {
       return _children;
     },
+    setChildren: function (c) {
+      _children = c;
+    },
     getNestedChildren: function () {
       return _nestedChildren;
+    },
+    setNestedChildren: function (c) {
+      _nestedChildren = c;
     },
     descendant: function (s, p) {
       return stylesheet.add(s, p, this, false);
@@ -45,8 +51,19 @@ module.exports = function (selector, props, stylesheet) {
     },
     id: function () {
       return _id;
+    },
+    clone: function () {
+      var rule = CSSRule(this.selector, this.props);
+
+      rule.parent = this.parent;
+      rule.setChildren(this.getChildren());
+      rule.setNestedChildren(this.getNestedChildren());
+
+      return rule;
     }
   };
 
   return record;
 };
+
+module.exports = CSSRule;

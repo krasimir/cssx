@@ -1,8 +1,12 @@
-var factory = require('./CSSStylesheet');
-var goGlobal = require('./helpers/goGlobal');
+var factory, goGlobal, stylesheets, api;
 
-var stylesheets = [];
-var api = function () {};
+require('./polyfills');
+
+factory = require('./CSSStylesheet');
+goGlobal = require('./helpers/goGlobal');
+
+stylesheets = [];
+api = function () {};
 
 function createStyleSheet(id) {
   var s, i;

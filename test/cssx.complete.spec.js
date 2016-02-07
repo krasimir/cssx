@@ -9,7 +9,7 @@ var expect = chai.expect;
 var d = describe;
 
 var tests = [];
-// var only = '3'.split(',');
+// var only = '5'.split(',');
 
 glob.sync(__dirname + '/fixtures/cssx-complete/**/actual.js').forEach(function (actual) {
   var testDir = path.dirname(actual), testDirParts = testDir.split('/');
@@ -36,6 +36,8 @@ d('Given the transpiler and client side library', function () {
         var transpiledFile = test.testDir + '/transpiled.js';
         var cssExprectedFile = test.testDir + '/exected.css.result';
         var generatedCSS = '';
+
+        this.timeout(3000);
 
         CSSXTranspiler.reset();
         fs.writeFileSync(astFile, json(test.actual));

@@ -1,3 +1,4 @@
+./packages/cssx/src/polyfills
 ./packages/cssx-transpiler/src/vendor
 ./packages/cssx-transpiler/src/core/data/autoprefix-features.js
 ./node_modules

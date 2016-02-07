@@ -1,0 +1,55 @@
+@keyframes ball-animation {
+  0%   {
+    transform: translateX(0);
+    -webkit-transform: translateX(0);
+    -o-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+  }
+  100% {
+    transform: translateX(200px);
+    -apple-transform: translateX(200px);
+  }
+}
+@-webkit-keyframes ball-animation {
+  0%   {
+    transform: translateX(0);
+    -webkit-transform: translateX(0);
+    -o-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+  }
+  100% {
+    transform: translateX(200px);
+    -apple-transform: translateX(200px);
+  }
+}
+@-moz-keyframes ball-animation {
+  0%   {
+    transform: translateX(0);
+    -webkit-transform: translateX(0);
+    -o-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+  }
+  100% {
+    transform: translateX(200px);
+    -apple-transform: translateX(200px);
+  }
+}
+@-o-keyframes ball-animation {
+  0%   {
+    transform: translateX(0);
+    -webkit-transform: translateX(0);
+    -o-transform: translateX(0);
+    -moz-transform: translateX(0);
+    -ms-transform: translateX(0);
+  }
+  100% {
+    transform: translateX(200px);
+    -apple-transform: translateX(200px);
+  }
+}
+.ball {
+  animation: ball-animation 1s ease infinite alternate;
+}
