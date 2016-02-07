@@ -9,7 +9,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cssx": "2.3.0",
     "cssx-loader": "2.3.0",
     "webpack": "1.12.9"
   }

@@ -66,7 +66,7 @@ var saveCode = function (code) {
   return code;
 };
 var getCode = function () {
-  return lsGetItem('cssx-playground-code') || '';
+  return lsGetItem('cssx-playground-code') || DefaultStyles || '';
 };
 
 // ********************************************************************
@@ -151,7 +151,6 @@ var init = function () {
 
   output = renderOutput();
   editor = renderEditor(updateOutput);
-  editor.setValue(DefaultStyles);
 
   // render in the right part of the screen
   function updateOutput(value) {

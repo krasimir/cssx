@@ -47,7 +47,14 @@ var CSSRule = function (selector, props, stylesheet) {
           this.props[propName] = p[propName];
         }
       }
+      stylesheet.compile();
       return this;
+    },
+    updateProp: function (prop, value) {
+      var newProp = {};
+
+      newProp[prop] = value;
+      return this.update(null, newProp);
     },
     id: function () {
       return _id;

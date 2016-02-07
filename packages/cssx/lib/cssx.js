@@ -331,6 +331,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var nextTick = __webpack_require__(8);
 	var resolveSelector = __webpack_require__(12);
 	var generate = __webpack_require__(13);
+	var warning = __webpack_require__(17);
 	
 	var ids = 0;
 	var getId = function () { return 'x' + (++ids); };
@@ -354,6 +355,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	    return false;
+	  };
+	  var getRuleBySelector = function (selector, rules) {
+	    var i;
+	
+	    for (i = 0; i < rules.length; i++) {
+	      if (resolveSelector(rules[i].selector) === selector) {
+	        return rules[i];
+	      }
+	    }
+	    warning('No rule matching "' + selector + '" selector.');
 	  };
 	
 	  _api.id = function () {
@@ -383,6 +394,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      nextTick(function () {
 	        _api.compileImmediate();
 	      }, _id);
+	      return _api;
 	    }
 	    return _api.compileImmediate();
 	  };
@@ -405,6 +417,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _api.getCSS = function () {
 	    this.compileImmediate();
 	    return _css;
+	  };
+	  _api.update = function () {
+	    var args = Array.prototype.slice.call(arguments);
+	    var value = args.pop();
+	    var prop = args.pop();
+	    var rule;
+	
+	    while (args.length > 0) {
+	      rule = getRuleBySelector(args.shift(), rule ? rule.getNestedChildren() : _rules);
+	      if (!rule) {
+	        break;
+	      }
+	    };
+	
+	    if (rule) {
+	      rule.updateProp(prop, value);
+	    }
 	  };
 	
 	  return _api;
@@ -468,7 +497,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	          this.props[propName] = p[propName];
 	        }
 	      }
+	      stylesheet.compile();
 	      return this;
+	    },
+	    updateProp: function (prop, value) {
+	      var newProp = {};
+	
+	      newProp[prop] = value;
+	      return this.update(null, newProp);
 	    },
 	    id: function () {
 	      return _id;
@@ -1089,6 +1125,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	module.exports = function (message) {
+	  if (typeof console !== 'undefined' && console.warn) {
+	    console.warn(message);
+	  }
+	};
+
 
 /***/ }
 /******/ ])

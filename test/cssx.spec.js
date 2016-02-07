@@ -129,6 +129,17 @@ d('Given the cssx library', function () {
       });
     });
   });
+  describe('when we use the update API', function () {
+    describe('and when we pass a selector', function () {
+      it('should result in the right css', function () {
+        var EXPECTED = 'a > b{c:2;}';
+        var S = cssx.s('S');
+        S.add('a > b', { c: 1 });
+        S.update('a > b', 'c', 2);
+        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+      });
+    });
+  });
   describe('when we add rules', function () {
     var tests = [], testDir, testDirParts, testCaseDirName, testName;
 

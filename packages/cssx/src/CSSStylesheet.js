@@ -3,6 +3,7 @@ var applyToDOM = require('./helpers/applyToDOM');
 var nextTick = require('./helpers/nextTick');
 var resolveSelector = require('./helpers/resolveSelector');
 var generate = require('./core/generate');
+var warning = require('./helpers/warning');
 
 var ids = 0;
 var getId = function () { return 'x' + (++ids); };
@@ -26,6 +27,16 @@ module.exports = function (id) {
       }
     }
     return false;
+  };
+  var getRuleBySelector = function (selector, rules) {
+    var i;
+
+    for (i = 0; i < rules.length; i++) {
+      if (resolveSelector(rules[i].selector) === selector) {
+        return rules[i];
+      }
+    }
+    warning('No rule matching "' + selector + '" selector.');
   };
 
   _api.id = function () {
@@ -55,6 +66,7 @@ module.exports = function (id) {
       nextTick(function () {
         _api.compileImmediate();
       }, _id);
+      return _api;
     }
     return _api.compileImmediate();
   };
@@ -77,6 +89,23 @@ module.exports = function (id) {
   _api.getCSS = function () {
     this.compileImmediate();
     return _css;
+  };
+  _api.update = function () {
+    var args = Array.prototype.slice.call(arguments);
+    var value = args.pop();
+    var prop = args.pop();
+    var rule;
+
+    while (args.length > 0) {
+      rule = getRuleBySelector(args.shift(), rule ? rule.getNestedChildren() : _rules);
+      if (!rule) {
+        break;
+      }
+    };
+
+    if (rule) {
+      rule.updateProp(prop, value);
+    }
   };
 
   return _api;
