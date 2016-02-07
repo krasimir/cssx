@@ -39,7 +39,7 @@ updateStyles(18);
 
 /* results in the following:
 
-<style id="my-styles2" type="text/css">
+<style id="x1" type="text/css">
 body {
   font-size: 18px;
 }
