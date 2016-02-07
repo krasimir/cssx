@@ -6,6 +6,7 @@ var path = require('path');
 var fs = require('fs');
 var glob = require("glob");
 var minifyCSS = require('./helpers/minifyCSS');
+var d = describe;
 
 chai.expect();
 chai.use(sinonChai);
@@ -32,7 +33,9 @@ var styles, file = function (f) {
 
 global.document = document;
 
-describe('Given the cssx library', function () {
+if (typeof only !== 'undefined') d = describe.only;
+
+d('Given the cssx library', function () {
 
   beforeEach(function () {
     document.createElement.reset();

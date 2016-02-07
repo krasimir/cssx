@@ -21,12 +21,24 @@
       padding: 8px;
       border-radius: 2px;
     }
+    hr {
+      border-top: none;
+      border-bottom: dotted 1px #999;
+      margin: 1em 0;
+    }
+    .ball {
+      border-radius: 20px;
+      width: 40px;
+      height: 40px;
+      background: #999;
+    }
   </style>
 </head>
 <body>
   <input type="text" placeholder="Type something" value="That's my text" />
   <button>disable input</button>
-  <div class="message js-message"></div>
+  <hr />
+  <div class="ball" />
   <script src="./bundle.js"></script>
 </body>
 </html>

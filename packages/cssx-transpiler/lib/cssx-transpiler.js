@@ -61,32 +61,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	var randomId = __webpack_require__(387);
 	
 	var visitors = {
-	  CSSXDefinition: __webpack_require__(388),
-	  CSSXElement: __webpack_require__(391),
-	  CSSXProperty: __webpack_require__(392),
-	  CSSXRule: __webpack_require__(394),
-	  CSSXRules: __webpack_require__(395),
-	  CSSXSelector: __webpack_require__(396),
-	  CSSXValue: __webpack_require__(397),
-	  CSSXMediaQueryElement: __webpack_require__(398),
-	  CSSXKeyframesElement: __webpack_require__(400)
+	  CSSXDefinition: __webpack_require__(389),
+	  CSSXElement: __webpack_require__(392),
+	  CSSXProperty: __webpack_require__(438),
+	  CSSXRule: __webpack_require__(440),
+	  CSSXRules: __webpack_require__(441),
+	  CSSXSelector: __webpack_require__(442),
+	  CSSXValue: __webpack_require__(443),
+	  CSSXMediaQueryElement: __webpack_require__(444),
+	  CSSXKeyframesElement: __webpack_require__(446)
 	};
 	
-	module.exports = function (code, generateOptions) {
+	module.exports = function (code, options) {
 	  var ast = AST(code);
-	
-	  traverse(ast.program, visitors);
-	  return generate(
-	    ast,
-	    merge({
+	  var opts = merge(
+	    {
 	      minified: false,
 	      compact: false,
 	      concise: false,
 	      quotes: 'single',
 	      sourceMaps: false
-	    }, generateOptions || {}),
-	    code
-	  ).code;
+	    },
+	    options || {}
+	  );
+	
+	  traverse(ast.program, visitors, opts);
+	  return generate(ast, opts, code).code;
 	};
 	
 	module.exports.ast = AST;
@@ -42015,14 +42015,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 388 */
+/* 388 */,
+/* 389 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArray = __webpack_require__(4);
-	var injectAt = __webpack_require__(389);
+	var injectAt = __webpack_require__(390);
 	var getID = __webpack_require__(387);
 	var t = __webpack_require__(41);
-	var settings = __webpack_require__(390);
+	var settings = __webpack_require__(391);
 	var isIgnored = __webpack_require__(3).isIgnored;
 	
 	var updateStyleSheet = function (node, stylesheetId) {
@@ -42114,7 +42115,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 389 */
+/* 390 */
 /***/ function(module, exports) {
 
 	module.exports = function (arr, index, elements) {
@@ -42123,7 +42124,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 390 */
+/* 391 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -42135,11 +42136,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 391 */
+/* 392 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
-	var settings = __webpack_require__(390);
+	var settings = __webpack_require__(391);
 	
 	var formCSSXElement = function (args) {
 	  return t.callExpression(
@@ -42170,11 +42171,56 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 392 */
+/* 393 */,
+/* 394 */,
+/* 395 */,
+/* 396 */,
+/* 397 */,
+/* 398 */,
+/* 399 */,
+/* 400 */,
+/* 401 */,
+/* 402 */,
+/* 403 */,
+/* 404 */,
+/* 405 */,
+/* 406 */,
+/* 407 */,
+/* 408 */,
+/* 409 */,
+/* 410 */,
+/* 411 */,
+/* 412 */,
+/* 413 */,
+/* 414 */,
+/* 415 */,
+/* 416 */,
+/* 417 */,
+/* 418 */,
+/* 419 */,
+/* 420 */,
+/* 421 */,
+/* 422 */,
+/* 423 */,
+/* 424 */,
+/* 425 */,
+/* 426 */,
+/* 427 */,
+/* 428 */,
+/* 429 */,
+/* 430 */,
+/* 431 */,
+/* 432 */,
+/* 433 */,
+/* 434 */,
+/* 435 */,
+/* 436 */,
+/* 437 */,
+/* 438 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
-	var parseExpressions = __webpack_require__(393);
+	var parseExpressions = __webpack_require__(439);
 	
 	module.exports = {
 	  enter: function (node, parent, index) {},
@@ -42189,7 +42235,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 393 */
+/* 439 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
@@ -42251,7 +42297,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 394 */
+/* 440 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -42263,7 +42309,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 395 */
+/* 441 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
@@ -42313,11 +42359,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 396 */
+/* 442 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
-	var parseExpressions = __webpack_require__(393);
+	var parseExpressions = __webpack_require__(439);
 	
 	module.exports = {
 	  enter: function (node, parent, index) {},
@@ -42332,11 +42378,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 397 */
+/* 443 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
-	var parseExpressions = __webpack_require__(393);
+	var parseExpressions = __webpack_require__(439);
 	
 	module.exports = {
 	  enter: function (node, parent, index) {},
@@ -42351,22 +42397,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 398 */
+/* 444 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(399);
+	module.exports = __webpack_require__(445);
 
 
 /***/ },
-/* 399 */
+/* 445 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CSSXElement = __webpack_require__(391);
+	var CSSXElement = __webpack_require__(392);
 	var formCSSXElement = CSSXElement.formCSSXElement;
 	var t = __webpack_require__(41);
-	var injectAt = __webpack_require__(389);
+	var injectAt = __webpack_require__(390);
 	var isArray = __webpack_require__(4);
-	var settings = __webpack_require__(390);
+	var settings = __webpack_require__(391);
 	var getID = __webpack_require__(387);
 	
 	module.exports = {
@@ -42400,10 +42446,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 400 */
+/* 446 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(399);
+	module.exports = __webpack_require__(445);
 
 
 /***/ }

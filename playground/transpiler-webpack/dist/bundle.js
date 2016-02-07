@@ -57,6 +57,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	__webpack_require__(1);
 	
 	var buttonStyle = __webpack_require__(2);
+	var ballAnimation = __webpack_require__(3);
 	
 	document.querySelector('button').addEventListener('click', buttonStyle);
 
@@ -887,6 +888,75 @@ return /******/ (function(modules) { // webpackBootstrap
 	  ;
 	  input.disabled = !enabled;
 	};
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	var animationApply = 'ball-animation 1s ease infinite alternate';
+	var animation = (function () {
+	  var _266 = {};
+	  _266['animation'] = animationApply;
+	  _266['-o-animation'] = animationApply;
+	  _266['-moz-animation'] = animationApply;
+	  _266['-webkit-animation'] = animationApply;
+	  var _264 = {};
+	  _264['-webkit-transform'] = 'translateX(200px)';
+	  _264['transform'] = 'translateX(200px)';
+	  var _263 = {};
+	  _263['-webkit-transform'] = 'translateX(0)';
+	  _263['transform'] = 'translateX(0)';
+	  var _261 = {};
+	  _261['-webkit-transform'] = 'translateX(200px)';
+	  _261['transform'] = 'translateX(200px)';
+	  var _260 = {};
+	  _260['-webkit-transform'] = 'translateX(0)';
+	  _260['transform'] = 'translateX(0)';
+	  var _258 = {};
+	  _258['-webkit-transform'] = 'translateX(200px)';
+	  _258['transform'] = 'translateX(200px)';
+	  var _257 = {};
+	  _257['-webkit-transform'] = 'translateX(0)';
+	  _257['transform'] = 'translateX(0)';
+	  var _255 = {};
+	  _255['-webkit-transform'] = 'translateX(200px)';
+	  _255['transform'] = 'translateX(200px)';
+	  var _254 = {};
+	  _254['-webkit-transform'] = 'translateX(0)';
+	  _254['transform'] = 'translateX(0)';
+	
+	  var _253 = cssx.s('_253');
+	
+	  var _256 = _253.add('@-webkit-keyframes ball-animation');
+	
+	  _256.n('0%  ', _254);
+	
+	  _256.n('100%', _255);
+	
+	  var _259 = _253.add('@-moz-keyframes ball-animation');
+	
+	  _259.n('0%  ', _257);
+	
+	  _259.n('100%', _258);
+	
+	  var _262 = _253.add('@-o-keyframes ball-animation');
+	
+	  _262.n('0%  ', _260);
+	
+	  _262.n('100%', _261);
+	
+	  var _265 = _253.add('@keyframes ball-animation');
+	
+	  _265.n('0%  ', _263);
+	
+	  _265.n('100%', _264);
+	
+	  _253.add('.ball', _266);
+	
+	  return _253;
+	}).apply(this);;
+	
+	module.exports = {};
 
 /***/ }
 /******/ ])

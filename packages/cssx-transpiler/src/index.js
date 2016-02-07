@@ -16,21 +16,21 @@ var visitors = {
   CSSXKeyframesElement: require('./visitors/CSSXKeyframesElement')
 };
 
-module.exports = function (code, generateOptions) {
+module.exports = function (code, options) {
   var ast = AST(code);
-
-  traverse(ast.program, visitors);
-  return generate(
-    ast,
-    merge({
+  var opts = merge(
+    {
       minified: false,
       compact: false,
       concise: false,
       quotes: 'single',
       sourceMaps: false
-    }, generateOptions || {}),
-    code
-  ).code;
+    },
+    options || {}
+  );
+
+  traverse(ast.program, visitors, opts);
+  return generate(ast, opts, code).code;
 };
 
 module.exports.ast = AST;

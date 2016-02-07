@@ -6,6 +6,7 @@ var babylon = require('../packages/cssx-transpiler/src/vendor/babylon');
 var glob = require("glob");
 var chai = require('chai');
 var expect = chai.expect;
+var d = describe;
 
 var tests = [];
 // var only = '3'.split(',');
@@ -24,7 +25,9 @@ glob.sync(__dirname + '/fixtures/cssx-complete/**/actual.js').forEach(function (
   });
 });
 
-describe('Given the transpiler and client side library', function () {
+if (typeof only !== 'undefined') d = describe.only;
+
+d('Given the transpiler and client side library', function () {
   tests.forEach(function (test) {
     describe('when running ' + test.name, function () {
       it('should pass actual and receive expected code', function () {

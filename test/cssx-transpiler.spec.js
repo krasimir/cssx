@@ -5,9 +5,10 @@ var babylon = require('../packages/cssx-transpiler/src/vendor/babylon');
 var glob = require("glob");
 var chai = require('chai');
 var expect = chai.expect;
+var d = describe;
 
 var tests = [];
-// var only = '10'.split(',');
+// var only = '11'.split(',');
 
 glob.sync(__dirname + '/fixtures/cssx-transpiler/**/actual.js').forEach(function (actual) {
   var testDir = path.dirname(actual), testDirParts = testDir.split('/');
@@ -23,7 +24,9 @@ glob.sync(__dirname + '/fixtures/cssx-transpiler/**/actual.js').forEach(function
   });
 });
 
-describe('Given the cssx transpiler', function () {
+if (typeof only !== 'undefined') d = describe.only;
+
+d('Given the cssx transpiler', function () {
   tests.forEach(function (test) {
     describe('when running ' + test.name, function () {
       it('should pass actual and receive expected code', function () {
