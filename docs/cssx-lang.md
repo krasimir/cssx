@@ -1,6 +1,6 @@
 # CSSX language
 
-CSSX is not a new language. It's the usual CSS that you know. The only one difference is that you may write it inside a JavaScript file. In order to get the [transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler) working you have to wrap your CSS in a CSSX expression:
+CSSX is not a new language. It's the usual CSS that you know and use every day. The only one difference is that you may write it inside a JavaScript context. In order to get the [transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler) working you have to wrap your CSS in a CSSX expression:
 
 ```js
 cssx(
@@ -11,7 +11,7 @@ cssx(
 );
 ```
 
-`cssx` returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object.
+`cssx` call returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object.
 
 ## Mix JavaScript and CSS
 
