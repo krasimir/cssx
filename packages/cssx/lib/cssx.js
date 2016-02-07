@@ -56,10 +56,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var factory, goGlobal, stylesheets, api;
 	
-	__webpack_require__(14);
+	__webpack_require__(1);
 	
-	factory = __webpack_require__(2);
-	goGlobal = __webpack_require__(13);
+	factory = __webpack_require__(5);
+	goGlobal = __webpack_require__(16);
 	
 	stylesheets = [];
 	api = function () {};
@@ -119,6 +119,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	__webpack_require__(2);
+	__webpack_require__(3);
+	__webpack_require__(4);
+
+
+/***/ },
+/* 2 */
 /***/ function(module, exports) {
 
 	if (!Array.prototype.filter) {
@@ -157,14 +166,171 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ },
-/* 2 */
+/* 3 */
+/***/ function(module, exports) {
+
+	// Production steps of ECMA-262, Edition 5, 15.4.4.18
+	// Reference: http://es5.github.io/#x15.4.4.18
+	if (!Array.prototype.forEach) {
+	
+	  Array.prototype.forEach = function(callback, thisArg) {
+	
+	    var T, k;
+	
+	    if (this == null) {
+	      throw new TypeError(' this is null or not defined');
+	    }
+	
+	    // 1. Let O be the result of calling ToObject passing the |this| value as the argument.
+	    var O = Object(this);
+	
+	    // 2. Let lenValue be the result of calling the Get internal method of O with the argument "length".
+	    // 3. Let len be ToUint32(lenValue).
+	    var len = O.length >>> 0;
+	
+	    // 4. If IsCallable(callback) is false, throw a TypeError exception.
+	    // See: http://es5.github.com/#x9.11
+	    if (typeof callback !== "function") {
+	      throw new TypeError(callback + ' is not a function');
+	    }
+	
+	    // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+	    if (arguments.length > 1) {
+	      T = thisArg;
+	    }
+	
+	    // 6. Let k be 0
+	    k = 0;
+	
+	    // 7. Repeat, while k < len
+	    while (k < len) {
+	
+	      var kValue;
+	
+	      // a. Let Pk be ToString(k).
+	      //   This is implicit for LHS operands of the in operator
+	      // b. Let kPresent be the result of calling the HasProperty internal method of O with argument Pk.
+	      //   This step can be combined with c
+	      // c. If kPresent is true, then
+	      if (k in O) {
+	
+	        // i. Let kValue be the result of calling the Get internal method of O with argument Pk.
+	        kValue = O[k];
+	
+	        // ii. Call the Call internal method of callback with T as the this value and
+	        // argument list containing kValue, k, and O.
+	        callback.call(T, kValue, k, O);
+	      }
+	      // d. Increase k by 1.
+	      k++;
+	    }
+	    // 8. return undefined
+	  };
+	}
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	// Production steps of ECMA-262, Edition 5, 15.4.4.19
+	// Reference: http://es5.github.io/#x15.4.4.19
+	if (!Array.prototype.map) {
+	
+	  Array.prototype.map = function(callback, thisArg) {
+	
+	    var T, A, k;
+	
+	    if (this == null) {
+	      throw new TypeError(' this is null or not defined');
+	    }
+	
+	    // 1. Let O be the result of calling ToObject passing the |this| 
+	    //    value as the argument.
+	    var O = Object(this);
+	
+	    // 2. Let lenValue be the result of calling the Get internal 
+	    //    method of O with the argument "length".
+	    // 3. Let len be ToUint32(lenValue).
+	    var len = O.length >>> 0;
+	
+	    // 4. If IsCallable(callback) is false, throw a TypeError exception.
+	    // See: http://es5.github.com/#x9.11
+	    if (typeof callback !== 'function') {
+	      throw new TypeError(callback + ' is not a function');
+	    }
+	
+	    // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
+	    if (arguments.length > 1) {
+	      T = thisArg;
+	    }
+	
+	    // 6. Let A be a new array created as if by the expression new Array(len) 
+	    //    where Array is the standard built-in constructor with that name and 
+	    //    len is the value of len.
+	    A = new Array(len);
+	
+	    // 7. Let k be 0
+	    k = 0;
+	
+	    // 8. Repeat, while k < len
+	    while (k < len) {
+	
+	      var kValue, mappedValue;
+	
+	      // a. Let Pk be ToString(k).
+	      //   This is implicit for LHS operands of the in operator
+	      // b. Let kPresent be the result of calling the HasProperty internal 
+	      //    method of O with argument Pk.
+	      //   This step can be combined with c
+	      // c. If kPresent is true, then
+	      if (k in O) {
+	
+	        // i. Let kValue be the result of calling the Get internal 
+	        //    method of O with argument Pk.
+	        kValue = O[k];
+	
+	        // ii. Let mappedValue be the result of calling the Call internal 
+	        //     method of callback with T as the this value and argument 
+	        //     list containing kValue, k, and O.
+	        mappedValue = callback.call(T, kValue, k, O);
+	
+	        // iii. Call the DefineOwnProperty internal method of A with arguments
+	        // Pk, Property Descriptor
+	        // { Value: mappedValue,
+	        //   Writable: true,
+	        //   Enumerable: true,
+	        //   Configurable: true },
+	        // and false.
+	
+	        // In browsers that support Object.defineProperty, use the following:
+	        // Object.defineProperty(A, k, {
+	        //   value: mappedValue,
+	        //   writable: true,
+	        //   enumerable: true,
+	        //   configurable: true
+	        // });
+	
+	        // For best browser support, use the following:
+	        A[k] = mappedValue;
+	      }
+	      // d. Increase k by 1.
+	      k++;
+	    }
+	
+	    // 9. return A
+	    return A;
+	  };
+	}
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CSSRule = __webpack_require__(3);
-	var applyToDOM = __webpack_require__(4);
-	var nextTick = __webpack_require__(5);
-	var resolveSelector = __webpack_require__(9);
-	var generate = __webpack_require__(10);
+	var CSSRule = __webpack_require__(6);
+	var applyToDOM = __webpack_require__(7);
+	var nextTick = __webpack_require__(8);
+	var resolveSelector = __webpack_require__(12);
+	var generate = __webpack_require__(13);
 	
 	var ids = 0;
 	var getId = function () { return 'x' + (++ids); };
@@ -250,7 +416,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 3 */
+/* 6 */
 /***/ function(module, exports) {
 
 	var ids = 0;
@@ -325,7 +491,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 4 */
+/* 7 */
 /***/ function(module, exports) {
 
 	var cache = {};
@@ -379,12 +545,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 5 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {var cache = {};
 	
-	__webpack_require__(8);
+	__webpack_require__(11);
 	
 	module.exports = function (work, id) {
 	  if (!cache[id]) {
@@ -396,13 +562,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	};
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate))
 
 /***/ },
-/* 6 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(7).nextTick;
+	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(10).nextTick;
 	var apply = Function.prototype.apply;
 	var slice = Array.prototype.slice;
 	var immediateIds = {};
@@ -478,10 +644,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).setImmediate, __webpack_require__(6).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate, __webpack_require__(9).clearImmediate))
 
 /***/ },
-/* 7 */
+/* 10 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -578,7 +744,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 8 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, clearImmediate, process) {(function (global, undefined) {
@@ -757,10 +923,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    attachTo.clearImmediate = clearImmediate;
 	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(6).clearImmediate, __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(9).clearImmediate, __webpack_require__(10)))
 
 /***/ },
-/* 9 */
+/* 12 */
 /***/ function(module, exports) {
 
 	module.exports = function (selector) {
@@ -769,12 +935,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isEmpty = __webpack_require__(11);
-	var resolveSelector = __webpack_require__(9);
-	var prefix = __webpack_require__(12);
+	var isEmpty = __webpack_require__(14);
+	var resolveSelector = __webpack_require__(12);
+	var prefix = __webpack_require__(15);
 	
 	module.exports = function (rules, minify) {
 	
@@ -825,7 +991,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = function (obj) {
@@ -841,10 +1007,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var resolveSelector = __webpack_require__(9);
+	var resolveSelector = __webpack_require__(12);
 	var SELECTORS = {
 	  '@keyframes': [
 	    '@-webkit-keyframes',
@@ -910,7 +1076,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 16 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {module.exports = function (api) {
@@ -923,172 +1089,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 14 */
-/***/ function(module, exports, __webpack_require__) {
-
-	__webpack_require__(1);
-	__webpack_require__(15);
-	__webpack_require__(16);
-
-
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
-
-	// Production steps of ECMA-262, Edition 5, 15.4.4.18
-	// Reference: http://es5.github.io/#x15.4.4.18
-	if (!Array.prototype.forEach) {
-	
-	  Array.prototype.forEach = function(callback, thisArg) {
-	
-	    var T, k;
-	
-	    if (this == null) {
-	      throw new TypeError(' this is null or not defined');
-	    }
-	
-	    // 1. Let O be the result of calling ToObject passing the |this| value as the argument.
-	    var O = Object(this);
-	
-	    // 2. Let lenValue be the result of calling the Get internal method of O with the argument "length".
-	    // 3. Let len be ToUint32(lenValue).
-	    var len = O.length >>> 0;
-	
-	    // 4. If IsCallable(callback) is false, throw a TypeError exception.
-	    // See: http://es5.github.com/#x9.11
-	    if (typeof callback !== "function") {
-	      throw new TypeError(callback + ' is not a function');
-	    }
-	
-	    // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
-	    if (arguments.length > 1) {
-	      T = thisArg;
-	    }
-	
-	    // 6. Let k be 0
-	    k = 0;
-	
-	    // 7. Repeat, while k < len
-	    while (k < len) {
-	
-	      var kValue;
-	
-	      // a. Let Pk be ToString(k).
-	      //   This is implicit for LHS operands of the in operator
-	      // b. Let kPresent be the result of calling the HasProperty internal method of O with argument Pk.
-	      //   This step can be combined with c
-	      // c. If kPresent is true, then
-	      if (k in O) {
-	
-	        // i. Let kValue be the result of calling the Get internal method of O with argument Pk.
-	        kValue = O[k];
-	
-	        // ii. Call the Call internal method of callback with T as the this value and
-	        // argument list containing kValue, k, and O.
-	        callback.call(T, kValue, k, O);
-	      }
-	      // d. Increase k by 1.
-	      k++;
-	    }
-	    // 8. return undefined
-	  };
-	}
-
-/***/ },
-/* 16 */
-/***/ function(module, exports) {
-
-	// Production steps of ECMA-262, Edition 5, 15.4.4.19
-	// Reference: http://es5.github.io/#x15.4.4.19
-	if (!Array.prototype.map) {
-	
-	  Array.prototype.map = function(callback, thisArg) {
-	
-	    var T, A, k;
-	
-	    if (this == null) {
-	      throw new TypeError(' this is null or not defined');
-	    }
-	
-	    // 1. Let O be the result of calling ToObject passing the |this| 
-	    //    value as the argument.
-	    var O = Object(this);
-	
-	    // 2. Let lenValue be the result of calling the Get internal 
-	    //    method of O with the argument "length".
-	    // 3. Let len be ToUint32(lenValue).
-	    var len = O.length >>> 0;
-	
-	    // 4. If IsCallable(callback) is false, throw a TypeError exception.
-	    // See: http://es5.github.com/#x9.11
-	    if (typeof callback !== 'function') {
-	      throw new TypeError(callback + ' is not a function');
-	    }
-	
-	    // 5. If thisArg was supplied, let T be thisArg; else let T be undefined.
-	    if (arguments.length > 1) {
-	      T = thisArg;
-	    }
-	
-	    // 6. Let A be a new array created as if by the expression new Array(len) 
-	    //    where Array is the standard built-in constructor with that name and 
-	    //    len is the value of len.
-	    A = new Array(len);
-	
-	    // 7. Let k be 0
-	    k = 0;
-	
-	    // 8. Repeat, while k < len
-	    while (k < len) {
-	
-	      var kValue, mappedValue;
-	
-	      // a. Let Pk be ToString(k).
-	      //   This is implicit for LHS operands of the in operator
-	      // b. Let kPresent be the result of calling the HasProperty internal 
-	      //    method of O with argument Pk.
-	      //   This step can be combined with c
-	      // c. If kPresent is true, then
-	      if (k in O) {
-	
-	        // i. Let kValue be the result of calling the Get internal 
-	        //    method of O with argument Pk.
-	        kValue = O[k];
-	
-	        // ii. Let mappedValue be the result of calling the Call internal 
-	        //     method of callback with T as the this value and argument 
-	        //     list containing kValue, k, and O.
-	        mappedValue = callback.call(T, kValue, k, O);
-	
-	        // iii. Call the DefineOwnProperty internal method of A with arguments
-	        // Pk, Property Descriptor
-	        // { Value: mappedValue,
-	        //   Writable: true,
-	        //   Enumerable: true,
-	        //   Configurable: true },
-	        // and false.
-	
-	        // In browsers that support Object.defineProperty, use the following:
-	        // Object.defineProperty(A, k, {
-	        //   value: mappedValue,
-	        //   writable: true,
-	        //   enumerable: true,
-	        //   configurable: true
-	        // });
-	
-	        // For best browser support, use the following:
-	        A[k] = mappedValue;
-	      }
-	      // d. Increase k by 1.
-	      k++;
-	    }
-	
-	    // 9. return A
-	    return A;
-	  };
-	}
 
 /***/ }
 /******/ ])
