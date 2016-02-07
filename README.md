@@ -19,6 +19,10 @@ Examples:
 * [Transpiling with gulp](./playground/transpiler-gulp)
 * [Transpiling with webpack](./playground/transpiler-webpack)
 
+Misc:
+
+* [CSSX language](./docs/cssx-lang.md)
+
 ---
 
 ```js
