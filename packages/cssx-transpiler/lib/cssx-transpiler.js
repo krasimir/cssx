@@ -7922,6 +7922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.format = format;
 	    this.opts = opts;
 	    this.ast = ast;
+	    this._inForStatementInitCounter = 0;
 	
 	    this.whitespace = new _whitespace2["default"](tokens);
 	    this.map = new _sourceMap2["default"](position, opts, code);
@@ -8503,8 +8504,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * Returns `i`th number from `base`, continuing from 0 when `max` is reached.
-	 * Useful for shifting `for` loop by a fixed number but going over all items.
+	 * Get whitespace around tokens.
 	 */
 	
 	"use strict";
@@ -8512,19 +8512,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _classCallCheck = __webpack_require__(21)["default"];
 	
 	exports.__esModule = true;
-	function getLookupIndex(i /*: number*/, base /*: number*/, max /*: number*/) /*: number*/ {
-	  i += base;
-	
-	  if (i >= max) {
-	    i -= max;
-	  }
-	
-	  return i;
-	}
-	
-	/**
-	 * Get whitespace around tokens.
-	 */
 	
 	var Whitespace = (function () {
 	  function Whitespace(tokens) {
@@ -8532,16 +8519,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    this.tokens = tokens;
 	    this.used = {};
-	
-	    // Profiling this code shows that while generator passes over it, indexes
-	    // returned by `getNewlinesBefore` and `getNewlinesAfter` are always increasing.
-	
-	    // We use this implementation detail for an optimization: instead of always
-	    // starting to look from `this.tokens[0]`, we will start `for` loops from the
-	    // previous successful match. We will enumerate all tokens—but the common
-	    // case will be much faster.
-	
-	    this._lastFoundIndex = 0;
 	  }
 	
 	  /**
@@ -8553,19 +8530,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var endToken = undefined;
 	    var tokens = this.tokens;
 	
-	    for (var j = 0; j < tokens.length; j++) {
-	      // optimize for forward traversal by shifting for loop index
-	      var i = getLookupIndex(j, this._lastFoundIndex, this.tokens.length);
-	      var token = tokens[i];
-	
-	      // this is the token this node starts with
-	      if (node.start === token.start) {
-	        startToken = tokens[i - 1];
-	        endToken = token;
-	
-	        this._lastFoundIndex = i;
-	        break;
-	      }
+	    var index = this._findToken(function (token) {
+	      return token.start - node.start;
+	    }, 0, tokens.length);
+	    if (index >= 0) {
+	      while (index && node.start === tokens[index - 1].start) --index;
+	      startToken = tokens[index - 1];
+	      endToken = tokens[index];
 	    }
 	
 	    return this.getNewlinesBetween(startToken, endToken);
@@ -8580,20 +8551,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var endToken = undefined;
 	    var tokens = this.tokens;
 	
-	    for (var j = 0; j < tokens.length; j++) {
-	      // optimize for forward traversal by shifting for loop index
-	      var i = getLookupIndex(j, this._lastFoundIndex, this.tokens.length);
-	      var token = tokens[i];
-	
-	      // this is the token this node ends with
-	      if (node.end === token.end) {
-	        startToken = token;
-	        endToken = tokens[i + 1];
-	        if (endToken.type.label === ",") endToken = tokens[i + 2];
-	
-	        this._lastFoundIndex = i;
-	        break;
-	      }
+	    var index = this._findToken(function (token) {
+	      return token.end - node.end;
+	    }, 0, tokens.length);
+	    if (index >= 0) {
+	      while (index && node.end === tokens[index - 1].end) --index;
+	      startToken = tokens[index];
+	      endToken = tokens[index + 1];
+	      if (endToken.type.label === ",") endToken = tokens[index + 2];
 	    }
 	
 	    if (endToken && endToken.type.label === "eof") {
@@ -8628,6 +8593,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    return lines;
+	  };
+	
+	  /**
+	   * Find a token between start and end.
+	   */
+	
+	  Whitespace.prototype._findToken = function _findToken(test /*: Function*/, start /*: number*/, end /*: number*/) /*: number*/ {
+	    var middle = start + end >>> 1;
+	    var match /*: number*/ = test(this.tokens[middle]);
+	    if (match < 0 && end > middle) {
+	      return this._findToken(test, middle + 1, end);
+	    } else if (match > 0 && start < middle) {
+	      return this._findToken(test, start, middle);
+	    } else if (match === 0) {
+	      return middle;
+	    }
+	    return -1;
 	  };
 	
 	  return Whitespace;
@@ -11697,7 +11679,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* @noflow */
+	/* @flow */
 	
 	"use strict";
 	
@@ -12247,6 +12229,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	function assertNode(node /*:: ?*/) {
 	  if (!isNode(node)) {
+	    // $FlowFixMe
 	    throw new TypeError("Not a valid node " + (node && node.type));
 	  }
 	}
@@ -16674,7 +16657,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  builder: ["operator", "argument", "prefix"],
 	  fields: {
 	    prefix: {
-	      "default": false
+	      "default": true
 	    },
 	    argument: {
 	      validate: _index2.assertNodeType("Expression")
@@ -16752,7 +16735,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      object: _index2.assertNodeType("Expression")
 	    },
 	    body: {
-	      validate: _index2.assertNodeType("BlockStatement")
+	      validate: _index2.assertNodeType("BlockStatement", "Statement")
 	    }
 	  }
 	});
@@ -18271,6 +18254,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* @flow */
+	
 	"use strict";
 	
 	var _getIterator = __webpack_require__(54)["default"];
@@ -18366,7 +18351,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    case "ArrowFunctionExpression":
 	    case "FunctionDeclaration":
 	    case "FunctionExpression":
-	      for (var _iterator = (parent.params /*: Array*/), _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _getIterator(_iterator);;) {
+	      for (var _iterator = (parent.params /*: Array<any>*/), _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _getIterator(_iterator);;) {
 	        var _ref;
 	
 	        if (_isArray) {
@@ -19044,6 +19029,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* @noflow */
+	
 	"use strict";
 	
 	var _getIterator = __webpack_require__(54)["default"];
@@ -19334,7 +19321,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	
-	function toBlock(node, parent /*: Object*/) /*: Object*/ {
+	function toBlock(node /*: Object*/, parent /*: Object*/) /*: Object*/ {
 	  if (t.isBlockStatement(node)) {
 	    return node;
 	  }
@@ -20059,6 +20046,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      path.resync();
 	      path.pushContext(this);
 	
+	      // this path no longer belongs to the tree
+	      if (path.key === null) continue;
+	
 	      if (testing && queue.length >= 1000) {
 	        this.trap = true;
 	      }
@@ -20537,7 +20527,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.ReferencedMemberExpression = ReferencedMemberExpression;
 	var BindingIdentifier = {
 	  types: ["Identifier"],
-	  checkPath: function checkPath(_ref3 /*: NodePath */) /*: boolean*/ {
+	  checkPath: function checkPath(_ref3 /*: NodePath*/) /*: boolean*/ {
 	    var node = _ref3.node;
 	    var parent = _ref3.parent;
 	
@@ -20548,7 +20538,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.BindingIdentifier = BindingIdentifier;
 	var Statement = {
 	  types: ["Statement"],
-	  checkPath: function checkPath(_ref4 /*: NodePath */) /*: boolean*/ {
+	  checkPath: function checkPath(_ref4 /*: NodePath*/) /*: boolean*/ {
 	    var node = _ref4.node;
 	    var parent = _ref4.parent;
 	
@@ -20631,7 +20621,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.Pure = Pure;
 	var Flow = {
 	  types: ["Flow", "ImportDeclaration", "ExportDeclaration"],
-	  checkPath: function checkPath(_ref5 /*: NodePath */) /*: boolean*/ {
+	  checkPath: function checkPath(_ref5 /*: NodePath*/) /*: boolean*/ {
 	    var node = _ref5.node;
 	
 	    if (t.isFlow(node)) {
@@ -27143,7 +27133,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // result in an empty array, and if so, the array must be
 	      // deleted.
 	      node.leadingComments = this.state.leadingComments.slice(0, i);
-	      if (node.leadingComments.length === 0) {
+	      if ((node.leadingComments /*: Array<any>*/).length === 0) {
 	        node.leadingComments = null;
 	      }
 	
@@ -27717,7 +27707,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return val;
 	};
 	
-	pp.parseParenAndDistinguishExpression = function (startPos, startLoc, canBeArrow, isAsync) {
+	pp.parseParenAndDistinguishExpression = function (startPos, startLoc, canBeArrow, isAsync, allowOptionalCommaStart) {
 	  startPos = startPos || this.state.start;
 	  startLoc = startLoc || this.state.startLoc;
 	
@@ -27773,7 +27763,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      this.unexpected(this.state.lastTokStart);
 	    }
 	  }
-	  if (optionalCommaStart) this.unexpected(optionalCommaStart);
+	  if (optionalCommaStart && !allowOptionalCommaStart) this.unexpected(optionalCommaStart);
 	  if (spreadStart) this.unexpected(spreadStart);
 	  if (refShorthandDefaultPos.start) this.unexpected(refShorthandDefaultPos.start);
 	
@@ -28217,7 +28207,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return this.finishNode(node, "YieldExpression");
 	};
 	},{"../tokenizer/types":17,"../util/identifier":18,"./index":5,"babel-runtime/core-js/get-iterator":21,"babel-runtime/core-js/object/create":22,"babel-runtime/helpers/interop-require-default":26}],5:[function(require,module,exports){
-	/* @noflow */
+	/* @flow */
 	
 	"use strict";
 	
@@ -28246,7 +28236,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var Parser = (function (_Tokenizer) {
 	  _inherits(Parser, _Tokenizer);
 	
-	  function Parser(options, input /*: string*/) {
+	  function Parser(options /*: Object*/, input /*: string*/) {
 	    _classCallCheck(this, Parser);
 	
 	    options = _options.getOptions(options);
@@ -28272,7 +28262,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this[name] = f(this[name]);
 	  };
 	
-	  Parser.prototype.loadPlugins = function loadPlugins(plugins /*: Array<string>*/) {
+	  Parser.prototype.loadPlugins = function loadPlugins(plugins /*: Array<string>*/) /*: Object*/ {
 	    var pluginMap = {};
 	
 	    if (plugins.indexOf("flow") >= 0) {
@@ -29846,10 +29836,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var pp = _parser2["default"].prototype;
 	
-	pp.flowParseTypeInitialiser = function (tok) {
+	pp.flowParseTypeInitialiser = function (tok, allowLeadingPipeOrAnd) {
 	  var oldInType = this.state.inType;
 	  this.state.inType = true;
 	  this.expect(tok || _tokenizerTypes.types.colon);
+	  if (allowLeadingPipeOrAnd) {
+	    if (this.match(_tokenizerTypes.types.bitwiseAND) || this.match(_tokenizerTypes.types.bitwiseOR)) {
+	      this.next();
+	    }
+	  }
 	  var type = this.flowParseType();
 	  this.state.inType = oldInType;
 	  return type;
@@ -30014,7 +30009,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    node.typeParameters = null;
 	  }
 	
-	  node.right = this.flowParseTypeInitialiser(_tokenizerTypes.types.eq);
+	  node.right = this.flowParseTypeInitialiser(_tokenizerTypes.types.eq,
+	  /*allowLeadingPipeOrAnd*/true);
 	  this.semicolon();
 	
 	  return this.finishNode(node, "TypeAlias");
@@ -30865,7 +30861,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return this.parseArrowExpression(node, [], isAsync);
 	      } else {
 	        // let foo = (foo): number => {};
-	        var node = inner.call(this, startPos, startLoc, canBeArrow, isAsync);
+	        var node = inner.call(this, startPos, startLoc, canBeArrow, isAsync, this.hasPlugin("trailingFunctionCommas"));
 	
 	        if (this.match(_tokenizerTypes.types.colon)) {
 	          var state = this.state.clone();
@@ -31640,7 +31636,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	exports.TokContext = TokContext;
-	var types = {
+	var types /*: {
+	            [key: string]: TokContext;
+	          }*/ = {
 	  b_stat: new TokContext("{", false),
 	  b_expr: new TokContext("{", true),
 	  b_tmpl: new TokContext("${", true),
@@ -31719,6 +31717,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.state.exprAllowed = false;
 	};
 	},{"../util/whitespace":20,"./types":17,"babel-runtime/helpers/class-call-check":24}],15:[function(require,module,exports){
+	/* @noflow */
+	
 	"use strict";
 	
 	var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
@@ -35977,6 +35977,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 271 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* @flow */
+	
 	"use strict";
 	
 	var _interopRequireWildcard = __webpack_require__(86)["default"];
@@ -36009,7 +36011,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Dedupe type annotations.
 	 */
 	
-	function removeTypeDuplicates(nodes /*: Array<Object>*/) {
+	function removeTypeDuplicates(nodes /*: Array<Object>*/) /*: Array<Object>*/ {
 	  var generics = {};
 	  var bases = {};
 	
@@ -36295,7 +36297,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _node = __webpack_require__(312);
 	
-	var _node2 = _interopRequireDefault(_node);
+	var n = _interopRequireWildcard(_node);
 	
 	var _babelTypes = __webpack_require__(41);
 	
@@ -36346,7 +36348,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (node.loc) this.printAuxAfterComment();
 	    this.printAuxBeforeComment(oldInAux);
 	
-	    var needsParens = _node2["default"].needsParens(node, parent, this._printStack);
+	    var needsParens = n.needsParens(node, parent, this._printStack);
 	    if (needsParens) this.push("(");
 	
 	    this.printLeadingComments(node, parent);
@@ -36530,7 +36532,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	
 	  Printer.prototype._printNewline = function _printNewline(leading, node, parent, opts) {
-	    if (!opts.statement && !_node2["default"].isUserWhitespacable(node, parent)) {
+	    if (!opts.statement && !n.isUserWhitespacable(node, parent)) {
 	      return;
 	    }
 	
@@ -36548,8 +36550,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!leading) lines++; // always include at least a single line after
 	      if (opts.addNewlines) lines += opts.addNewlines(leading, node) || 0;
 	
-	      var needs = _node2["default"].needsWhitespaceAfter;
-	      if (leading) needs = _node2["default"].needsWhitespaceBefore;
+	      var needs = n.needsWhitespaceAfter;
+	      if (leading) needs = n.needsWhitespaceBefore;
 	      if (needs(node, parent)) lines++;
 	
 	      // generated nodes can't add starting file whitespace
@@ -37160,6 +37162,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 310 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* @flow */
+	
 	"use strict";
 	
 	var _classCallCheck = __webpack_require__(21)["default"];
@@ -37191,13 +37195,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this._indent = format.indent.base;
 	    this.format = format;
 	    this.buf = "";
+	
+	    // Maintaining a reference to the last char in the buffer is an optimization
+	    // to make sure that v8 doesn't "flatten" the string more often than needed
+	    // see https://github.com/babel/babel/pull/3283 for details.
+	    this.last = "";
 	  }
 	
 	  /**
 	   * Description
 	   */
 	
-	  Buffer.prototype.catchUp = function catchUp(node) {
+	  Buffer.prototype.catchUp = function catchUp(node /*: Object*/) {
 	    // catch up to this nodes newline if we're behind
 	    if (node.loc && this.format.retainLines && this.buf) {
 	      while (this.position.line < node.loc.start.line) {
@@ -37210,7 +37219,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Get the current trimmed buffer.
 	   */
 	
-	  Buffer.prototype.get = function get() {
+	  Buffer.prototype.get = function get() /*: string*/ {
 	    return _trimRight2["default"](this.buf);
 	  };
 	
@@ -37218,7 +37227,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Get the current indent.
 	   */
 	
-	  Buffer.prototype.getIndent = function getIndent() {
+	  Buffer.prototype.getIndent = function getIndent() /*: string*/ {
 	    if (this.format.compact || this.format.concise) {
 	      return "";
 	    } else {
@@ -37230,7 +37239,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Get the current indent size.
 	   */
 	
-	  Buffer.prototype.indentSize = function indentSize() {
+	  Buffer.prototype.indentSize = function indentSize() /*: number*/ {
 	    return this.getIndent().length;
 	  };
 	
@@ -37310,7 +37319,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  Buffer.prototype._removeLast = function _removeLast(cha /*: string*/) {
 	    if (!this._isLast(cha)) return;
-	    this.buf = this.buf.substr(0, this.buf.length - 1);
+	    this.buf = this.buf.slice(0, -1);
+	    this.last = this.buf[this.buf.length - 1];
 	    this.position.unshift(cha);
 	  };
 	
@@ -37361,42 +37371,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 	
-	    removeLast = removeLast || false;
-	
-	    if (typeof i === "number") {
-	      i = Math.min(2, i);
-	
-	      if (this.endsWith("{\n") || this.endsWith(":\n")) i--;
-	      if (i <= 0) return;
-	
-	      while (i > 0) {
-	        this._newline(removeLast);
-	        i--;
-	      }
-	      return;
-	    }
-	
-	    if (typeof i === "boolean") {
-	      removeLast = i;
-	    }
-	
-	    this._newline(removeLast);
-	  };
-	
-	  /**
-	   * Adds a newline unless there is already two previous newlines.
-	   */
-	
-	  Buffer.prototype._newline = function _newline(removeLast /*:: ?: boolean*/) {
 	    // never allow more than two lines
 	    if (this.endsWith("\n\n")) return;
 	
+	    if (typeof i === "boolean") removeLast = i;
+	    if (typeof i !== "number") i = 1;
+	
+	    i = Math.min(2, i);
+	    if (this.endsWith("{\n") || this.endsWith(":\n")) i--;
+	    if (i <= 0) return;
+	
 	    // remove the last newline
-	    if (removeLast && this.isLast("\n")) this.removeLast("\n");
+	    if (removeLast) {
+	      this.removeLast("\n");
+	    }
 	
 	    this.removeLast(" ");
 	    this._removeSpacesAfterLastNewline();
-	    this._push("\n");
+	    this._push(_repeating2["default"]("\n", i));
 	  };
 	
 	  /**
@@ -37405,21 +37397,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  Buffer.prototype._removeSpacesAfterLastNewline = function _removeSpacesAfterLastNewline() {
 	    var lastNewlineIndex = this.buf.lastIndexOf("\n");
-	    if (lastNewlineIndex === -1) {
-	      return;
-	    }
-	
-	    var index = this.buf.length - 1;
-	    while (index > lastNewlineIndex) {
-	      if (this.buf[index] !== " ") {
-	        break;
-	      }
-	
-	      index--;
-	    }
-	
-	    if (index === lastNewlineIndex) {
-	      this.buf = this.buf.substring(0, index + 1);
+	    if (lastNewlineIndex >= 0 && this.get().length <= lastNewlineIndex) {
+	      this.buf = this.buf.substring(0, lastNewlineIndex + 1);
+	      this.last = "\n";
 	    }
 	  };
 	
@@ -37446,7 +37426,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Push a string to the buffer.
 	   */
 	
-	  Buffer.prototype._push = function _push(str) {
+	  Buffer.prototype._push = function _push(str /*: string*/) /*: void*/ {
 	    // see startTerminatorless() instance method
 	    var parenPushNewlineState = this.parenPushNewlineState;
 	    if (parenPushNewlineState) {
@@ -37472,6 +37452,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    //
 	    this.position.push(str);
 	    this.buf += str;
+	    this.last = str[str.length - 1];
 	  };
 	
 	  /**
@@ -37479,12 +37460,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	   */
 	
 	  Buffer.prototype.endsWith = function endsWith(str /*: string*/) /*: boolean*/ {
-	    var buf /*: string*/ = arguments.length <= 1 || arguments[1] === undefined ? this.buf : arguments[1];
-	
 	    if (str.length === 1) {
-	      return buf[buf.length - 1] === str;
+	      return this.last === str;
 	    } else {
-	      return buf.slice(-str.length) === str;
+	      return this.buf.slice(-str.length) === str;
 	    }
 	  };
 	
@@ -37492,14 +37471,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Test if a character is last in the buffer.
 	   */
 	
-	  Buffer.prototype.isLast = function isLast(cha /*: string*/) {
+	  Buffer.prototype.isLast = function isLast(cha /*: string*/) /*: boolean*/ {
 	    if (this.format.compact) return false;
 	    return this._isLast(cha);
 	  };
 	
-	  Buffer.prototype._isLast = function _isLast(cha /*: string*/) {
-	    var buf = this.buf;
-	    var last = buf[buf.length - 1];
+	  Buffer.prototype._isLast = function _isLast(cha /*: string*/) /*: boolean*/ {
+	    var last = this.last;
 	
 	    if (Array.isArray(cha)) {
 	      return cha.indexOf(last) >= 0;
@@ -37538,8 +37516,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	"use strict";
 	
-	var _classCallCheck = __webpack_require__(21)["default"];
-	
 	var _Object$keys = __webpack_require__(313)["default"];
 	
 	var _interopRequireDefault = __webpack_require__(22)["default"];
@@ -37547,6 +37523,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _interopRequireWildcard = __webpack_require__(23)["default"];
 	
 	exports.__esModule = true;
+	exports.isUserWhitespacable = isUserWhitespacable;
+	exports.needsWhitespace = needsWhitespace;
+	exports.needsWhitespaceBefore = needsWhitespaceBefore;
+	exports.needsWhitespaceAfter = needsWhitespaceAfter;
+	exports.needsParens = needsParens;
 	
 	var _whitespace = __webpack_require__(317);
 	
@@ -37555,10 +37536,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var _parentheses = __webpack_require__(371);
 	
 	var parens = _interopRequireWildcard(_parentheses);
-	
-	var _lodashCollectionEach = __webpack_require__(320);
-	
-	var _lodashCollectionEach2 = _interopRequireDefault(_lodashCollectionEach);
 	
 	var _babelTypes = __webpack_require__(41);
 	
@@ -37594,79 +37571,49 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	
-	var Node = (function () {
-	  function Node(node /*: Object*/, parent /*: Object*/) {
-	    _classCallCheck(this, Node);
+	function isUserWhitespacable(node) {
+	  return t.isUserWhitespacable(node);
+	}
 	
-	    this.parent = parent;
-	    this.node = node;
+	function needsWhitespace(node, parent, type) {
+	  if (!node) return 0;
+	
+	  if (t.isExpressionStatement(node)) {
+	    node = node.expression;
 	  }
 	
-	  Node.isUserWhitespacable = function isUserWhitespacable(node) {
-	    return t.isUserWhitespacable(node);
-	  };
+	  var linesInfo = find(_whitespace2["default"].nodes, node, parent);
 	
-	  Node.needsWhitespace = function needsWhitespace(node, parent, type) {
-	    if (!node) return 0;
-	
-	    if (t.isExpressionStatement(node)) {
-	      node = node.expression;
-	    }
-	
-	    var linesInfo = find(_whitespace2["default"].nodes, node, parent);
-	
-	    if (!linesInfo) {
-	      var items = find(_whitespace2["default"].list, node, parent);
-	      if (items) {
-	        for (var i = 0; i < items.length; i++) {
-	          linesInfo = Node.needsWhitespace(items[i], node, type);
-	          if (linesInfo) break;
-	        }
+	  if (!linesInfo) {
+	    var items = find(_whitespace2["default"].list, node, parent);
+	    if (items) {
+	      for (var i = 0; i < items.length; i++) {
+	        linesInfo = needsWhitespace(items[i], node, type);
+	        if (linesInfo) break;
 	      }
 	    }
+	  }
 	
-	    return linesInfo && linesInfo[type] || 0;
-	  };
+	  return linesInfo && linesInfo[type] || 0;
+	}
 	
-	  Node.needsWhitespaceBefore = function needsWhitespaceBefore(node, parent) {
-	    return Node.needsWhitespace(node, parent, "before");
-	  };
+	function needsWhitespaceBefore(node, parent) {
+	  return needsWhitespace(node, parent, "before");
+	}
 	
-	  Node.needsWhitespaceAfter = function needsWhitespaceAfter(node, parent) {
-	    return Node.needsWhitespace(node, parent, "after");
-	  };
+	function needsWhitespaceAfter(node, parent) {
+	  return needsWhitespace(node, parent, "after");
+	}
 	
-	  Node.needsParens = function needsParens(node, parent, printStack) {
-	    if (!parent) return false;
+	function needsParens(node, parent, printStack) {
+	  if (!parent) return false;
 	
-	    if (t.isNewExpression(parent) && parent.callee === node) {
-	      if (isOrHasCallExpression(node)) return true;
-	    }
+	  if (t.isNewExpression(parent) && parent.callee === node) {
+	    if (isOrHasCallExpression(node)) return true;
+	  }
 	
-	    return find(parens, node, parent, printStack);
-	  };
-	
-	  return Node;
-	})();
-	
-	exports["default"] = Node;
-	
-	_lodashCollectionEach2["default"](Node, function (fn, key) {
-	  Node.prototype[key] = function () {
-	    // Avoid leaking arguments to prevent deoptimization
-	    var args = new Array(arguments.length + 2);
-	
-	    args[0] = this.node;
-	    args[1] = this.parent;
-	
-	    for (var i = 0; i < args.length; i++) {
-	      args[i + 2] = arguments[i];
-	    }
-	
-	    return Node[key].apply(null, args);
-	  };
-	});
-	module.exports = exports["default"];
+	  return find(parens, node, parent, printStack);
+	}
 
 /***/ },
 /* 313 */
@@ -37713,6 +37660,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 317 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* @noflow */
+	
 	"use strict";
 	
 	var _interopRequireDefault = __webpack_require__(22)["default"];
@@ -37743,7 +37692,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * // { hasCall: false, hasFunction: true, hasHelper: false }
 	 */
 	
-	function crawl(node) {
+	/*:: type WhitespaceObject = {
+	  before?: boolean,
+	  after?: boolean
+	};*/function crawl(node) {
 	  var state = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 	
 	  if (t.isMemberExpression(node)) {
@@ -37796,7 +37748,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Test if AssignmentExpression needs whitespace.
 	   */
 	
-	  AssignmentExpression: function AssignmentExpression(node) {
+	  AssignmentExpression: function AssignmentExpression(node /*: Object*/) /*: ?WhitespaceObject*/ {
 	    var state = crawl(node.right);
 	    if (state.hasCall && state.hasHelper || state.hasFunction) {
 	      return {
@@ -37810,7 +37762,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Test if SwitchCase needs whitespace.
 	   */
 	
-	  SwitchCase: function SwitchCase(node, parent) {
+	  SwitchCase: function SwitchCase(node /*: Object*/, parent /*: Object*/) /*: ?WhitespaceObject*/ {
 	    return {
 	      before: node.consequent.length || parent.cases[0] === node
 	    };
@@ -37820,7 +37772,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Test if LogicalExpression needs whitespace.
 	   */
 	
-	  LogicalExpression: function LogicalExpression(node) {
+	  LogicalExpression: function LogicalExpression(node /*: Object*/) /*: ?WhitespaceObject*/ {
 	    if (t.isFunction(node.left) || t.isFunction(node.right)) {
 	      return {
 	        after: true
@@ -37832,7 +37784,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Test if Literal needs whitespace.
 	   */
 	
-	  Literal: function Literal(node) {
+	  Literal: function Literal(node /*: Object*/) /*: ?WhitespaceObject*/ {
 	    if (node.value === "use strict") {
 	      return {
 	        after: true
@@ -37844,7 +37796,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Test if CallExpression needs whitespace.
 	   */
 	
-	  CallExpression: function CallExpression(node) {
+	  CallExpression: function CallExpression(node /*: Object*/) /*: ?WhitespaceObject*/ {
 	    if (t.isFunction(node.callee) || isHelper(node)) {
 	      return {
 	        before: true,
@@ -37857,7 +37809,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Test if VariableDeclaration needs whitespace.
 	   */
 	
-	  VariableDeclaration: function VariableDeclaration(node) {
+	  VariableDeclaration: function VariableDeclaration(node /*: Object*/) /*: ?WhitespaceObject*/ {
 	    for (var i = 0; i < node.declarations.length; i++) {
 	      var declar = node.declarations[i];
 	
@@ -37880,7 +37832,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Test if IfStatement needs whitespace.
 	   */
 	
-	  IfStatement: function IfStatement(node) {
+	  IfStatement: function IfStatement(node /*: Object*/) /*: ?WhitespaceObject*/ {
 	    if (t.isBlockStatement(node.consequent)) {
 	      return {
 	        before: true,
@@ -37894,7 +37846,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * Test if Property or SpreadProperty needs whitespace.
 	 */
 	
-	exports.nodes.ObjectProperty = exports.nodes.ObjectMethod = exports.nodes.SpreadProperty = function (node, parent) {
+	exports.nodes.ObjectProperty = exports.nodes.ObjectMethod = exports.nodes.SpreadProperty = function (node /*: Object*/, parent) /*: ?WhitespaceObject*/ {
 	  if (parent.properties[0] === node) {
 	    return {
 	      before: true
@@ -37912,7 +37864,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Return VariableDeclaration declarations init properties.
 	   */
 	
-	  VariableDeclaration: function VariableDeclaration(node) {
+	  VariableDeclaration: function VariableDeclaration(node /*: Object*/) /*: Array<Object>*/ {
 	    return _lodashCollectionMap2["default"](node.declarations, "init");
 	  },
 	
@@ -37920,7 +37872,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Return VariableDeclaration elements.
 	   */
 	
-	  ArrayExpression: function ArrayExpression(node) {
+	  ArrayExpression: function ArrayExpression(node /*: Object*/) /*: Array<Object>*/ {
 	    return node.elements;
 	  },
 	
@@ -37928,7 +37880,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * Return VariableDeclaration properties.
 	   */
 	
-	  ObjectExpression: function ObjectExpression(node) {
+	  ObjectExpression: function ObjectExpression(node /*: Object*/) /*: Array<Object>*/ {
 	    return node.properties;
 	  }
 	};
@@ -40035,7 +39987,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return true;
 	  }
 	
-	  return isFirstInStatement(printStack);
+	  return isFirstInStatement(printStack, true);
 	}
 	
 	function Binary(node /*: Object*/, parent /*: Object*/) /*: boolean*/ {
@@ -40215,12 +40167,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	// Walk up the print stack to deterimine if our node can come first
 	// in statement.
 	function isFirstInStatement(printStack /*: Array<Object>*/) /*: boolean*/ {
+	  var considerArrow /*: bool*/ = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+	
 	  var i = printStack.length - 1;
 	  var node = printStack[i];
 	  i--;
 	  var parent = printStack[i];
 	  while (i > 0) {
 	    if (t.isExpressionStatement(parent, { expression: node })) {
+	      return true;
+	    }
+	
+	    if (considerArrow && t.isArrowFunctionExpression(parent, { body: node })) {
 	      return true;
 	    }
 	
@@ -40322,7 +40280,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var _node = __webpack_require__(312);
 	
-	var _node2 = _interopRequireDefault(_node);
+	var n = _interopRequireWildcard(_node);
 	
 	var SCIENTIFIC_NOTATION = /e/i;
 	var ZERO_DECIMAL_INTEGER = /\.0+$/;
@@ -40475,7 +40433,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	function AssignmentExpression(node /*: Object*/, parent /*: Object*/) {
 	  // Somewhere inside a for statement `init` node but doesn't usually
 	  // needs a paren except for `in` expressions: `for (a in b ? a : b;;)`
-	  var parens = this._inForStatementInit && node.operator === "in" && !_node2["default"].needsParens(node, parent);
+	  var parens = this._inForStatementInitCounter && node.operator === "in" && !n.needsParens(node, parent);
 	
 	  if (parens) {
 	    this.push("(");
@@ -40647,6 +40605,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 378 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* @flow */
+	
 	"use strict";
 	
 	var _getIterator = __webpack_require__(275)["default"];
@@ -40727,9 +40687,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  this.keyword("for");
 	  this.push("(");
 	
-	  this._inForStatementInit = true;
+	  this._inForStatementInitCounter++;
 	  this.print(node.init, node);
-	  this._inForStatementInit = false;
+	  this._inForStatementInitCounter--;
 	  this.push(";");
 	
 	  if (node.test) {
@@ -41140,17 +41100,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  this.push(" => ");
 	
-	  var bodyNeedsParens = t.isObjectExpression(node.body);
-	
-	  if (bodyNeedsParens) {
-	    this.push("(");
-	  }
-	
 	  this.print(node.body, node);
-	
-	  if (bodyNeedsParens) {
-	    this.push(")");
-	  }
 	}
 
 /***/ },
@@ -41879,6 +41829,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 385 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* @flow */
+	
 	"use strict";
 	
 	var _getIterator = __webpack_require__(275)["default"];
