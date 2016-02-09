@@ -16,6 +16,7 @@ cssx.nextTick(false);
 
 // var only = '7'.split(',');
 var expect = chai.expect;
+var removeChild = sinon.spy();
 var document = {
   querySelector: sinon.stub().returns({
     appendChild: sinon.spy()
@@ -23,7 +24,7 @@ var document = {
   createElement: sinon.stub().returns({
     setAttribute: sinon.spy(),
     parentNode: {
-      removeChild: sinon.spy()
+      removeChild: removeChild
     }
   })
 };
@@ -40,6 +41,7 @@ d('Given the cssx library', function () {
   beforeEach(function () {
     document.createElement.reset();
     cssx.clear();
+    removeChild.reset();
   });
 
   describe('when we use disableDOMChanges and enableDOMChanges', function () {
@@ -69,6 +71,14 @@ d('Given the cssx library', function () {
       cssx.stylesheet('B').compile();
       cssx.stylesheet('C').compile();
       expect(document.createElement).to.be.calledThrice;
+    });
+  });
+  describe('when we use destroy method', function () {
+    it('should create multiple <style> element', function () {
+      var A = cssx.stylesheet('A').compile();
+      expect(removeChild).to.not.be.called;
+      A.destroy();
+      expect(removeChild).to.be.calledOnce;
     });
   });
   describe('when we pass an id to the factory', function () {

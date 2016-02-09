@@ -133,7 +133,7 @@ Traverses the added rules and transforms them to CSS. At the end applies them to
 
 When `nestTick` is set to `true` (which is by default) calling `compile` does not update the CSS on the page immediate. It happens in the next tick. This function is helpful if we want to see the result right after the change.
 
-#### `<stylesheet>.clear()`
+#### `<stylesheet>.clear()` or `<stylesheet>.destroy()`
 
 It clears the registered styles. 
 

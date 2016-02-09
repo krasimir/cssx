@@ -86,6 +86,9 @@ module.exports = function (id) {
     }
     return _api;
   };
+  _api.destroy = function () {
+    return _api.clear();
+  };
   _api.getCSS = function () {
     this.compileImmediate();
     return _css;
