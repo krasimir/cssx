@@ -11,7 +11,7 @@ var sheet = cssx(
 );
 ```
 
-The `cssx` call (in this format) returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object which we use to manage our styles.
+The `cssx` call (in this format) returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object which we use to manage our styles. To append a new CSS rule we use the `add` method:
 
 ```js
 sheet.add('p', cssx({
