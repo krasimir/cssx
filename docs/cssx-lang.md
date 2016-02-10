@@ -1,9 +1,9 @@
 # CSSX language
 
-CSSX is not a new language. It's the usual CSS that you know and use every day. The only one difference is that you may write it inside a JavaScript context. In order to get the [transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler) working you have to wrap your CSS in a CSSX expression:
+CSSX is not a new language. It's still the CSS that you know and use every day. The only one difference is that you write it inside a JavaScript context. To make this possible we have to use a [transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler). It understand and successfully transforms expressions like the one below:
 
 ```js
-cssx(
+var sheet = cssx(
   body {
     margin: 0;
     padding: 0;
@@ -11,11 +11,67 @@ cssx(
 );
 ```
 
-`cssx` call returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object.
+The `cssx` call (in this format) returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object which we may use manage our styles.
 
-## Mix JavaScript and CSS
+```js
+sheet.add('p', cssx({
+  font-size: 1em;
+  line-height: 1.2em;
+}));
+```
 
-The biggest benefit of CSSX is the fact that you may mix JavaScript and CSS.
+## Language expressions
+
+#### `cssx(<selector> { <styles> } ...)`
+
+It returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object.
+
+Example:
+
+```js
+var sheet = cssx(
+  body {
+    margin: 0;
+    padding: 0;
+  }
+);
+```
+
+Same as:
+
+```js
+var sheet = cssx.stylesheet('id');
+sheet.add('body', {
+  margin: 0,
+  padding: 0
+});
+```
+
+#### `cssx({ styles })`
+
+It returns a vanilla JavaScript object.
+
+Example:
+
+```js
+var styles = cssx({
+  font-size: 1em;
+  line-height: 1.2em;
+});
+```
+
+Same as :
+
+```js
+var styles = {
+  'line-height': '1.2em',
+  'font-size': '1em'
+};
+```
+
+## Using JavaScript
+
+The biggest benefit of CSSX is the fact that it's written in JavaScript context. So it has an access to all the data in the current scope.
 
 ```js
 var property = 'size';

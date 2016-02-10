@@ -42004,7 +42004,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return node;
 	};
 	
-	var funcLines, stylesheetId, funcBody, funcExpr, selfInvoke;
+	var detectCSSRulesBlock = function (nodes) {
+	  return nodes.length === 1 &&
+	    nodes[0].type === 'ExpressionStatement' &&
+	    nodes[0].expression.type === 'CallExpression' &&
+	    nodes[0].expression.arguments.length > 0 &&
+	    nodes[0].expression.arguments[0].value === '';
+	};
+	
+	var funcLines, stylesheetId;
 	
 	module.exports = {
 	  enter: function (node, parent, index, context) {
@@ -42015,10 +42023,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 	  exit: function (node, parent, index, context) {
+	    var rulesRegistration, newStylesheetExpr, createSelfInvoke, funcBody, funcExpr;
 	
 	    delete context.addToCSSXSelfInvoke;
 	
-	    funcLines.push(t.variableDeclaration(
+	    if (node.body.length === 0) {
+	      delete parent[index];
+	      return;
+	    }
+	
+	    newStylesheetExpr = t.variableDeclaration(
 	      'var',
 	      [
 	        t.variableDeclarator(
@@ -42032,16 +42046,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	          )
 	        )
 	      ]
-	    ));
-	    funcLines = funcLines.concat(node.body.map(function (line) {
+	    );
+	
+	    rulesRegistration = node.body.map(function (line) {
 	      line = updateStyleSheet(line, stylesheetId);
 	      if (line.type === 'CallExpression') {
 	        line = t.expressionStatement(updateStyleSheet(line, stylesheetId));
 	      }
 	      return line;
-	    }));
-	    funcLines.push(t.returnStatement(t.identifier(stylesheetId)));
+	    });
 	
+	    // is it only css rules block
+	    if (detectCSSRulesBlock(rulesRegistration)) {
+	      funcLines.push(t.returnStatement(t.identifier(
+	        funcLines[0].declarations[0].id.name
+	      )));
+	      createSelfInvoke = function (expr) { return expr; };
+	    // creating the stylesheet
+	    } else {
+	      funcLines.push(newStylesheetExpr);
+	      funcLines = funcLines.concat(rulesRegistration);
+	      funcLines.push(t.returnStatement(t.identifier(stylesheetId)));
+	      createSelfInvoke = function (expr) { return t.expressionStatement(expr); };
+	    }
+	
+	    // wrapping up the self-invoke function
 	    funcBody = t.blockStatement(funcLines);
 	    funcExpr = t.callExpression(
 	      t.memberExpression(
@@ -42050,16 +42079,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      ),
 	      [t.thisExpression()]
 	    );
-	    selfInvoke = t.expressionStatement(funcExpr);
 	
-	    if (node.body.length === 0) {
-	      delete parent[index];
+	    if (isArray(parent)) {
+	      injectAt(parent, index, createSelfInvoke(funcExpr));
 	    } else {
-	      if (isArray(parent)) {
-	        injectAt(parent, index, selfInvoke);
-	      } else {
-	        parent[index] = selfInvoke;
-	      }
+	      parent[index] = createSelfInvoke(funcExpr);
 	    }
 	  }
 	};

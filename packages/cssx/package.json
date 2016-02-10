@@ -5,7 +5,7 @@
   "main": "lib/cssx.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/krasimir/cssx.git"
+    "url": "https://github.com/krasimir/cssx/tree/master/packages/cssx"
   },
   "keywords": [
     "css",

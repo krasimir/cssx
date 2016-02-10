@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/krasimir/cssx.git"
+    "url": "https://github.com/krasimir/cssx/tree/master/packages/gulp-cssx"
   },
   "keywords": [
     "css",
