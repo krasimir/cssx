@@ -1,8 +1,12 @@
 # CSSX - CSS in JavaScript
 
-> Generate and/or apply CSS with JavaScript. Check out the demo [here](http://krasimir.github.io/cssx/playground/try-it-out/).
+> Generate and/or apply CSS with JavaScript. Try it out [here](http://krasimir.github.io/cssx/playground/try-it-out/).
 
 ---
+
+Language:
+
+* [CSSX language](./docs/cssx-lang.md)
 
 Packages:
 
@@ -18,10 +22,6 @@ Examples:
 * [Transpiling](./playground/transpiler)
 * [Transpiling with gulp](./playground/transpiler-gulp)
 * [Transpiling with webpack](./playground/transpiler-webpack)
-
-Misc:
-
-* [CSSX language](./docs/cssx-lang.md)
 
 ---
 
