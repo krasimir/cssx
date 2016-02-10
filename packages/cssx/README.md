@@ -4,6 +4,14 @@
 
 ---
 
+## API
+
+* [Top level](#top-level-api)
+* [Stylesheet](#stylesheet-api)
+* [Rule](#rule-api)
+
+---
+
 ## How it works
 
 CSSX is a tiny library that provides a JavaScript API for defining CSS styles. We create stylesheet and register rules same as we do with the regular CSS files. The library generates valid CSS and injects it into the page as a `<style>` tag automatically. Once your code is rerun it makes the same transformation but changes the `<style>` tag only if there any changes.
