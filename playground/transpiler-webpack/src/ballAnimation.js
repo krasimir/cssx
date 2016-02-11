@@ -16,9 +16,15 @@ var animation = cssx(
 
 module.exports = {
   updateEndpoint: function (endPoint) {
-    animation.update('@keyframes ball-animation', '100%', '(w)transform', 'translateX(' + endPoint + 'px)');
+    animation.update(
+      '@keyframes ball-animation 100%', 
+      cssx({ (w)transform: translateX(`endPoint`px); })
+    );
   },
   updateColor: function (color) {
-    animation.update('.ball', 'background-color', 'rgb(' + color + ', 0, 0)');
+    animation.update(
+      '.ball',
+      cssx({ background-color: rgb(`color`, 0, 0); })
+    );
   }
 };

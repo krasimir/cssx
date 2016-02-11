@@ -125,21 +125,21 @@ return /******/ (function(modules) { // webpackBootstrap
 			/* 0 */
 			/***/function (module, exports, __webpack_require__) {
 	
-				var factory, goGlobal, stylesheets, api;
+				var factory, goGlobal, stylesheets, api, randomId;
 	
 				__webpack_require__(1);
 	
 				factory = __webpack_require__(5);
-				goGlobal = __webpack_require__(16);
+				goGlobal = __webpack_require__(17);
+				randomId = __webpack_require__(18);
 	
 				stylesheets = [];
-				api = function () {};
 	
 				function createStyleSheet(id) {
 					var s, i;
 	
 					if (typeof id === 'undefined') {
-						throw new Error('`stylesheet` method expects ID as an argument');
+						id = randomId();
 					}
 	
 					for (i = 0; i < stylesheets.length; i++) {
@@ -150,6 +150,10 @@ return /******/ (function(modules) { // webpackBootstrap
 					s = factory.apply(factory, arguments);
 					stylesheets.push(s);
 					return s;
+				};
+	
+				api = function (id) {
+					return createStyleSheet(id);
 				};
 	
 				api.domChanges = function (flag) {
@@ -183,7 +187,6 @@ return /******/ (function(modules) { // webpackBootstrap
 					return css;
 				};
 	
-				api.stylesheet = api.s = createStyleSheet;
 				module.exports = api;
 	
 				goGlobal(module.exports);
@@ -406,8 +409,9 @@ return /******/ (function(modules) { // webpackBootstrap
 				var nextTick = __webpack_require__(8);
 				var resolveSelector = __webpack_require__(12);
 				var generate = __webpack_require__(13);
-				var warning = __webpack_require__(17);
+				var warning = __webpack_require__(16);
 	
+				var graphRulePropName = '__$__cssx_rule';
 				var ids = 0;
 				var getId = function () {
 					return 'x' + ++ids;
@@ -419,6 +423,8 @@ return /******/ (function(modules) { // webpackBootstrap
 					var _rules = [];
 					var _remove = null;
 					var _css = '';
+					var _graph = {};
+					var _queries = {};
 	
 					var ruleExists = function (selector, parent) {
 						var i, rule, areParentsMatching, areThereNoParents;
@@ -433,15 +439,26 @@ return /******/ (function(modules) { // webpackBootstrap
 						}
 						return false;
 					};
-					var getRuleBySelector = function (selector, rules) {
-						var i;
+					var getOnlyTopRules = function () {
+						return _rules.filter(function (rule) {
+							return rule.parent === null;
+						});
+					};
+					var buildGraph = function () {
+						_graph = {};
+						(function loop(rules, parent, obj) {
+							if (!rules) return;
+							rules.forEach(function (rule) {
+								var selector = parent ? parent + ' ' : '';
 	
-						for (i = 0; i < rules.length; i++) {
-							if (resolveSelector(rules[i].selector) === selector) {
-								return rules[i];
-							}
-						}
-						warning('No rule matching "' + selector + '" selector.');
+								selector += resolveSelector(rule.selector);
+								obj[selector] = {};
+								obj[selector][graphRulePropName] = rule;
+								loop(rule.getChildren(), selector, obj[selector]);
+								loop(rule.getNestedChildren(), selector, obj[selector]);
+							});
+						})(getOnlyTopRules(), false, _graph);
+						return _graph;
 					};
 	
 					_api.id = function () {
@@ -451,7 +468,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						var rule,
 						    r = ruleExists(selector, parent);
 	
-						if (r !== false) {
+						if (r) {
 							rule = r.update(false, props);
 						} else {
 							rule = CSSRule(selector, props, _api);
@@ -460,6 +477,7 @@ return /******/ (function(modules) { // webpackBootstrap
 								rule.parent = parent;
 								parent.addChild(rule, isWrapper);
 							}
+							buildGraph();
 						}
 						this.compile();
 						return rule;
@@ -477,7 +495,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						return _api.compileImmediate();
 					};
 					_api.compileImmediate = function () {
-						_css = generate(_rules, module.exports.minify);
+						_css = generate(getOnlyTopRules(), module.exports.minify);
 						if (!module.exports.disableDOMChanges) {
 							_remove = applyToDOM(_css, _id);
 						}
@@ -492,26 +510,54 @@ return /******/ (function(modules) { // webpackBootstrap
 						}
 						return _api;
 					};
+					_api.destroy = function () {
+						return _api.clear();
+					};
 					_api.getCSS = function () {
 						this.compileImmediate();
 						return _css;
 					};
-					_api.update = function () {
-						var args = Array.prototype.slice.call(arguments);
-						var value = args.pop();
-						var prop = args.pop();
+					_api.update = function (selector, props) {
+						var rule = this.query(selector);
+	
+						if (!rule) {
+							warning('There is no rule matching "' + selector + '"');
+						} else {
+							rule.update(null, props);
+						}
+						return rule;
+					};
+					_api.query = function (selector) {
 						var rule;
 	
-						while (args.length > 0) {
-							rule = getRuleBySelector(args.shift(), rule ? rule.getNestedChildren() : _rules);
+						selector = resolveSelector(selector);
+	
+						if (_queries[selector]) return _queries[selector];
+						(function find(node) {
+							var sel;
+	
 							if (!rule) {
-								break;
+								for (sel in node) {
+									if (sel === selector && sel !== graphRulePropName) {
+										rule = node[selector][graphRulePropName];
+										break;
+									} else {
+										if (typeof node[sel][graphRulePropName] !== 'undefined') {
+											find(node[sel]);
+										}
+									}
+								}
 							}
-						};
+						})(_graph);
 	
 						if (rule) {
-							rule.updateProp(prop, value);
+							_queries[selector] = rule;
 						}
+	
+						return rule;
+					};
+					_api.graph = function () {
+						return _graph;
 					};
 	
 					return _api;
@@ -571,20 +617,20 @@ return /******/ (function(modules) { // webpackBootstrap
 						update: function (s, p) {
 							var propName;
 	
+							if (arguments.length === 1) {
+								p = s;
+								s = false;
+							}
+	
 							if (s) this.selector = s;
 							if (p) {
+								if (typeof p === 'function') p = p();
 								for (propName in p) {
 									this.props[propName] = p[propName];
 								}
 							}
 							stylesheet.compile();
 							return this;
-						},
-						updateProp: function (prop, value) {
-							var newProp = {};
-	
-							newProp[prop] = value;
-							return this.update(null, newProp);
 						},
 						id: function () {
 							return _id;
@@ -1065,11 +1111,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				module.exports = function (rules, minify) {
 	
-					// at the top level, use only those which has no parent
-					rules = rules.filter(function (rule) {
-						return rule.parent === null;
-					});
-	
 					// duplicate those that need prefixing
 					rules = prefix.selector(rules);
 	
@@ -1198,6 +1239,17 @@ return /******/ (function(modules) { // webpackBootstrap
 			/* 16 */
 			/***/function (module, exports) {
 	
+				module.exports = function (message) {
+					if (typeof console !== 'undefined' && console.warn) {
+						console.warn(message);
+					}
+				};
+	
+				/***/
+			},
+			/* 17 */
+			/***/function (module, exports) {
+	
 				/* WEBPACK VAR INJECTION */(function (global) {
 					module.exports = function (api) {
 						if (typeof global !== 'undefined') {
@@ -1215,13 +1267,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 17 */
+			/* 18 */
 			/***/function (module, exports) {
 	
-				module.exports = function (message) {
-					if (typeof console !== 'undefined' && console.warn) {
-						console.warn(message);
-					}
+				var ids = 0;
+	
+				module.exports = function () {
+					return '_cssx' + ++ids;
+				};
+				module.exports.resetIDs = function () {
+					ids = 0;
 				};
 	
 				/***/
@@ -1250,7 +1305,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _2['color'] = enabled ? '#000' : '#ccc';
 	    _2['border'] = "solid " + (enabled ? '2px #999' : '1px #B0B0B0');
 	
-	    var _1 = cssx.s('_1');
+	    var _1 = cssx('_1');
 	
 	    _1.add('input', _2);
 	
@@ -1266,33 +1321,41 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var animationApply = 'ball-animation 1s ease infinite alternate';
 	var animation = (function () {
-	  var _177 = {};
-	  _177['background-color'] = 'rgb(200, 0, 0)';
-	  _177['(w)animation'] = animationApply;
-	  var _175 = {};
-	  _175['(w)transform'] = 'translateX(60px)';
-	  var _174 = {};
-	  _174['(w)transform'] = 'translateX(0)';
+	  var _29 = {};
+	  _29['background-color'] = 'rgb(200, 0, 0)';
+	  _29['(w)animation'] = animationApply;
+	  var _27 = {};
+	  _27['(w)transform'] = 'translateX(60px)';
+	  var _26 = {};
+	  _26['(w)transform'] = 'translateX(0)';
 	
-	  var _173 = cssx.s('_173');
+	  var _25 = cssx('_25');
 	
-	  var _176 = _173.add('@keyframes ball-animation');
+	  var _28 = _25.add('@keyframes ball-animation');
 	
-	  _176.n('0%', _174);
+	  _28.n('0%', _26);
 	
-	  _176.n('100%', _175);
+	  _28.n('100%', _27);
 	
-	  _173.add('.ball', _177);
+	  _25.add('.ball', _29);
 	
-	  return _173;
+	  return _25;
 	}).apply(this);;
 	
 	module.exports = {
 	  updateEndpoint: function (endPoint) {
-	    animation.update('@keyframes ball-animation', '100%', '(w)transform', 'translateX(' + endPoint + 'px)');
+	    animation.update('@keyframes ball-animation 100%', function () {
+	      var _31 = {};
+	      _31['(w)transform'] = "translateX(" + endPoint + "px)";
+	      return _31;
+	    }.apply(this));
 	  },
 	  updateColor: function (color) {
-	    animation.update('.ball', 'background-color', 'rgb(' + color + ', 0, 0)');
+	    animation.update('.ball', function () {
+	      var _33 = {};
+	      _33['background-color'] = "rgb(" + color + ", 0, 0)";
+	      return _33;
+	    }.apply(this));
 	  }
 	};
 

@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cssx-transpiler": "2.0.5"
+    "cssx-transpiler": "3.0.0"
   }
 }
