@@ -1,6 +1,6 @@
 # CSSX language
 
-CSSX is not a new language. It's still the CSS that you know and use every day. The only one difference is that you write it inside a JavaScript context. To make this possible we have to use a [transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler). It understand and successfully transforms expressions like the one below:
+CSSX is not a new language. It's still the CSS that we know and use every day. The difference is that we write it inside a JavaScript context. That's possible because we now have an access to [CSSX transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler). It understand and successfully transforms expressions like this:
 
 ```js
 var sheet = cssx(
@@ -11,7 +11,7 @@ var sheet = cssx(
 );
 ```
 
-The `cssx` call (in this format) returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object which we use to manage our styles. To append a new CSS rule we use the `add` method:
+The `cssx` call (in this format) returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object which we use to manage our styles. For example, to append a new CSS rule we use the `add` method:
 
 ```js
 sheet.add('p', cssx({
@@ -40,12 +40,14 @@ var sheet = cssx(
 Same as:
 
 ```js
-var sheet = cssx.stylesheet('id');
+var sheet = cssx('id');
 sheet.add('body', {
   margin: 0,
   padding: 0
 });
 ```
+
+The `id` passed to `cssx` is optional. If you don't provide one the library will generate it for you. However, we should say that running only `cssx()` generates a new stylesheet every time. So if we plan to execute such code many times it's good to provide that ID.
 
 #### `cssx({ styles })`
 
