@@ -59,8 +59,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	__webpack_require__(1);
 	
 	factory = __webpack_require__(5);
-	goGlobal = __webpack_require__(6);
-	randomId = __webpack_require__(7);
+	goGlobal = __webpack_require__(17);
+	randomId = __webpack_require__(18);
 	
 	stylesheets = [];
 	
@@ -327,12 +327,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CSSRule = __webpack_require__(8);
-	var applyToDOM = __webpack_require__(9);
-	var nextTick = __webpack_require__(10);
-	var resolveSelector = __webpack_require__(14);
-	var generate = __webpack_require__(15);
-	var warning = __webpack_require__(18);
+	var CSSRule = __webpack_require__(6);
+	var applyToDOM = __webpack_require__(7);
+	var nextTick = __webpack_require__(8);
+	var resolveSelector = __webpack_require__(12);
+	var generate = __webpack_require__(13);
+	var warning = __webpack_require__(16);
 	
 	var graphRulePropName = '__$__cssx_rule';
 	var ids = 0;
@@ -492,35 +492,6 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 6 */
 /***/ function(module, exports) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {module.exports = function (api) {
-	  if (typeof global !== 'undefined') {
-	    global.cssx = api;
-	  }
-	  if (typeof window !== 'undefined') {
-	    window.cssx = api;
-	  }
-	};
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
-
-/***/ },
-/* 7 */
-/***/ function(module, exports) {
-
-	var ids = 0;
-	
-	module.exports = function () {
-	  return '_cssx' + (++ids);
-	};
-	module.exports.resetIDs = function () {
-	  ids = 0;
-	};
-
-
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
-
 	var ids = 0;
 	var getId = function () { return 'r' + (++ids); };
 	
@@ -600,7 +571,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */
+/* 7 */
 /***/ function(module, exports) {
 
 	var cache = {};
@@ -654,12 +625,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {var cache = {};
 	
-	__webpack_require__(13);
+	__webpack_require__(11);
 	
 	module.exports = function (work, id) {
 	  if (!cache[id]) {
@@ -671,13 +642,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	};
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate))
 
 /***/ },
-/* 11 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(12).nextTick;
+	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(10).nextTick;
 	var apply = Function.prototype.apply;
 	var slice = Array.prototype.slice;
 	var immediateIds = {};
@@ -753,10 +724,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).setImmediate, __webpack_require__(11).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate, __webpack_require__(9).clearImmediate))
 
 /***/ },
-/* 12 */
+/* 10 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -853,7 +824,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, clearImmediate, process) {(function (global, undefined) {
@@ -1032,10 +1003,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    attachTo.clearImmediate = clearImmediate;
 	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(11).clearImmediate, __webpack_require__(12)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(9).clearImmediate, __webpack_require__(10)))
 
 /***/ },
-/* 14 */
+/* 12 */
 /***/ function(module, exports) {
 
 	module.exports = function (selector) {
@@ -1044,12 +1015,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 15 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isEmpty = __webpack_require__(16);
-	var resolveSelector = __webpack_require__(14);
-	var prefix = __webpack_require__(17);
+	var isEmpty = __webpack_require__(14);
+	var resolveSelector = __webpack_require__(12);
+	var prefix = __webpack_require__(15);
 	
 	module.exports = function (rules, minify) {
 	
@@ -1095,7 +1066,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 16 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = function (obj) {
@@ -1111,10 +1082,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 17 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var resolveSelector = __webpack_require__(14);
+	var resolveSelector = __webpack_require__(12);
 	var SELECTORS = {
 	  '@keyframes': [
 	    '@-webkit-keyframes',
@@ -1180,13 +1151,42 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 18 */
+/* 16 */
 /***/ function(module, exports) {
 
 	module.exports = function (message) {
 	  if (typeof console !== 'undefined' && console.warn) {
 	    console.warn(message);
 	  }
+	};
+
+
+/***/ },
+/* 17 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {module.exports = function (api) {
+	  if (typeof global !== 'undefined') {
+	    global.cssx = api;
+	  }
+	  if (typeof window !== 'undefined') {
+	    window.cssx = api;
+	  }
+	};
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
+	var ids = 0;
+	
+	module.exports = function () {
+	  return '_cssx' + (++ids);
+	};
+	module.exports.resetIDs = function () {
+	  ids = 0;
 	};
 
 
