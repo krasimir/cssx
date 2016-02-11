@@ -1,5 +1,5 @@
 (function () {
-  var _1 = cssx.s('_1');
+  var _1 = cssx('_1');
 
   _1.add('header');
 

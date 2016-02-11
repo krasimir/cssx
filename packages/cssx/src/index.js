@@ -1,18 +1,18 @@
-var factory, goGlobal, stylesheets, api;
+var factory, goGlobal, stylesheets, api, randomId;
 
 require('./polyfills');
 
 factory = require('./CSSStylesheet');
 goGlobal = require('./helpers/goGlobal');
+randomId = require('./helpers/randomId');
 
 stylesheets = [];
-api = function () {};
 
 function createStyleSheet(id) {
   var s, i;
 
   if (typeof id === 'undefined') {
-    throw new Error('`stylesheet` method expects ID as an argument');
+    id = randomId();
   }
 
   for (i = 0; i < stylesheets.length; i++) {
@@ -24,6 +24,8 @@ function createStyleSheet(id) {
   stylesheets.push(s);
   return s;
 };
+
+api = function (id) { return createStyleSheet(id); };
 
 api.domChanges = function (flag) {
   factory.disableDOMChanges = !flag;
@@ -55,7 +57,6 @@ api.getCSS = function () {
   return css;
 };
 
-api.stylesheet = api.s = createStyleSheet;
 module.exports = api;
 
 goGlobal(module.exports);

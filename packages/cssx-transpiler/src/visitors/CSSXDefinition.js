@@ -66,10 +66,7 @@ module.exports = {
         t.variableDeclarator(
           t.identifier(stylesheetId),
           t.callExpression(
-            t.MemberExpression(
-              t.identifier(settings.CSSXCalleeObj),
-              t.identifier(settings.CSSXNewStylesheet)
-            ),
+            t.identifier(settings.CSSXCalleeObj),
             [t.stringLiteral(stylesheetId)]
           )
         )

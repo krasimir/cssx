@@ -144,8 +144,10 @@ var init = function () {
       css = generatedCSS.join('');
     } catch(err) {
       renderError(err.message);
+      return false;
     }
     printIfValid(css, 'The generated JavaScript do not produce any CSS.');
+    return true;
   };
   var print = printCompiledCSS;
 
@@ -158,9 +160,10 @@ var init = function () {
       CSSXTranspiler.reset();
       ast = CSSXTranspiler.ast(value);
       transpiled = CSSXTranspiler(value, transpilerOpts);
-      print();
-      renderOutError();
-      saveCode(value);
+      if (print()) {
+        renderOutError();
+        saveCode(value);
+      }
     } catch(err) {
       // console.log(err);
       renderError(err.message);

@@ -4,11 +4,6 @@ var prefix = require('../helpers/prefix');
 
 module.exports = function (rules, minify) {
 
-  // at the top level, use only those which has no parent
-  rules = rules.filter(function (rule) {
-    return rule.parent === null;
-  });
-
   // duplicate those that need prefixing
   rules = prefix.selector(rules);
 

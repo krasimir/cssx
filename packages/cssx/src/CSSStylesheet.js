@@ -5,6 +5,7 @@ var resolveSelector = require('./helpers/resolveSelector');
 var generate = require('./core/generate');
 var warning = require('./helpers/warning');
 
+var graphRulePropName = '__$__cssx_rule';
 var ids = 0;
 var getId = function () { return 'x' + (++ids); };
 
@@ -14,6 +15,8 @@ module.exports = function (id) {
   var _rules = [];
   var _remove = null;
   var _css = '';
+  var _graph = {};
+  var _queries = {};
 
   var ruleExists = function (selector, parent) {
     var i, rule, areParentsMatching, areThereNoParents;
@@ -28,15 +31,26 @@ module.exports = function (id) {
     }
     return false;
   };
-  var getRuleBySelector = function (selector, rules) {
-    var i;
+  var getOnlyTopRules = function () {
+    return _rules.filter(function (rule) {
+      return rule.parent === null;
+    });
+  };
+  var buildGraph = function () {
+    _graph = {};
+    (function loop(rules, parent, obj) {
+      if (!rules) return;
+      rules.forEach(function (rule) {
+        var selector = parent ? parent + ' ' : '';
 
-    for (i = 0; i < rules.length; i++) {
-      if (resolveSelector(rules[i].selector) === selector) {
-        return rules[i];
-      }
-    }
-    warning('No rule matching "' + selector + '" selector.');
+        selector += resolveSelector(rule.selector);
+        obj[selector] = {};
+        obj[selector][graphRulePropName] = rule;
+        loop(rule.getChildren(), selector, obj[selector]);
+        loop(rule.getNestedChildren(), selector, obj[selector]);
+      });
+    })(getOnlyTopRules(), false, _graph);
+    return _graph;
   };
 
   _api.id = function () {
@@ -45,7 +59,7 @@ module.exports = function (id) {
   _api.add = function (selector, props, parent, isWrapper) {
     var rule, r = ruleExists(selector, parent);
 
-    if (r !== false) {
+    if (r) {
       rule = r.update(false, props);
     } else {
       rule = CSSRule(selector, props, _api);
@@ -54,6 +68,7 @@ module.exports = function (id) {
         rule.parent = parent;
         parent.addChild(rule, isWrapper);
       }
+      buildGraph();
     }
     this.compile();
     return rule;
@@ -71,7 +86,7 @@ module.exports = function (id) {
     return _api.compileImmediate();
   };
   _api.compileImmediate = function () {
-    _css = generate(_rules, module.exports.minify);
+    _css = generate(getOnlyTopRules(), module.exports.minify);
     if (!module.exports.disableDOMChanges) {
       _remove = applyToDOM(_css, _id);
     }
@@ -93,22 +108,47 @@ module.exports = function (id) {
     this.compileImmediate();
     return _css;
   };
-  _api.update = function () {
-    var args = Array.prototype.slice.call(arguments);
-    var value = args.pop();
-    var prop = args.pop();
+  _api.update = function (selector, props) {
+    var rule = this.query(selector);
+
+    if (!rule) {
+      warning('There is no rule matching "' + selector + '"');
+    } else {
+      rule.update(null, props);
+    }
+    return rule;
+  };
+  _api.query = function (selector) {
     var rule;
 
-    while (args.length > 0) {
-      rule = getRuleBySelector(args.shift(), rule ? rule.getNestedChildren() : _rules);
+    selector = resolveSelector(selector);
+
+    if (_queries[selector]) return _queries[selector];
+    (function find(node) {
+      var sel;
+
       if (!rule) {
-        break;
+        for (sel in node) {
+          if (sel === selector && sel !== graphRulePropName) {
+            rule = node[selector][graphRulePropName];
+            break;
+          } else {
+            if (typeof node[sel][graphRulePropName] !== 'undefined') {
+              find(node[sel]);
+            }
+          }
+        }
       }
-    };
+    })(_graph);
 
     if (rule) {
-      rule.updateProp(prop, value);
+      _queries[selector] = rule;
     }
+
+    return rule;
+  };
+  _api.graph = function () {
+    return _graph;
   };
 
   return _api;

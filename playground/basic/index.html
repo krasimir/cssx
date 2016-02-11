@@ -21,7 +21,7 @@
     var randomColor = '#000';
 
     var updateStyles = function () {
-      var stylesheet = cssx.stylesheet('my-styles');
+      var stylesheet = cssx('my-styles');
       var body = stylesheet.add('body');
       var h1 = body.descendant('h1', { 'color': h1Color });
 

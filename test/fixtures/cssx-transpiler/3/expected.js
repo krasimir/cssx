@@ -5,7 +5,7 @@
   _2['font-size'] = '20px';
   _2['margin'] = '10px';
 
-  var _1 = cssx.s('_1');
+  var _1 = cssx('_1');
 
   _1.add('body', _2);
 

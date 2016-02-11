@@ -54,21 +54,21 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var factory, goGlobal, stylesheets, api;
+	var factory, goGlobal, stylesheets, api, randomId;
 	
 	__webpack_require__(1);
 	
 	factory = __webpack_require__(5);
-	goGlobal = __webpack_require__(17);
+	goGlobal = __webpack_require__(6);
+	randomId = __webpack_require__(7);
 	
 	stylesheets = [];
-	api = function () {};
 	
 	function createStyleSheet(id) {
 	  var s, i;
 	
 	  if (typeof id === 'undefined') {
-	    throw new Error('`stylesheet` method expects ID as an argument');
+	    id = randomId();
 	  }
 	
 	  for (i = 0; i < stylesheets.length; i++) {
@@ -80,6 +80,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  stylesheets.push(s);
 	  return s;
 	};
+	
+	api = function (id) { return createStyleSheet(id); };
 	
 	api.domChanges = function (flag) {
 	  factory.disableDOMChanges = !flag;
@@ -111,7 +113,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return css;
 	};
 	
-	api.stylesheet = api.s = createStyleSheet;
 	module.exports = api;
 	
 	goGlobal(module.exports);
@@ -326,13 +327,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CSSRule = __webpack_require__(6);
-	var applyToDOM = __webpack_require__(7);
-	var nextTick = __webpack_require__(8);
-	var resolveSelector = __webpack_require__(12);
-	var generate = __webpack_require__(13);
-	var warning = __webpack_require__(16);
+	var CSSRule = __webpack_require__(8);
+	var applyToDOM = __webpack_require__(9);
+	var nextTick = __webpack_require__(10);
+	var resolveSelector = __webpack_require__(14);
+	var generate = __webpack_require__(15);
+	var warning = __webpack_require__(18);
 	
+	var graphRulePropName = '__$__cssx_rule';
 	var ids = 0;
 	var getId = function () { return 'x' + (++ids); };
 	
@@ -342,6 +344,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _rules = [];
 	  var _remove = null;
 	  var _css = '';
+	  var _graph = {};
+	  var _queries = {};
 	
 	  var ruleExists = function (selector, parent) {
 	    var i, rule, areParentsMatching, areThereNoParents;
@@ -356,15 +360,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return false;
 	  };
-	  var getRuleBySelector = function (selector, rules) {
-	    var i;
+	  var getOnlyTopRules = function () {
+	    return _rules.filter(function (rule) {
+	      return rule.parent === null;
+	    });
+	  };
+	  var buildGraph = function () {
+	    _graph = {};
+	    (function loop(rules, parent, obj) {
+	      if (!rules) return;
+	      rules.forEach(function (rule) {
+	        var selector = parent ? parent + ' ' : '';
 	
-	    for (i = 0; i < rules.length; i++) {
-	      if (resolveSelector(rules[i].selector) === selector) {
-	        return rules[i];
-	      }
-	    }
-	    warning('No rule matching "' + selector + '" selector.');
+	        selector += resolveSelector(rule.selector);
+	        obj[selector] = {};
+	        obj[selector][graphRulePropName] = rule;
+	        loop(rule.getChildren(), selector, obj[selector]);
+	        loop(rule.getNestedChildren(), selector, obj[selector]);
+	      });
+	    })(getOnlyTopRules(), false, _graph);
+	    return _graph;
 	  };
 	
 	  _api.id = function () {
@@ -373,7 +388,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _api.add = function (selector, props, parent, isWrapper) {
 	    var rule, r = ruleExists(selector, parent);
 	
-	    if (r !== false) {
+	    if (r) {
 	      rule = r.update(false, props);
 	    } else {
 	      rule = CSSRule(selector, props, _api);
@@ -382,6 +397,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        rule.parent = parent;
 	        parent.addChild(rule, isWrapper);
 	      }
+	      buildGraph();
 	    }
 	    this.compile();
 	    return rule;
@@ -399,7 +415,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _api.compileImmediate();
 	  };
 	  _api.compileImmediate = function () {
-	    _css = generate(_rules, module.exports.minify);
+	    _css = generate(getOnlyTopRules(), module.exports.minify);
 	    if (!module.exports.disableDOMChanges) {
 	      _remove = applyToDOM(_css, _id);
 	    }
@@ -421,22 +437,47 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.compileImmediate();
 	    return _css;
 	  };
-	  _api.update = function () {
-	    var args = Array.prototype.slice.call(arguments);
-	    var value = args.pop();
-	    var prop = args.pop();
+	  _api.update = function (selector, props) {
+	    var rule = this.query(selector);
+	
+	    if (!rule) {
+	      warning('There is no rule matching "' + selector + '"');
+	    } else {
+	      rule.update(null, props);
+	    }
+	    return rule;
+	  };
+	  _api.query = function (selector) {
 	    var rule;
 	
-	    while (args.length > 0) {
-	      rule = getRuleBySelector(args.shift(), rule ? rule.getNestedChildren() : _rules);
+	    selector = resolveSelector(selector);
+	
+	    if (_queries[selector]) return _queries[selector];
+	    (function find(node) {
+	      var sel;
+	
 	      if (!rule) {
-	        break;
+	        for (sel in node) {
+	          if (sel === selector && sel !== graphRulePropName) {
+	            rule = node[selector][graphRulePropName];
+	            break;
+	          } else {
+	            if (typeof node[sel][graphRulePropName] !== 'undefined') {
+	              find(node[sel]);
+	            }
+	          }
+	        }
 	      }
-	    };
+	    })(_graph);
 	
 	    if (rule) {
-	      rule.updateProp(prop, value);
+	      _queries[selector] = rule;
 	    }
+	
+	    return rule;
+	  };
+	  _api.graph = function () {
+	    return _graph;
 	  };
 	
 	  return _api;
@@ -449,6 +490,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 6 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(global) {module.exports = function (api) {
+	  if (typeof global !== 'undefined') {
+	    global.cssx = api;
+	  }
+	  if (typeof window !== 'undefined') {
+	    window.cssx = api;
+	  }
+	};
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	var ids = 0;
+	
+	module.exports = function () {
+	  return '_cssx' + (++ids);
+	};
+	module.exports.resetIDs = function () {
+	  ids = 0;
+	};
+
+
+/***/ },
+/* 8 */
 /***/ function(module, exports) {
 
 	var ids = 0;
@@ -494,20 +564,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    update: function (s, p) {
 	      var propName;
 	
+	      if (arguments.length === 1) {
+	        p = s;
+	        s = false;
+	      }
+	
 	      if (s) this.selector = s;
 	      if (p) {
+	        if (typeof p === 'function') p = p();
 	        for (propName in p) {
 	          this.props[propName] = p[propName];
 	        }
 	      }
 	      stylesheet.compile();
 	      return this;
-	    },
-	    updateProp: function (prop, value) {
-	      var newProp = {};
-	
-	      newProp[prop] = value;
-	      return this.update(null, newProp);
 	    },
 	    id: function () {
 	      return _id;
@@ -530,7 +600,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports) {
 
 	var cache = {};
@@ -584,12 +654,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 8 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {var cache = {};
 	
-	__webpack_require__(11);
+	__webpack_require__(13);
 	
 	module.exports = function (work, id) {
 	  if (!cache[id]) {
@@ -601,13 +671,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	};
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).setImmediate))
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(10).nextTick;
+	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(12).nextTick;
 	var apply = Function.prototype.apply;
 	var slice = Array.prototype.slice;
 	var immediateIds = {};
@@ -683,10 +753,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate, __webpack_require__(9).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11).setImmediate, __webpack_require__(11).clearImmediate))
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -783,7 +853,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, clearImmediate, process) {(function (global, undefined) {
@@ -962,10 +1032,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    attachTo.clearImmediate = clearImmediate;
 	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(9).clearImmediate, __webpack_require__(10)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(11).clearImmediate, __webpack_require__(12)))
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = function (selector) {
@@ -974,19 +1044,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isEmpty = __webpack_require__(14);
-	var resolveSelector = __webpack_require__(12);
-	var prefix = __webpack_require__(15);
+	var isEmpty = __webpack_require__(16);
+	var resolveSelector = __webpack_require__(14);
+	var prefix = __webpack_require__(17);
 	
 	module.exports = function (rules, minify) {
-	
-	  // at the top level, use only those which has no parent
-	  rules = rules.filter(function (rule) {
-	    return rule.parent === null;
-	  });
 	
 	  // duplicate those that need prefixing
 	  rules = prefix.selector(rules);
@@ -1030,7 +1095,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports) {
 
 	module.exports = function (obj) {
@@ -1046,10 +1111,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 15 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var resolveSelector = __webpack_require__(12);
+	var resolveSelector = __webpack_require__(14);
 	var SELECTORS = {
 	  '@keyframes': [
 	    '@-webkit-keyframes',
@@ -1115,7 +1180,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 16 */
+/* 18 */
 /***/ function(module, exports) {
 
 	module.exports = function (message) {
@@ -1124,21 +1189,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	};
 
-
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(global) {module.exports = function (api) {
-	  if (typeof global !== 'undefined') {
-	    global.cssx = api;
-	  }
-	  if (typeof window !== 'undefined') {
-	    window.cssx = api;
-	  }
-	};
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ }
 /******/ ])

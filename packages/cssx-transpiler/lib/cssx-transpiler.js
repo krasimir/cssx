@@ -42038,10 +42038,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        t.variableDeclarator(
 	          t.identifier(stylesheetId),
 	          t.callExpression(
-	            t.MemberExpression(
-	              t.identifier(settings.CSSXCalleeObj),
-	              t.identifier(settings.CSSXNewStylesheet)
-	            ),
+	            t.identifier(settings.CSSXCalleeObj),
 	            [t.stringLiteral(stylesheetId)]
 	          )
 	        )
@@ -42105,8 +42102,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = {
 	  CSSXCalleeObj: 'cssx',
 	  CSSXCalleeProp: 'add',
-	  CSSXClientNestedMethodName: 'n',
-	  CSSXNewStylesheet: 's'
+	  CSSXClientNestedMethodName: 'n'
 	};
 
 

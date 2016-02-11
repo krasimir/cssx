@@ -16,7 +16,7 @@
   var _2 = {};
   _2['transform'] = 'translateX(0)';
 
-  var _1 = cssx.s('_1');
+  var _1 = cssx('_1');
 
   var _10 = _1.add('@keyframes shake');
 

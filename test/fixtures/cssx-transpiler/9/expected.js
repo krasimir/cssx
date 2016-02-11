@@ -30,7 +30,7 @@ var image = 'bg.jpg';
   _2['display'] = 'table';
   _2['content'] = '" "';
 
-  var _1 = cssx.s('_1');
+  var _1 = cssx('_1');
 
   _1.add("section::" + pseudoClass, _2);
 
