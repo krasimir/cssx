@@ -130,7 +130,7 @@ Returns a **rule** object that represents a single CSS rule.
 * `selector` - string
 * `new styles` - if it's a function should return an object containing properties-values pair. If it's an object should be simply properties-values pairs. The new styles are merged with the existing ones.
 
-(The function internally calls the `[update](#ruleupdate)` method of the [CSSX rule object](#rule-api))
+(The function internally calls the [`update`](#ruleupdate) method of the [CSSX rule object](#rule-api))
 
 Let's say that we have the following stylesheet:
 
