@@ -104,7 +104,7 @@ var value = 18;
 }).apply(this);
 ```
 
-And results in a valid CSS:
+And it results in a valid CSS:
 
 ```css
 body {
