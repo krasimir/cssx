@@ -25,38 +25,7 @@ Examples:
 
 ---
 
-```js
-var size = 1;
-var sheet = cssx(
-  body {
-    font-size: `size`em;
-  }
-);
-
-var h1 = sheet.add(
-  'h1',
-  cssx({
-    font-size: `size * 2`em;
-  })
-);
-h1.update(
-  cssx({ margin: 2em; })
-);
-
-/* results in the following:
-
-<style id="_cssx0" type="text/css">
-body {
-  font-size: 1em;
-}
-h1 {
-  font-size: 2em;
-  margin: 2em;
-}
-</style>
-
-*/
-```
+![demo CSSX](./docs/img/demo.jpg)
 
 ## Testing
 
