@@ -26,32 +26,32 @@ Examples:
 ---
 
 ```js
-var updateStyles = function(size) {
-  cssx(
-    body {
-      font-size: `size`px;
-    }
-    body h1 {
-      font-size: 2em;
-    }
-    body small {
-      font-size: 0.8em;
-    }
-  );
-}
-updateStyles(18);
+var size = 1;
+var sheet = cssx(
+  body {
+    font-size: `size`em;
+  }
+);
+
+var h1 = sheet.add(
+  'h1',
+  cssx({
+    font-size: `size * 2`em;
+  })
+);
+h1.update(
+  cssx({ margin: 2em; })
+);
 
 /* results in the following:
 
-<style id="x1" type="text/css">
+<style id="_cssx0" type="text/css">
 body {
-  font-size: 18px;
+  font-size: 1em;
 }
-body h1 {
+h1 {
   font-size: 2em;
-}
-body small {
-  font-size: 0.8em;
+  margin: 2em;
 }
 </style>
 
