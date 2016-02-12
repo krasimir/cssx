@@ -12,7 +12,7 @@ Language:
 
 Packages:
 
-* [CSSX client-side library](./packages/cssx) ([download](./packages/cssx/lib) or `npm i cssx`))
+* [CSSX client-side library](./packages/cssx) ([download](./packages/cssx/lib) or `npm i cssx`)
 * [CSSX-transpiler](./packages/cssx-transpiler) ([download](./packages/cssx-transpiler/lib) or `npm i cssx-transpiler`)
 * [gulp plugin](./packages/gulp-cssx) (`npm i gulp-cssx -D`)
 * [webpack loader](./packages/cssx-loader) (`npm i cssx-loader -D`)
