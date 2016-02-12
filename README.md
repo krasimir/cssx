@@ -10,8 +10,8 @@ Language:
 
 Packages:
 
-* [cssx client-side library](./packages/cssx) ([download](./packages/cssx/lib))
-* [cssx-transpiler](./packages/cssx-transpiler) ([download](./packages/cssx-transpiler/lib) or `npm i cssx-transpiler`)
+* [CSSX client-side library](./packages/cssx) ([download](./packages/cssx/lib))
+* [CSSX-transpiler](./packages/cssx-transpiler) ([download](./packages/cssx-transpiler/lib) or `npm i cssx-transpiler`)
 * [gulp plugin](./packages/gulp-cssx) (`npm i gulp-cssx -D`)
 * [webpack loader](./packages/cssx-loader) (`npm i cssx-loader -D`)
 
@@ -22,6 +22,13 @@ Examples:
 * [Transpiling](./playground/transpiler)
 * [Transpiling with gulp](./playground/transpiler-gulp)
 * [Transpiling with webpack](./playground/transpiler-webpack)
+
+---
+
+## How to use CSSX
+
+* CSSX could be considered a patter where we dynamically create CSS stylesheets and control their content with JavaScript. The bare minimum is including [CSSX client-side library](./packages/cssx) on the page. Doing that you'll have an access to the [top level API](https://github.com/krasimir/cssx/tree/master/packages/cssx#top-level-api). The same library is published to `npm` too.
+* If you want to use the [CSS-ish syntax](https://github.com/krasimir/cssx/blob/master/docs/cssx-lang.md) in JavaScript then you'll need the [transpiler](./packages/cssx-transpiler).
 
 ---
 

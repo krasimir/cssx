@@ -4,6 +4,15 @@
 
 ---
 
+## Download
+
+* [cssx.js](http://krasimir.github.io/cssx/packages/cssx/lib/cssx.js) - CSSX library (uncompressed)
+* [cssx.min.js](http://krasimir.github.io/cssx/packages/cssx/lib/cssx.min.js) - CSSX library (compressed)
+
+(For source maps check [here](./lib))
+
+---
+
 ## API
 
 * [Top level](#top-level-api)
