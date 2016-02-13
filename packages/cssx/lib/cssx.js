@@ -543,6 +543,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (s) this.selector = s;
 	      if (p) {
 	        if (typeof p === 'function') p = p();
+	        if (!this.props) this.props = {};
 	        for (propName in p) {
 	          this.props[propName] = p[propName];
 	        }

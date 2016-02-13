@@ -312,4 +312,14 @@ d('Given the cssx library', function () {
     });
   });
 
+  describe('when we update a rule that has no styles so far', function () {
+    it('should set the rules and compile successfully', function () {
+      var sheet = cssx();
+      var rule = sheet.add('body');
+      rule.update({ a: 1 });
+      rule.update({ b: 2 });
+      expect(sheet.getCSS()).to.be.equal('body {\n  a: 1;\n  b: 2;\n}\n');
+    });
+  });
+
 });
