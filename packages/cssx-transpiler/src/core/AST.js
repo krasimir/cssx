@@ -18,8 +18,10 @@ var BABYLON_PLUGINS = [
   'functionSent'
 ];
 
-module.exports = function (code) {
+module.exports = function (code, opts) {
+  if (!opts) opts = {};
   return babylon.parse(code, {
-    plugins: BABYLON_PLUGINS
+    plugins: BABYLON_PLUGINS,
+    sourceType: opts.sourceType || 'module'
   });
 };
