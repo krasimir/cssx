@@ -42195,9 +42195,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      inExpr = true;
 	    // ends
 	    } else if ((index = ends.indexOf(i)) >= 0) {
-	      code += i === length - 1 ? '' : ' + "';
+	      code += i === length ? '' : ' + "';
 	      inExpr = false;
 	    }
+	
 	    if (!inExpr) {
 	      ch = value.charAt(i);
 	      ch = ch === '"' ? '\\"' : ch;
