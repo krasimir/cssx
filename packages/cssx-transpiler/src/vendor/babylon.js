@@ -96,6 +96,7 @@ function getOptions(opts /*:: ?: Object*/) /*: Object*/ {
 // the parser process. These options are recognized:
 },{}],3:[function(require,module,exports){
 /* @flow */
+/* eslint max-len: 0 */
 
 /**
  * Based on the comment attachment algorithm used in espree and estraverse.
@@ -247,6 +248,9 @@ pp.processComment = function (node) {
   stack.push(node);
 };
 },{"./index":5,"babel-runtime/helpers/interop-require-default":35}],4:[function(require,module,exports){
+/* eslint indent: 0 */
+/* eslint max-len: 0 */
+
 // A recursive descent parser operates by defining functions for all
 // syntactic elements, and recursively calling those, each function
 // advancing the input stream and returning an AST node. Precedence
@@ -1433,6 +1437,8 @@ pp.raise = function (pos, message) {
   throw err;
 };
 },{"../util/location":28,"./index":5,"babel-runtime/helpers/interop-require-default":35}],7:[function(require,module,exports){
+/* eslint indent: 0 */
+
 "use strict";
 
 var _getIterator = require("babel-runtime/core-js/get-iterator")["default"];
@@ -1797,6 +1803,9 @@ pp.finishNodeAt = function (node, type, pos, loc) {
   return finishNodeAt.call(this, node, type, pos, loc);
 };
 },{"../util/location":28,"./index":5,"babel-runtime/helpers/class-call-check":33,"babel-runtime/helpers/interop-require-default":35}],9:[function(require,module,exports){
+/* eslint indent: 0 */
+/* eslint max-len: 0 */
+
 "use strict";
 
 var _Object$create = require("babel-runtime/core-js/object/create")["default"];
@@ -2432,7 +2441,7 @@ pp.parseClass = function (node, isStatement, optionalId) {
 };
 
 pp.isClassProperty = function () {
-  return this.match(_tokenizerTypes.types.eq) || this.match(_tokenizerTypes.types.semi) || this.canInsertSemicolon();
+  return this.match(_tokenizerTypes.types.eq) || this.isLineTerminator();
 };
 
 pp.parseClassBody = function (node) {
@@ -2578,9 +2587,7 @@ pp.parseClassProperty = function (node) {
   } else {
     node.value = null;
   }
-  if (!this.eat(_tokenizerTypes.types.semi)) {
-    this.raise(node.value && node.value.end || node.key.end, "A semicolon is required after a class property");
-  }
+  this.semicolon();
   return this.finishNode(node, "ClassProperty");
 };
 
@@ -3087,8 +3094,16 @@ pp.cssxLookahead = function () {
 
   this.isLookahead = true;
   while (numOfTokens > 0) {
-    this.next();
-    stack.push(this.state.clone(true));
+    try {
+      this.next();
+      stack.push(this.state.clone(true));
+    } catch (e) {
+      // The next token cannot be parsed.
+      // We still put something in the stack though so we
+      // don't break the logic that uses the result of
+      // this function
+      stack.push({ type: null });
+    }
     --numOfTokens;
   }
   this.isLookahead = false;
@@ -3377,13 +3392,21 @@ pp.cssxEntryPoint = function (code) {
   var name = undefined,
       parenL = undefined,
       future = undefined,
-      cState = undefined;
+      cState = undefined,
+      firstInCSSX = undefined;
 
   if (nextToken.type === _tokenizerTypes.types.name && nextToken.value === 'cssx' && this.cssxMatchNextToken(_tokenizerTypes.types.name, _tokenizerTypes.types.parenL)) {
     cState = this.state.clone();
-    future = this.cssxLookahead(2);
-    name = future.first;
-    parenL = future.last;
+    future = this.cssxLookahead(3);
+    parenL = future.stack[1];
+    firstInCSSX = future.stack[2];
+
+    // Making sure that we don't parse
+    // cssx('something') or cssx("something")
+    if (firstInCSSX.type === _tokenizerTypes.types.string) {
+      return false;
+    }
+
     this.cssxIn();
     this.state.pos = parenL.end;
     this.finishToken(_tokenizerTypes.types.cssxStart);
@@ -3929,6 +3952,9 @@ function isNumber(code) {
 
 ;
 },{}],20:[function(require,module,exports){
+/* eslint indent: 0 */
+/* eslint max-len: 0 */
+
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -4992,6 +5018,8 @@ exports["default"] = function (instance) {
 
 module.exports = exports["default"];
 },{"../parser":5,"../tokenizer/types":26,"babel-runtime/helpers/interop-require-default":35}],21:[function(require,module,exports){
+/* eslint indent: 0 */
+
 "use strict";
 
 var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
@@ -5825,6 +5853,8 @@ _types.types.backQuote.updateContext = function () {
 };
 },{"../util/whitespace":29,"./types":26,"babel-runtime/helpers/class-call-check":33}],24:[function(require,module,exports){
 /* @noflow */
+/* eslint max-len: 0 */
+/* eslint indent: 0 */
 
 "use strict";
 
@@ -6226,7 +6256,8 @@ var Tokenizer = (function () {
     }
 
     if (next === 61) {
-      size = this.input.charCodeAt(this.state.pos + 2) === 61 ? 3 : 2;
+      // <= | >=
+      size = 2;
     }
 
     return this.finishOp(_types.types.relational, size);
@@ -6997,6 +7028,8 @@ kw("typeof", { beforeExpr: true, prefix: true, startsExpr: true });
 kw("void", { beforeExpr: true, prefix: true, startsExpr: true });
 kw("delete", { beforeExpr: true, prefix: true, startsExpr: true });
 },{"babel-runtime/helpers/class-call-check":33}],27:[function(require,module,exports){
+/* eslint max-len: 0 */
+
 // This is a trick taken from Esprima. It turns out that, on
 // non-Chrome browsers, to check whether a string is in a set, a
 // predicate containing a big ugly `switch` statement is faster than

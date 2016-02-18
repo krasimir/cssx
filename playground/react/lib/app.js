@@ -62,8 +62,10 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	var ITEMS = ['React', 'Angular', 'Vue', 'Ember', 'Knockout', 'Vanilla'];
+	
 	window.onload = function () {
-	  _reactDom2.default.render(_react2.default.createElement(_Component2.default, null), document.querySelector('#container'));
+	  _reactDom2.default.render(_react2.default.createElement(_Component2.default, { items: ITEMS }), document.querySelector('#container'));
 	};
 
 /***/ },
