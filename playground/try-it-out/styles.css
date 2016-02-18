@@ -45,7 +45,7 @@ body {
   font-weight: bold;
 }
 .output[data-status="error"] {
-  border-top: 26px solid #F00;
+  border-top: 40px solid #F00;
 }
 .CodeMirror {
   height: auto;

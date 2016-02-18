@@ -134,16 +134,31 @@ var init = function () {
   var printCompiledCSS = function () {
     var func, generatedCSS, css;
 
+    cssx.clear();
     try {
-      cssx.clear();
       func = new Function(transpiled);
+      renderOutError();
+    } catch (err) {
+      renderError('Error while using the transpiled code:<br />' + err.message);
+      return false;
+    }
+
+    try {
       func();
+      renderOutError();
+    } catch(err) {
+      renderError('Error while running the transpiled code:<br />' + err.message);
+      return false;
+    }
+
+    try {
       generatedCSS = cssx.getStylesheets().map(function (stylesheet) {
         return stylesheet.compileImmediate().getCSS();
       });
       css = generatedCSS.join('');
+      renderOutError();
     } catch(err) {
-      renderError(err.message);
+      renderError('Error while fetching the generated CSS:<br />' + err.message);
       return false;
     }
     printIfValid(css, 'The generated JavaScript do not produce any CSS.');
@@ -156,17 +171,25 @@ var init = function () {
 
   // render in the right part of the screen
   function updateOutput(value) {
+    CSSXTranspiler.reset();
     try {
-      CSSXTranspiler.reset();
       ast = CSSXTranspiler.ast(value);
+    } catch(err) {
+      renderOutError();
+      renderError('Error while generating the AST:<br />' + err.message);
+      return false;
+    }
+
+    try {
       transpiled = CSSXTranspiler(value, transpilerOpts);
+      renderOutError();
       if (print()) {
-        renderOutError();
         saveCode(value);
       }
     } catch(err) {
       // console.log(err);
-      renderError(err.message);
+      renderError('Error while transpiling:<br />' + err.message);
+      return false;
     }
   };
 

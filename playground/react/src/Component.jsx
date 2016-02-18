@@ -24,11 +24,14 @@ class Component extends React.Component {
     })
   }
   _handleClick(index) {
-    cssx('selected').clear();
-      // .clear()
-      // .add('li:nth-child(' + (index + 1) + ')', cssx({
-      //   padding-left: 2em;
-      // }));
+    cssx('selected')
+      .clear()
+      .add('li:nth-child(' + (index + 1) + ')', cssx({
+        padding-left: 2em;
+      }))
+      .descendant('.btn', cssx({
+        background-color: `this.state.color`;
+      }));
   }
   _setBasicStyles(color) {
     cssx(

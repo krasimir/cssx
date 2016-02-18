@@ -54,7 +54,7 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _Component = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./Component\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _Component = __webpack_require__(159);
 	
 	var _Component2 = _interopRequireDefault(_Component);
 	
@@ -19670,7 +19670,136 @@
 
 
 /***/ },
-/* 159 */,
+/* 159 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(158);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Component = function (_React$Component) {
+	  _inherits(Component, _React$Component);
+	
+	  function Component(props) {
+	    _classCallCheck(this, Component);
+	
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Component).call(this, props));
+	
+	    _this.state = { color: '#2276BF' };
+	    return _this;
+	  }
+	
+	  _createClass(Component, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      this._setBasicStyles(this.state.color);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'ul',
+	        null,
+	        this._getItems()
+	      );
+	    }
+	  }, {
+	    key: '_getItems',
+	    value: function _getItems() {
+	      var _this2 = this;
+	
+	      return this.props.items.map(function (item, i) {
+	        return _react2.default.createElement(
+	          'li',
+	          { key: i },
+	          _react2.default.createElement(
+	            'a',
+	            { className: 'btn', onClick: _this2._handleClick.bind(_this2, i) },
+	            item
+	          )
+	        );
+	      });
+	    }
+	  }, {
+	    key: '_handleClick',
+	    value: function _handleClick(index) {
+	      cssx('selected').clear().add('li:nth-child(' + (index + 1) + ')', function () {
+	        var _18 = {};
+	        _18['padding-left'] = '2em';
+	        return _18;
+	      }.apply(this)).descendant('.btn', function () {
+	        var _20 = {};
+	        _20['background-color'] = this.state.color;
+	        return _20;
+	      }.apply(this));
+	    }
+	  }, {
+	    key: '_setBasicStyles',
+	    value: function _setBasicStyles(color) {
+	      (function () {
+	        var _24 = {};
+	        _24['background-color'] = shadeColor(color, 0.2);
+	        var _23 = {};
+	        _23['(w)transition'] = 'background-color 400ms ease';
+	        _23['background-color'] = shadeColor(color, 0.5);
+	        _23['border-radius'] = '6px';
+	        _23['border-bottom'] = "solid 2px " + color;
+	        _23['padding'] = '0.6em 1em';
+	        _23['cursor'] = 'pointer';
+	        _23['display'] = 'block';
+	        var _22 = {};
+	        _22['(w)transition'] = 'padding-left 300ms ease';
+	        _22['padding-left'] = '0';
+	
+	        var _21 = cssx('_21');
+	
+	        _21.add('li', _22);
+	
+	        _21.add('.btn', _23);
+	
+	        _21.add('.btn:hover', _24);
+	
+	        return _21;
+	      }).apply(this);
+	    }
+	  }]);
+	
+	  return Component;
+	}(_react2.default.Component);
+	
+	function shadeColor(color, percent) {
+	  var f = parseInt(color.slice(1), 16),
+	      t = percent < 0 ? 0 : 255,
+	      p = percent < 0 ? percent * -1 : percent,
+	      R = f >> 16,
+	      G = f >> 8 & 0x00FF,
+	      B = f & 0x0000FF;
+	  return "#" + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
+	}
+	
+	exports.default = Component;
+
+/***/ },
 /* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
