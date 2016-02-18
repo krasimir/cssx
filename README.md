@@ -24,6 +24,7 @@ Examples:
 * [Transpiling](./playground/transpiler)
 * [Transpiling with gulp](./playground/transpiler-gulp)
 * [Transpiling with webpack](./playground/transpiler-webpack)
+* [In React component](./playground/react)
 
 ---
 

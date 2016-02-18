@@ -1,13 +1,31 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-class Component extends React.Component {
+class Navigation extends React.Component {
   constructor(props) {
     super(props);
     this.state = { color: '#2276BF' };
   }
   componentWillMount() {
-    this._setBasicStyles(this.state.color);
+    var color = this.state.color;
+    cssx(
+      li {
+        padding-left: 0;
+        (w)transition: padding-left 300ms ease;
+      }
+      .btn {
+        display: block;
+        cursor: pointer;
+        padding: 0.6em 1em;
+        border-bottom: solid 2px `color`;
+        border-radius: 6px;        
+        background-color: `shadeColor(color, 0.5)`;
+        (w)transition: background-color 400ms ease;
+      }
+      .btn:hover {
+        background-color: `shadeColor(color, 0.2)`;
+      }
+    );
   }
   render() {
     return <ul>{ this._getItems() }</ul>;
@@ -33,26 +51,6 @@ class Component extends React.Component {
         background-color: `this.state.color`;
       }));
   }
-  _setBasicStyles(color) {
-    cssx(
-      li {
-        padding-left: 0;
-        (w)transition: padding-left 300ms ease;
-      }
-      .btn {
-        display: block;
-        cursor: pointer;
-        padding: 0.6em 1em;
-        border-bottom: solid 2px `color`;
-        border-radius: 6px;        
-        background-color: `shadeColor(color, 0.5)`;
-        (w)transition: background-color 400ms ease;
-      }
-      .btn:hover {
-        background-color: `shadeColor(color, 0.2)`;
-      }
-    ) 
-  }
 }
 
 function shadeColor(color, percent) {   
@@ -60,4 +58,4 @@ function shadeColor(color, percent) {
   return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
 }
 
-export default Component;
+export default Navigation;

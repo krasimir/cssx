@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Component from './Component';
+import Navigation from './Navigation';
 import 'cssx';
 
 const ITEMS = [
@@ -14,7 +14,7 @@ const ITEMS = [
 
 window.onload = () => {
   ReactDOM.render(
-    <Component items={ ITEMS } />,
+    <Navigation items={ ITEMS } />,
     document.querySelector('#container')
   );
 };
