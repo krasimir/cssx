@@ -31,7 +31,7 @@ Examples:
 
 ## How to use CSSX
 
-* CSSX could be considered a patter where we dynamically create CSS stylesheets and control their content with JavaScript. The bare minimum is including [CSSX client-side library](./packages/cssx) on the page. Doing that you'll have an access to the [top level API](https://github.com/krasimir/cssx/tree/master/packages/cssx#top-level-api). The same library is published to npm so `npm install cssx -S`.
+* CSSX could be considered a pattern where we dynamically create CSS stylesheets and control their content with JavaScript. The bare minimum is including [CSSX client-side library](./packages/cssx) on the page. Doing that you'll have an access to the [top level API](https://github.com/krasimir/cssx/tree/master/packages/cssx#top-level-api). The same library is published to npm so `npm install cssx -S`.
 * If you want to use the [CSS-ish syntax](https://github.com/krasimir/cssx/blob/master/docs/cssx-lang.md) in JavaScript then you'll need the [transpiler](./packages/cssx-transpiler). It's a available as a [standalone](https://github.com/krasimir/cssx/blob/master/packages/cssx-transpiler/lib/cssx-transpiler.min.js) file too but it's not recommended using it in the browser. What you should do is integrating the transpiler in your build process.
 
 ---
