@@ -171,6 +171,38 @@ body p {
 */
 ```
 
+#### `<stylesheet>.define(<prop name>, <func>)`
+
+* `prop name` - string defining the custom property
+* `func` - function that receives the value of the property and returns a new object containing valid CSS properties.
+
+This API is about creating custom properties. For example:
+
+```js
+var sheet = cssx();
+sheet.define('button', function (color) {
+  return {
+    'color': color,
+    'border': 'solid 2px ' + color,
+    'display': 'block',
+    'padding-left': '1em'
+  }
+});
+
+sheet.add('section > a', {
+  button: '#00FF00'
+});
+
+/* produces
+section > a {
+  color: #00FF00;
+  border: solid 2px #00FF00;
+  display: block;
+  padding-left: 1em;
+}
+*/
+```
+
 #### `<stylesheet>.query(<selector>)`
 
 * `selector` - string
