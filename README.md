@@ -1,6 +1,6 @@
 # CSSX - CSS in JavaScript
 
-> Generate and/or apply CSS with JavaScript. Try it out [here](http://krasimir.github.io/cssx/playground/try-it-out/).
+> Generate and/or apply CSS with JavaScript. Try it out [here](krasimir.github.io/cssx/playground/try-it-out-bin/).
 
 ![demo CSSX](./docs/img/demo.jpg)
 
@@ -19,7 +19,8 @@ Packages:
 
 Examples:
 
-* [Try it out](./playground/try-it-out)
+* [Try it out](./playground/try-it-out-bin)
+* [Try it out (developer edition)](./playground/try-it-out)
 * [Basic](./playground/basic)
 * [Transpiling](./playground/transpiler)
 * [Transpiling with gulp](./playground/transpiler-gulp)
