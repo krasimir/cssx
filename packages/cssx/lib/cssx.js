@@ -342,6 +342,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _id = id || getId();
 	  var _api = {};
 	  var _rules = [];
+	  var _customProperties = {};
 	  var _remove = null;
 	  var _css = '';
 	  var _graph = {};
@@ -479,6 +480,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _api.graph = function () {
 	    return _graph;
 	  };
+	  _api.define = function (prop, func) {
+	    _customProperties[prop] = func;
+	  };
+	
+	  _api._getCustomProps = function () {
+	    return _customProperties;
+	  };
 	
 	  return _api;
 	};
@@ -493,16 +501,31 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	var ids = 0;
-	var getId = function () { return 'r' + (++ids); };
+	var getId = function () { return 'r' + (++ids); }, CSSRule;
 	
-	var CSSRule = function (selector, props, stylesheet) {
+	function resolveCustomProps(actual, custom) {
+	  var result = actual, prop, newProp, value;
+	
+	  for (prop in custom) {
+	    if (typeof actual[prop] !== 'undefined') {
+	      value = custom[prop](actual[prop]);
+	      delete actual[prop];
+	      for (newProp in value) {
+	        actual[newProp] = value[newProp];
+	      }
+	    }
+	  }
+	  return result;
+	};
+	
+	CSSRule = function (selector, props, stylesheet) {
 	  var _id = getId();
 	  var _children = [];
 	  var _nestedChildren = [];
 	
 	  var record = {
 	    selector: selector,
-	    props: props,
+	    props: resolveCustomProps(props, stylesheet._getCustomProps()),
 	    parent: null,
 	    addChild: function (c, isWrapper) {
 	      (isWrapper ? _nestedChildren : _children).push(c);
@@ -544,6 +567,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (p) {
 	        if (typeof p === 'function') p = p();
 	        if (!this.props) this.props = {};
+	        p = resolveCustomProps(p, stylesheet._getCustomProps());
 	        for (propName in p) {
 	          this.props[propName] = p[propName];
 	        }
@@ -555,7 +579,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return _id;
 	    },
 	    clone: function () {
-	      var rule = CSSRule(this.selector, this.props);
+	      var rule = CSSRule(this.selector, this.props, stylesheet);
 	
 	      rule.parent = this.parent;
 	      rule.setChildren(this.getChildren());

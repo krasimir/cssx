@@ -13,6 +13,7 @@ module.exports = function (id) {
   var _id = id || getId();
   var _api = {};
   var _rules = [];
+  var _customProperties = {};
   var _remove = null;
   var _css = '';
   var _graph = {};
@@ -149,6 +150,13 @@ module.exports = function (id) {
   };
   _api.graph = function () {
     return _graph;
+  };
+  _api.define = function (prop, func) {
+    _customProperties[prop] = func;
+  };
+
+  _api._getCustomProps = function () {
+    return _customProperties;
   };
 
   return _api;

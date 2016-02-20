@@ -1,14 +1,29 @@
 var ids = 0;
-var getId = function () { return 'r' + (++ids); };
+var getId = function () { return 'r' + (++ids); }, CSSRule;
 
-var CSSRule = function (selector, props, stylesheet) {
+function resolveCustomProps(actual, custom) {
+  var result = actual, prop, newProp, value;
+
+  for (prop in custom) {
+    if (typeof actual[prop] !== 'undefined') {
+      value = custom[prop](actual[prop]);
+      delete actual[prop];
+      for (newProp in value) {
+        actual[newProp] = value[newProp];
+      }
+    }
+  }
+  return result;
+};
+
+CSSRule = function (selector, props, stylesheet) {
   var _id = getId();
   var _children = [];
   var _nestedChildren = [];
 
   var record = {
     selector: selector,
-    props: props,
+    props: resolveCustomProps(props, stylesheet._getCustomProps()),
     parent: null,
     addChild: function (c, isWrapper) {
       (isWrapper ? _nestedChildren : _children).push(c);
@@ -50,6 +65,7 @@ var CSSRule = function (selector, props, stylesheet) {
       if (p) {
         if (typeof p === 'function') p = p();
         if (!this.props) this.props = {};
+        p = resolveCustomProps(p, stylesheet._getCustomProps());
         for (propName in p) {
           this.props[propName] = p[propName];
         }
@@ -61,7 +77,7 @@ var CSSRule = function (selector, props, stylesheet) {
       return _id;
     },
     clone: function () {
-      var rule = CSSRule(this.selector, this.props);
+      var rule = CSSRule(this.selector, this.props, stylesheet);
 
       rule.parent = this.parent;
       rule.setChildren(this.getChildren());

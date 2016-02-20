@@ -14,7 +14,7 @@ chai.use(sinonChai);
 cssx.minify(false);
 cssx.nextTick(false);
 
-// var only = '7'.split(',');
+// var only = '8'.split(',');
 var expect = chai.expect;
 var removeChild = sinon.spy();
 var document = {
