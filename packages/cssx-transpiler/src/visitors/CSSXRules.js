@@ -10,7 +10,7 @@ module.exports = {
 
     addToContext = function (item) {
       if (context && context.addToCSSXSelfInvoke) {
-        context.addToCSSXSelfInvoke(item);
+        context.addToCSSXSelfInvoke(item, parent);
       }
     };
 

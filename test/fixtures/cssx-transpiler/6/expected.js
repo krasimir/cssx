@@ -10,4 +10,4 @@ var getSelector = function () {
   _1.add(getSelector, _2);
 
   return _1;
-}).apply(this);
+}.apply(this))

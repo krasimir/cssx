@@ -32,22 +32,21 @@ var updateStyleSheet = function (node, stylesheetId) {
   return node;
 };
 
-var detectCSSRulesBlock = function (nodes) {
-  return nodes.length === 1 &&
-    nodes[0].type === 'ExpressionStatement' &&
-    nodes[0].expression.type === 'CallExpression' &&
-    nodes[0].expression.arguments.length > 0 &&
-    nodes[0].expression.arguments[0].value === '';
-};
-
-var funcLines, stylesheetId;
+var funcLines, objectLiterals, stylesheetId;
 
 module.exports = {
   enter: function (node, parent, index, context) {
     funcLines = [];
+    objectLiterals = [];
     stylesheetId = getID();
-    context.addToCSSXSelfInvoke = function (item) {
+    context.addToCSSXSelfInvoke = function (item, parent) {
       funcLines = [item].concat(funcLines);
+      if (item.type === 'VariableDeclaration') {
+        objectLiterals.push({
+          selector: parent.selector.value,
+          rulesObjVar: item.declarations[0].id.name
+        });
+      }
     };
   },
   exit: function (node, parent, index, context) {
@@ -81,19 +80,26 @@ module.exports = {
       return line;
     });
 
-    // is it only css rules block
-    if (detectCSSRulesBlock(rulesRegistration)) {
-      funcLines.push(t.returnStatement(t.identifier(
-        funcLines[0].declarations[0].id.name
-      )));
-      createSelfInvoke = function (expr) { return expr; };
-    // creating the stylesheet
+    // styles passed to a method
+    if (context.inCallExpression) {
+      funcLines.push(
+        t.returnStatement(
+          t.objectExpression(objectLiterals.map(function (o) {
+            return t.objectProperty(t.stringLiteral(o.selector), t.identifier(o.rulesObjVar));
+          }))
+        )
+      );
+    // styles for only one rule
+    } else if (objectLiterals.length === 1 && objectLiterals[0].selector === '') {
+      funcLines.push(t.returnStatement(t.identifier(objectLiterals[0].rulesObjVar)));
+    // autocreating a stylesheet
     } else {
       funcLines.push(newStylesheetExpr);
       funcLines = funcLines.concat(rulesRegistration);
       funcLines.push(t.returnStatement(t.identifier(stylesheetId)));
-      createSelfInvoke = function (expr) { return t.expressionStatement(expr); };
     }
+
+    createSelfInvoke = function (expr) { return t.parenthesizedExpression(expr); };
 
     // wrapping up the self-invoke function
     funcBody = t.blockStatement(funcLines);

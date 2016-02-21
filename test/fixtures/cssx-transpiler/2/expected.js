@@ -4,5 +4,5 @@
   _1.add('header');
 
   return _1;
-}).apply(this);
+}.apply(this))
 ;

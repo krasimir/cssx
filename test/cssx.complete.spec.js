@@ -37,7 +37,7 @@ d('Given the transpiler and client side library', function () {
         var cssExprectedFile = test.testDir + '/exected.css.result';
         var generatedCSS = '';
 
-        this.timeout(3000);
+        this.timeout(5000);
 
         CSSXTranspiler.reset();
         fs.writeFileSync(astFile, json(test.actual));

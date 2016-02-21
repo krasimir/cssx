@@ -387,7 +387,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _id;
 	  };
 	  _api.add = function (selector, props, parent, isWrapper) {
-	    var rule, r = ruleExists(selector, parent);
+	    var rule, r, s;
+	
+	    if (arguments.length === 1 && typeof selector === 'object') {
+	      for (s in selector) {
+	        _api.add(s, selector[s]);
+	      }
+	      return _api;
+	    }
+	
+	    r = ruleExists(selector, parent);
 	
 	    if (r) {
 	      rule = r.update(false, props);
@@ -439,7 +448,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _css;
 	  };
 	  _api.update = function (selector, props) {
-	    var rule = this.query(selector);
+	    var rule, s;
+	
+	    if (arguments.length === 1 && typeof selector === 'object') {
+	      for (s in selector) {
+	        _api.update(s, selector[s]);
+	      }
+	      return _api;
+	    }
+	
+	    rule = this.query(selector);
 	
 	    if (!rule) {
 	      warning('There is no rule matching "' + selector + '"');

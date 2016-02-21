@@ -29,5 +29,5 @@
   _1.add('section p > a', _7);
 
   return _1;
-}).apply(this);
+}.apply(this))
 ;

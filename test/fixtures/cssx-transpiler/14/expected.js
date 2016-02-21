@@ -1,0 +1,37 @@
+var sheet = cssx();
+
+(function () {
+  var _3 = {};
+  _3['color'] = '#F00';
+  var _2 = {};
+  _2['color'] = '#000';
+
+  var _1 = cssx('_1');
+
+  _1.add('body', _2);
+
+  _1.add('body.error', _3);
+
+  return _1;
+}.apply(this))
+;
+
+sheet.add((function () {
+  var _6 = {};
+  _6['padding'] = '2em';
+  _6['margin'] = '0';
+  var _5 = {};
+  _5['line-height'] = '12px';
+  _5['font-size'] = '10px';
+  return {
+    'p': _5,
+    'ul > foo': _6
+  };
+}.apply(this)));
+
+var test = (function () {
+  var _8 = {};
+  _8['background'] = '#F00';
+  _8['border'] = 'solid 1px #000';
+  return _8;
+}.apply(this));

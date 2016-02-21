@@ -8,20 +8,26 @@ var expect = chai.expect;
 var d = describe;
 
 var tests = [];
-// var only = '13'.split(',');
+// var only = '14'.split(',');
 
 glob.sync(__dirname + '/fixtures/cssx-transpiler/**/actual.js').forEach(function (actual) {
   var testDir = path.dirname(actual), testDirParts = testDir.split('/');
   var testCaseDirName = testDirParts[testDirParts.length-1];
   var testName = 'test/fixtures/cssx-transpiler/' + testCaseDirName;
 
-  if (typeof only !== 'undefined' && only.length > 0 && only.indexOf(testCaseDirName.toString()) < 0) return;
-  tests.push({
-    name: testName,
-    actual: actual,
-    expected: testDir + '/expected.js',
-    testDir: testDir
-  });
+  if (
+    typeof only !== 'undefined' &&
+    only.length > 0 &&
+    (only.indexOf(testCaseDirName.toString()) >= 0 ||
+    only === 'all')
+  ) {
+    tests.push({
+      name: testName,
+      actual: actual,
+      expected: testDir + '/expected.js',
+      testDir: testDir
+    });
+  }
 });
 
 if (typeof only !== 'undefined') d = describe.only;

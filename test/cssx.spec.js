@@ -322,4 +322,60 @@ d('Given the cssx library', function () {
     });
   });
 
+  describe('when use an array as a first argument of stylesheet.add method', function () {
+    var STYLES = {
+      '.span foo::after': {
+        a: 1,
+        b: 2
+      },
+      'h1 > span': {
+        c: 3,
+        d: 4
+      }
+    };
+    it('should compile the rules properly', function () {
+      var sheet = cssx();
+      sheet.add(STYLES);
+      expect(sheet.getCSS()).to.be.equal('.span foo::after {\n  a: 1;\n  b: 2;\n}\nh1 > span {\n  c: 3;\n  d: 4;\n}\n');
+    });
+    it('should create only one stylesheet', function () {
+      var sheet = cssx();
+      sheet.add(STYLES);
+      expect(cssx.getStylesheets().length).to.be.equal(1);
+    });
+  });
+
+  describe('when use an array as a first argument of stylesheet.update method', function () {
+    var STYLES = {
+      '.span foo::after': {
+        a: 1,
+        b: 2
+      },
+      'h1 > span': {
+        c: 3,
+        d: 4
+      }
+    };
+    var UPDATES = {
+      '.span foo::after': {
+        a: 10
+      },
+      'h1 > span': {
+        e: 20
+      }
+    };
+    it('should compile the rules properly', function () {
+      var sheet = cssx();
+      sheet.add(STYLES);
+      sheet.update(UPDATES);
+      expect(sheet.getCSS()).to.be.equal('.span foo::after {\n  a: 10;\n  b: 2;\n}\nh1 > span {\n  c: 3;\n  d: 4;\n  e: 20;\n}\n');
+    });
+    it('should create only one stylesheet', function () {
+      var sheet = cssx();
+      sheet.add(STYLES);
+      sheet.update(UPDATES);
+      expect(cssx.getStylesheets().length).to.be.equal(1);
+    });
+  });
+
 });

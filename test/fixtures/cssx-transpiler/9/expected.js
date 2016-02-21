@@ -45,5 +45,5 @@ var image = 'bg.jpg';
   _1.add(data.sel.join(', '), _7);
 
   return _1;
-}).apply(this);
+}.apply(this))
 ;

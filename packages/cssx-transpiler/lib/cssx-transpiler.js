@@ -62,14 +62,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var visitors = {
 	  CSSXDefinition: __webpack_require__(388),
-	  CSSXElement: __webpack_require__(391),
-	  CSSXProperty: __webpack_require__(392),
-	  CSSXRule: __webpack_require__(394),
-	  CSSXRules: __webpack_require__(395),
-	  CSSXSelector: __webpack_require__(396),
-	  CSSXValue: __webpack_require__(397),
-	  CSSXMediaQueryElement: __webpack_require__(398),
-	  CSSXKeyframesElement: __webpack_require__(400)
+	  CSSXElement: __webpack_require__(389),
+	  CSSXProperty: __webpack_require__(391),
+	  CSSXRule: __webpack_require__(393),
+	  CSSXRules: __webpack_require__(394),
+	  CSSXSelector: __webpack_require__(395),
+	  CSSXValue: __webpack_require__(396),
+	  CSSXMediaQueryElement: __webpack_require__(397),
+	  CSSXKeyframesElement: __webpack_require__(400),
+	  CallExpression: __webpack_require__(401)
 	};
 	
 	module.exports = function (code, options) {
@@ -42006,7 +42007,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var isArray = __webpack_require__(4);
-	var injectAt = __webpack_require__(389);
+	var injectAt = __webpack_require__(399);
 	var getID = __webpack_require__(387);
 	var t = __webpack_require__(41);
 	var settings = __webpack_require__(390);
@@ -42039,22 +42040,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return node;
 	};
 	
-	var detectCSSRulesBlock = function (nodes) {
-	  return nodes.length === 1 &&
-	    nodes[0].type === 'ExpressionStatement' &&
-	    nodes[0].expression.type === 'CallExpression' &&
-	    nodes[0].expression.arguments.length > 0 &&
-	    nodes[0].expression.arguments[0].value === '';
-	};
-	
-	var funcLines, stylesheetId;
+	var funcLines, objectLiterals, stylesheetId;
 	
 	module.exports = {
 	  enter: function (node, parent, index, context) {
 	    funcLines = [];
+	    objectLiterals = [];
 	    stylesheetId = getID();
-	    context.addToCSSXSelfInvoke = function (item) {
+	    context.addToCSSXSelfInvoke = function (item, parent) {
 	      funcLines = [item].concat(funcLines);
+	      if (item.type === 'VariableDeclaration') {
+	        objectLiterals.push({
+	          selector: parent.selector.value,
+	          rulesObjVar: item.declarations[0].id.name
+	        });
+	      }
 	    };
 	  },
 	  exit: function (node, parent, index, context) {
@@ -42088,19 +42088,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return line;
 	    });
 	
-	    // is it only css rules block
-	    if (detectCSSRulesBlock(rulesRegistration)) {
-	      funcLines.push(t.returnStatement(t.identifier(
-	        funcLines[0].declarations[0].id.name
-	      )));
-	      createSelfInvoke = function (expr) { return expr; };
-	    // creating the stylesheet
+	    // styles passed to a method
+	    if (context.inCallExpression) {
+	      funcLines.push(
+	        t.returnStatement(
+	          t.objectExpression(objectLiterals.map(function (o) {
+	            return t.objectProperty(t.stringLiteral(o.selector), t.identifier(o.rulesObjVar));
+	          }))
+	        )
+	      );
+	    // styles for only one rule
+	    } else if (objectLiterals.length === 1 && objectLiterals[0].selector === '') {
+	      funcLines.push(t.returnStatement(t.identifier(objectLiterals[0].rulesObjVar)));
+	    // autocreating a stylesheet
 	    } else {
 	      funcLines.push(newStylesheetExpr);
 	      funcLines = funcLines.concat(rulesRegistration);
 	      funcLines.push(t.returnStatement(t.identifier(stylesheetId)));
-	      createSelfInvoke = function (expr) { return t.expressionStatement(expr); };
 	    }
+	
+	    createSelfInvoke = function (expr) { return t.parenthesizedExpression(expr); };
 	
 	    // wrapping up the self-invoke function
 	    funcBody = t.blockStatement(funcLines);
@@ -42123,26 +42130,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 389 */
-/***/ function(module, exports) {
-
-	module.exports = function (arr, index, elements) {
-	  arr.splice.apply(arr, [index, 1].concat(elements));
-	};
-
-
-/***/ },
-/* 390 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	  CSSXCalleeObj: 'cssx',
-	  CSSXCalleeProp: 'add',
-	  CSSXClientNestedMethodName: 'n'
-	};
-
-
-/***/ },
-/* 391 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
@@ -42177,11 +42164,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 392 */
+/* 390 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  CSSXCalleeObj: 'cssx',
+	  CSSXCalleeProp: 'add',
+	  CSSXClientNestedMethodName: 'n'
+	};
+
+
+/***/ },
+/* 391 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
-	var parseExpressions = __webpack_require__(393);
+	var parseExpressions = __webpack_require__(392);
 	
 	module.exports = {
 	  enter: function (node, parent, index) {},
@@ -42196,7 +42194,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 393 */
+/* 392 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
@@ -42259,7 +42257,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 394 */
+/* 393 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -42271,7 +42269,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 395 */
+/* 394 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
@@ -42286,7 +42284,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    addToContext = function (item) {
 	      if (context && context.addToCSSXSelfInvoke) {
-	        context.addToCSSXSelfInvoke(item);
+	        context.addToCSSXSelfInvoke(item, parent);
 	      }
 	    };
 	
@@ -42321,11 +42319,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 396 */
+/* 395 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
-	var parseExpressions = __webpack_require__(393);
+	var parseExpressions = __webpack_require__(392);
 	
 	module.exports = {
 	  enter: function (node, parent, index) {},
@@ -42340,11 +42338,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 397 */
+/* 396 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(41);
-	var parseExpressions = __webpack_require__(393);
+	var parseExpressions = __webpack_require__(392);
 	
 	module.exports = {
 	  enter: function (node, parent, index) {},
@@ -42359,20 +42357,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 398 */
+/* 397 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(399);
+	module.exports = __webpack_require__(398);
 
 
 /***/ },
-/* 399 */
+/* 398 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CSSXElement = __webpack_require__(391);
+	var CSSXElement = __webpack_require__(389);
 	var formCSSXElement = CSSXElement.formCSSXElement;
 	var t = __webpack_require__(41);
-	var injectAt = __webpack_require__(389);
+	var injectAt = __webpack_require__(399);
 	var isArray = __webpack_require__(4);
 	var settings = __webpack_require__(390);
 	var getID = __webpack_require__(387);
@@ -42408,10 +42406,35 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
+/* 399 */
+/***/ function(module, exports) {
+
+	module.exports = function (arr, index, elements) {
+	  arr.splice.apply(arr, [index, 1].concat(elements));
+	};
+
+
+/***/ },
 /* 400 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(399);
+	module.exports = __webpack_require__(398);
+
+
+/***/ },
+/* 401 */
+/***/ function(module, exports) {
+
+	module.exports = {
+	  enter: function (node, parent, index, context) {
+	    if (node.arguments.length === 1 && node.arguments[0].type === 'CSSXDefinition') {
+	      context.inCallExpression = true;
+	    }
+	  },
+	  exit: function (node, parent, index, context) {
+	    context.inCallExpression = false;
+	  }
+	};
 
 
 /***/ }

@@ -12,5 +12,5 @@
   _1.add('.header p > span', _3);
 
   return _1;
-}).apply(this);
+}.apply(this))
 ;

@@ -7,4 +7,4 @@
   _1.add('body', _2);
 
   return _1;
-}).apply(this);
+}.apply(this))

@@ -7,4 +7,4 @@
   _1.add(a + b + "-to-" + (c + d) + "-from-" + (e + f), _2);
 
   return _1;
-}).apply(this);
+}.apply(this))

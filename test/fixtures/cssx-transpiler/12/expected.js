@@ -8,10 +8,10 @@ var sheet = (function () {
   _1.add('body', _2);
 
   return _1;
-}).apply(this);;
+}.apply(this));
 
-sheet.add('p', function () {
+sheet.add('p', (function () {
   var _4 = {};
   _4['font-size'] = '10px';
   return _4;
-}.apply(this));
+}.apply(this)));

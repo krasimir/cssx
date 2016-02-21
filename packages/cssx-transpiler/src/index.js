@@ -13,7 +13,8 @@ var visitors = {
   CSSXSelector: require('./visitors/CSSXSelector'),
   CSSXValue: require('./visitors/CSSXValue'),
   CSSXMediaQueryElement: require('./visitors/CSSXMediaQueryElement'),
-  CSSXKeyframesElement: require('./visitors/CSSXKeyframesElement')
+  CSSXKeyframesElement: require('./visitors/CSSXKeyframesElement'),
+  CallExpression: require('./visitors/CallExpression')
 };
 
 module.exports = function (code, options) {
