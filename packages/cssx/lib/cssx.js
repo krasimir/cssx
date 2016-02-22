@@ -59,8 +59,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	__webpack_require__(1);
 	
 	factory = __webpack_require__(5);
-	goGlobal = __webpack_require__(17);
-	randomId = __webpack_require__(18);
+	goGlobal = __webpack_require__(18);
+	randomId = __webpack_require__(19);
 	
 	stylesheets = [];
 	
@@ -333,7 +333,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var resolveSelector = __webpack_require__(12);
 	var generate = __webpack_require__(13);
 	var warning = __webpack_require__(16);
-	var isArray = __webpack_require__(19);
+	var isArray = __webpack_require__(17);
 	
 	var graphRulePropName = '__$__cssx_rule';
 	var ids = 0;
@@ -1215,6 +1215,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 17 */
 /***/ function(module, exports) {
 
+	module.exports = function (v) {
+	  return Object.prototype.toString.call(v) === '[object Array]';
+	};
+
+
+/***/ },
+/* 18 */
+/***/ function(module, exports) {
+
 	/* WEBPACK VAR INJECTION */(function(global) {module.exports = function (api) {
 	  if (typeof global !== 'undefined') {
 	    global.cssx = api;
@@ -1227,7 +1236,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 	var ids = 0;
@@ -1237,15 +1246,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	module.exports.resetIDs = function () {
 	  ids = 0;
-	};
-
-
-/***/ },
-/* 19 */
-/***/ function(module, exports) {
-
-	module.exports = function (v) {
-	  return Object.prototype.toString.call(v) === '[object Array]';
 	};
 
 

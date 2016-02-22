@@ -12,6 +12,6 @@ module.exports = {
       context.inCallExpression = false;
       delete context.nodeId;
       delete node.__id;
-    }  
+    }
   }
 };

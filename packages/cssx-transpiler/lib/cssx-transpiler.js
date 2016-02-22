@@ -42093,7 +42093,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      funcLines.push(
 	        t.returnStatement(
 	          t.arrayExpression(objectLiterals.map(function (o) {
-	            return t.arrayExpression([o.selector, t.identifier(o.rulesObjVar)])
+	            return t.arrayExpression([o.selector, t.identifier(o.rulesObjVar)]);
 	          }))
 	        )
 	      );
@@ -42439,7 +42439,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      context.inCallExpression = false;
 	      delete context.nodeId;
 	      delete node.__id;
-	    }  
+	    }
 	  }
 	};
 
