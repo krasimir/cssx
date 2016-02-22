@@ -4,6 +4,7 @@ var nextTick = require('./helpers/nextTick');
 var resolveSelector = require('./helpers/resolveSelector');
 var generate = require('./core/generate');
 var warning = require('./helpers/warning');
+var isArray = require('./helpers/isArray');
 
 var graphRulePropName = '__$__cssx_rule';
 var ids = 0;
@@ -61,8 +62,14 @@ module.exports = function (id) {
     var rule, r, s;
 
     if (arguments.length === 1 && typeof selector === 'object') {
-      for (s in selector) {
-        _api.add(s, selector[s]);
+      if (isArray(selector)) {
+        selector.forEach(function (s) {
+          _api.add(s[0], s[1]);
+        });
+      } else {
+        for (s in selector) {
+          _api.add(s, selector[s]);
+        }
       }
       return _api;
     }

@@ -333,6 +333,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var resolveSelector = __webpack_require__(12);
 	var generate = __webpack_require__(13);
 	var warning = __webpack_require__(16);
+	var isArray = __webpack_require__(19);
 	
 	var graphRulePropName = '__$__cssx_rule';
 	var ids = 0;
@@ -390,8 +391,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var rule, r, s;
 	
 	    if (arguments.length === 1 && typeof selector === 'object') {
-	      for (s in selector) {
-	        _api.add(s, selector[s]);
+	      if (isArray(selector)) {
+	        selector.forEach(function (s) {
+	          _api.add(s[0], s[1]);
+	        });
+	      } else {
+	        for (s in selector) {
+	          _api.add(s, selector[s]);
+	        }
 	      }
 	      return _api;
 	    }
@@ -1230,6 +1237,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	module.exports.resetIDs = function () {
 	  ids = 0;
+	};
+
+
+/***/ },
+/* 19 */
+/***/ function(module, exports) {
+
+	module.exports = function (v) {
+	  return Object.prototype.toString.call(v) === '[object Array]';
 	};
 
 

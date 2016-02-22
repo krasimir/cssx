@@ -42049,9 +42049,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    stylesheetId = getID();
 	    context.addToCSSXSelfInvoke = function (item, parent) {
 	      funcLines = [item].concat(funcLines);
-	      if (item.type === 'VariableDeclaration') {
+	      if (item.type === 'VariableDeclaration' && context.inCallExpression) {
 	        objectLiterals.push({
-	          selector: parent.selector.value,
+	          selector: parent.selector.value ? t.stringLiteral(parent.selector.value) : parent.selector,
 	          rulesObjVar: item.declarations[0].id.name
 	        });
 	      }
@@ -42092,8 +42092,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (context.inCallExpression) {
 	      funcLines.push(
 	        t.returnStatement(
-	          t.objectExpression(objectLiterals.map(function (o) {
-	            return t.objectProperty(t.stringLiteral(o.selector), t.identifier(o.rulesObjVar));
+	          t.arrayExpression(objectLiterals.map(function (o) {
+	            return t.arrayExpression([o.selector, t.identifier(o.rulesObjVar)])
 	          }))
 	        )
 	      );
@@ -42423,16 +42423,23 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 401 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
+	var randomId = __webpack_require__(387);
+	
 	module.exports = {
 	  enter: function (node, parent, index, context) {
 	    if (node.arguments.length === 1 && node.arguments[0].type === 'CSSXDefinition') {
+	      node.__id = context.nodeId = randomId();
 	      context.inCallExpression = true;
 	    }
 	  },
 	  exit: function (node, parent, index, context) {
-	    context.inCallExpression = false;
+	    if (context.nodeId === node.__id) {
+	      context.inCallExpression = false;
+	      delete context.nodeId;
+	      delete node.__id;
+	    }  
 	  }
 	};
 

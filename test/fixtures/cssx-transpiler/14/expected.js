@@ -17,21 +17,23 @@ var sheet = cssx();
 ;
 
 sheet.add((function () {
+  var _7 = {};
+  _7['padding'] = '2em';
+  _7['margin'] = '0';
   var _6 = {};
-  _6['padding'] = '2em';
-  _6['margin'] = '0';
-  var _5 = {};
-  _5['line-height'] = '12px';
-  _5['font-size'] = '10px';
-  return {
-    'p': _5,
-    'ul > foo': _6
-  };
+  _6['line-height'] = '12px';
+  _6['font-size'] = '10px';
+  return [['p', _6], ['ul > foo', _7]];
 }.apply(this)));
 
 var test = (function () {
-  var _8 = {};
-  _8['background'] = '#F00';
-  _8['border'] = 'solid 1px #000';
+  var _9 = {};
+  _9['background'] = '#F00';
+  _9['border'] = 'solid 1px #000';
+
+  var _8 = cssx('_8');
+
+  _8.add('', _9);
+
   return _8;
 }.apply(this));

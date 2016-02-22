@@ -41,9 +41,9 @@ module.exports = {
     stylesheetId = getID();
     context.addToCSSXSelfInvoke = function (item, parent) {
       funcLines = [item].concat(funcLines);
-      if (item.type === 'VariableDeclaration') {
+      if (item.type === 'VariableDeclaration' && context.inCallExpression) {
         objectLiterals.push({
-          selector: parent.selector.value,
+          selector: parent.selector.value ? t.stringLiteral(parent.selector.value) : parent.selector,
           rulesObjVar: item.declarations[0].id.name
         });
       }
@@ -84,8 +84,8 @@ module.exports = {
     if (context.inCallExpression) {
       funcLines.push(
         t.returnStatement(
-          t.objectExpression(objectLiterals.map(function (o) {
-            return t.objectProperty(t.stringLiteral(o.selector), t.identifier(o.rulesObjVar));
+          t.arrayExpression(objectLiterals.map(function (o) {
+            return t.arrayExpression([o.selector, t.identifier(o.rulesObjVar)])
           }))
         )
       );
