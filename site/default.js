@@ -28,9 +28,7 @@ sheet.add(cssx(
     width: 300px;
     margin: 1em 0 0 0;
     padding: 0;
-    transform: translateX(92px);
-    -webkit-transform: translateX(92px);
-    -o-transform: translateX(92px);
+    (wo)transform: translateX(92px);
   }
   h2 > small {
     display: block;
