@@ -39,11 +39,11 @@ module.exports = {
     funcLines = [];
     objectLiterals = [];
     stylesheetId = getID();
-    context.addToCSSXSelfInvoke = function (item, parent) {
+    context.addToCSSXSelfInvoke = function (item, p) {
       funcLines = [item].concat(funcLines);
-      if (item.type === 'VariableDeclaration' && context.inCallExpression) {
+      if (item.type === 'VariableDeclaration' && (context.inCallExpression || context.inReturnStatement)) {
         objectLiterals.push({
-          selector: parent.selector.value ? t.stringLiteral(parent.selector.value) : parent.selector,
+          selector: p.selector.value ? t.stringLiteral(p.selector.value) : p.selector,
           rulesObjVar: item.declarations[0].id.name
         });
       }
@@ -90,7 +90,12 @@ module.exports = {
         )
       );
     // styles for only one rule
-    } else if (objectLiterals.length === 1 && objectLiterals[0].selector === '') {
+    } else if (
+      objectLiterals.length >= 1 &&
+      (typeof objectLiterals[0].selector === 'object' ?
+        objectLiterals[0].selector.value === '' :
+        objectLiterals[0].selector === '')
+    ) {
       funcLines.push(t.returnStatement(t.identifier(objectLiterals[0].rulesObjVar)));
     // autocreating a stylesheet
     } else {

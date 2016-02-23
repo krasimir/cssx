@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Real, working CSS in JavaScript</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Real, working CSS in JavaScript" />
+    <meta property="og:url" content="http://krasimir.github.io/cssx" />
+    <meta property="og:site_name" content="Real, working CSS in JavaScript" />
+    <link href='https://fonts.googleapis.com/css?family=Oswald:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="./site/vendor/codemirror/codemirror.css">
+    <link rel="stylesheet" href="./site/vendor/codemirror/addon/fold/foldgutter.css" />
+    <link rel="stylesheet" href="./site/styles.css">
+  </head>
+  <body>
+    <div class="left">
+      <div class="hero">
+        <h1>CSSX</h1>
+      </div>    
+      <h2>
+        CSSX is a set of tools that will help you write vanilla CSS in JavaScript
+        <small>Check out CSSX in <a href="https://github.com/krasimir/cssx" target="external">GitHub</a>. It's working well with <a href="https://github.com/krasimir/cssx/blob/master/packages/cssx-loader" target="external">Webpack</a> and <a href="https://github.com/krasimir/cssx/blob/master/packages/gulp-cssx" target="external">Gulp</a>. There is no new syntax, it's still the good old <strong>CSS</strong> but it lives in JavaScript. Learn more about that <a href="https://github.com/krasimir/cssx/blob/master/docs/cssx-lang.md" target="external">here</a>.</small>
+      </h2>    
+    </div>
+    <div class="code-editor">
+      <div class="js-code-mirror"></div>
+    </div>
+    <div class="error js-error"></div>
+    <script src="./packages/cssx/lib/cssx.js"></script>
+    <script src="./packages/cssx-transpiler/lib/cssx-transpiler.js"></script>
+    <script src="./site/vendor/codemirror/codemirror.js"></script>
+    <script src="./site/vendor/codemirror/javascript.js"></script>
+    <script src="./site/vendor/codemirror/xml.js"></script>
+    <script src="./site/vendor/codemirror/addon/fold/foldcode.js"></script>
+    <script src="./site/vendor/codemirror/addon/fold/foldgutter.js"></script>
+    <script src="./site/vendor/codemirror/addon/fold/brace-fold.js"></script>
+    <script src="./site/vendor/codemirror/addon/fold/xml-fold.js"></script>
+    <script src="./site/vendor/codemirror/addon/fold/markdown-fold.js"></script>
+    <script src="./site/vendor/codemirror/addon/fold/comment-fold.js"></script>
+    <script src="./site/polyfills/reduce.js"></script>
+    <script src="./site/polyfills/map.js"></script>
+    <script src="./site/vendor/zepto.min.js"></script>
+    <script src="./site/script.js"></script>
+  </body>
+</html>

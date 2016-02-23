@@ -1166,11 +1166,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	module.exports = {
 	  selector: function (rules) {
-	    var result = [], keyword, newRule;
+	    var result = [], keyword, newRule, sel;
 	
 	    rules.forEach(function (rule) {
-	      keyword = resolveSelector(rule.selector).split(' ')[0];
+	      sel = resolveSelector(rule.selector);
 	      result.push(rule);
+	      if (sel) keyword = resolveSelector(rule.selector).split(' ')[0];
 	      if (SELECTORS[keyword]) {
 	        SELECTORS[keyword].forEach(function (prefixed) {
 	          newRule = rule.clone();

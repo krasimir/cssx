@@ -70,7 +70,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  CSSXValue: __webpack_require__(397),
 	  CSSXMediaQueryElement: __webpack_require__(398),
 	  CSSXKeyframesElement: __webpack_require__(400),
-	  CallExpression: __webpack_require__(401)
+	  CallExpression: __webpack_require__(401),
+	  ReturnStatement: __webpack_require__(402)
 	};
 	
 	module.exports = function (code, options) {
@@ -42047,11 +42048,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    funcLines = [];
 	    objectLiterals = [];
 	    stylesheetId = getID();
-	    context.addToCSSXSelfInvoke = function (item, parent) {
+	    context.addToCSSXSelfInvoke = function (item, p) {
 	      funcLines = [item].concat(funcLines);
-	      if (item.type === 'VariableDeclaration' && context.inCallExpression) {
+	      if (item.type === 'VariableDeclaration' && (context.inCallExpression || context.inReturnStatement)) {
 	        objectLiterals.push({
-	          selector: parent.selector.value ? t.stringLiteral(parent.selector.value) : parent.selector,
+	          selector: p.selector.value ? t.stringLiteral(p.selector.value) : p.selector,
 	          rulesObjVar: item.declarations[0].id.name
 	        });
 	      }
@@ -42098,7 +42099,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	        )
 	      );
 	    // styles for only one rule
-	    } else if (objectLiterals.length === 1 && objectLiterals[0].selector === '') {
+	    } else if (
+	      objectLiterals.length >= 1 &&
+	      (typeof objectLiterals[0].selector === 'object' ?
+	        objectLiterals[0].selector.value === '' :
+	        objectLiterals[0].selector === '')
+	    ) {
 	      funcLines.push(t.returnStatement(t.identifier(objectLiterals[0].rulesObjVar)));
 	    // autocreating a stylesheet
 	    } else {
@@ -42437,6 +42443,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	  exit: function (node, parent, index, context) {
 	    if (context.nodeId === node.__id) {
 	      context.inCallExpression = false;
+	      delete context.nodeId;
+	      delete node.__id;
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 402 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var randomId = __webpack_require__(387);
+	
+	module.exports = {
+	  enter: function (node, parent, index, context) {
+	    if (node.argument.type === 'CSSXDefinition') {
+	      node.__id = context.nodeId = randomId();
+	      context.inReturnStatement = true;
+	    }
+	  },
+	  exit: function (node, parent, index, context) {
+	    if (context.nodeId === node.__id) {
+	      context.inReturnStatement = false;
 	      delete context.nodeId;
 	      delete node.__id;
 	    }
