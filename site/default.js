@@ -1,4 +1,4 @@
-var showImages = ['s1.png', 's2.png', 's3.png'];
+// styles applied immediately
 cssx(
   body {
     background: #F0CB13;
@@ -8,23 +8,24 @@ cssx(
     color: #FF044C;
     letter-spacing: 0px;
   }
+  @keyframes snow {
+    0% { background-position: 0px 0px, 0px 0px, 0px 0px; }
+    50% { background-position: 500px 500px, 100px 200px, -100px 150px; }
+    100% { background-position: 500px 1000px, 200px 400px, -100px 300px; }
+  }
 );
 
-function letItSnow() {
+// styles applied when the button is clicked
+function letItSnow(bgColor) {
   cssx(
+    body, a, h1 { color: #FFF; }
+    body { background: `bgColor`; }
     .left {
-      background-image: `
-        showImages.reduce(function(value, image) {
-          value.push('site/imgs/' + value);
-          return value;
-        }, []).join(',')
-      `;
+      background-image: 
+        url("./site/imgs/s1.png"),
+        url("./site/imgs/s2.png"),
+        url("./site/imgs/s3.png");
       (wmo)animation: snow 10s linear infinite;
-    }
-    @keyframes snow {
-      0% { background-position: 0px 0px, 0px 0px, 0px 0px; }
-      50% { background-position: 500px 500px, 100px 200px, -100px 150px; }
-      100% { background-position: 500px 1000px, 200px 400px, -100px 300px; }
     }
   )
 };
@@ -34,10 +35,6 @@ function letItSnow() {
 
 document
   .querySelector('button')
-  .addEventListener('click', letItSnow);
- 
-/*
-  helpers which are available globally on the page
-  getRandomColor()
-  getRandomInt(min, max)
-*/
+  .addEventListener('click', function () {
+    letItSnow('#004B63');
+  });

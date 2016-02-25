@@ -42,10 +42,10 @@ h1 {
   margin: 50px 0 0 0;
   padding: 0;
   font-family: Oswald;
-  transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 4000ms ease, letter-spacing 2000ms ease;
-  -webkit-transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 4000ms ease, letter-spacing 2000ms ease;
-  -moz-transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 4000ms ease, letter-spacing 2000ms ease;
-  -o-transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 4000ms ease, letter-spacing 2000ms ease;
+  transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 600ms ease, letter-spacing 2000ms ease;
+  -webkit-transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 600ms ease, letter-spacing 2000ms ease;
+  -moz-transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 600ms ease, letter-spacing 2000ms ease;
+  -o-transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 600ms ease, letter-spacing 2000ms ease;
   transform: translateX(-650px);
   -webkit-transform: translateX(-650px);
   -o-transform: translateX(-650px);
@@ -122,7 +122,7 @@ h2 > small {
   border-bottom: solid 2px #000;
   color: #FFF;
   font-weight: bold;
-  margin: 1em 0 0 15em;
+  margin: 1em 0 0 17.3em;
   outline: none;
   transition: transform 200ms ease, background 400ms ease;
   -webkit-transition: transform 200ms ease, background 400ms ease;
@@ -137,6 +137,20 @@ h2 > small {
 }
 .btn:hover {
   background: #A2002E;
+}
+.snow-animation {
+  font-size: 0.6em;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 200;
+}
+.snow-animation a {
+  opacity: 0.4;
+  text-decoration: none;
+}
+.snow-animation a:hover{
+  opacity: 1;
 }
 @media all and (max-width: 900px) {
   .left {
@@ -159,6 +173,6 @@ h2 > small {
     width: 50%;
   }
   .btn {
-    margin: 1em 0 0 9em;
+    margin: 1em 0 0 11.4em;
   }
 }
