@@ -13,8 +13,11 @@ body {
   height: 100%;
   font-family: Arial, Verdana;
   color: #746309;
-  background: #F0CB13;
+  background: #FFF;
   font-size: 16px;
+  transition: background 800ms ease, color 800ms ease;
+  -webkit-transition: background 800ms ease, color 800ms ease;
+  -o-transition: background 800ms ease, color 800ms ease;
 }
 a {
   font-weight: bold;
@@ -24,27 +27,66 @@ a:hover {
   color: #000;
 }
 .left {
+  position: relative;
   width: 500px;
   height: 100%;
   float: left;
   transition: transform 1600ms cubic-bezier(.47,.22,0,1.32);
   -webkit-transition: transform 1600ms cubic-bezier(.47,.22,0,1.32);
   -o-transition: transform 1600ms cubic-bezier(.47,.22,0,1.32);
-  transform: translateX(-500px);
-  -webkit-transform: translateX(-500px);
-  -o-transform: translateX(-500px);
+  z-index: 1;
+}
+h1 {
+  font-size: 13em;
+  line-height: 1em;
+  margin: 50px 0 0 0;
+  padding: 0;
+  font-family: Oswald;
+  transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 4000ms ease, letter-spacing 2000ms ease;
+  -webkit-transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 4000ms ease, letter-spacing 2000ms ease;
+  -moz-transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 4000ms ease, letter-spacing 2000ms ease;
+  -o-transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 4000ms ease, letter-spacing 2000ms ease;
+  transform: translateX(-650px);
+  -webkit-transform: translateX(-650px);
+  -o-transform: translateX(-650px);
+  -moz-transform: translateX(-650px);
+  letter-spacing: 40px;
+  color: #000;
+}
+h2 {
+  font-size: 1.2em;
+  line-height: 1.4em;
+  width: 340px;
+  margin: 1em 0 0 0;
+  padding: 0;
+  text-align: right;
+  transform: translateX(65px);
+  -webkit-transform: translateX(65px);
+  -o-transform: translateX(65px);
+  -moz-transform: translateX(65px);
+}
+h2 > small {
+  display: block;
+  font-size: 0.7em;
+  line-height: 1.7;
+  font-weight: normal;
+  margin-top: 1em;
 }
 .css-applied > pre {
   font-family: Arial, Verdana;
 }
-.code-editor {
+.right {
+  z-index: 50;
+  position: relative;
   width: calc(100% - 500px);
+  height: 100%;
   float: right;
+}
+.code-editor {
   background: #FFF;
   padding: 1em;
-  height: 100%;
-  border-left: solid 1px #746309;
   overflow: hidden;
+  height: 100%;
 }
 .CodeMirror {
   background: none;
@@ -52,11 +94,11 @@ a:hover {
   font-size: 0.8em;
 }
 .error {
+  z-index: 100;
   position: absolute;
   top: 0;
   right: 0;
   margin: 1em 1em;
-  z-index: 100;
   color: #FFF;
   font-size: 0.7em;
   background: #F00;
@@ -67,4 +109,56 @@ a:hover {
   transform: translateY(-100px);
   -webkit-transform: translateY(-100px);
   -o-transform: translateY(-100px);
+  -moz-transform: translateY(-100px);
+}
+.btn {
+  font-size: 1em;
+  padding: 1em;
+  border-radius: 4px;
+  background: #FF044C;
+  border-top: none;
+  border-left: none;
+  border-right: solid 2px #000;
+  border-bottom: solid 2px #000;
+  color: #FFF;
+  font-weight: bold;
+  margin: 1em 0 0 15em;
+  outline: none;
+  transition: transform 200ms ease, background 400ms ease;
+  -webkit-transition: transform 200ms ease, background 400ms ease;
+  -o-transition: transform 200ms ease, background 400ms ease;
+  cursor: pointer;
+}
+.btn:active {
+  transform: translateY(6px);
+  -webkit-transform: translateY(6px);
+  -o-transform: translateY(6px);
+  -moz-transform: translateY(6px);
+}
+.btn:hover {
+  background: #A2002E;
+}
+@media all and (max-width: 900px) {
+  .left {
+    width: 50%;
+  }
+  h2 {
+    transform: translateX(-29px);
+    -webkit-transform: translateX(-29px);
+    -o-transform: translateX(-29px);
+    -moz-transform: translateX(-29px);
+  }
+  h1 {
+    font-size: 10.2em;
+    transform: translateX(-35px);
+    -webkit-transform: translateX(-35px);
+    -o-transform: translateX(-35px);
+    -moz-transform: translateX(-35px);
+  }
+  .right {
+    width: 50%;
+  }
+  .btn {
+    margin: 1em 0 0 9em;
+  }
 }

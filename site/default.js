@@ -1,38 +1,43 @@
-var titleFont = 'Oswald'
-var sheet = cssx();
-
-// defining a custom propety text
-sheet.define('text', function (value) {
-  var parts = value.split(/, ?/);
-  return cssx({
-    font-size: `parts[0]`em;
-    line-height: `parts[1]`em;
-    font-weight: `parts[2] ? parts[2] : 'bold'`;
-  })
-});
-
-sheet.add(cssx(
-  .left {
-    (wo)transform: translateX(0);
+var showImages = ['s1.png', 's2.png', 's3.png'];
+cssx(
+  body {
+    background: #F0CB13;
   }
   h1 {
-    text: 13, 1;
-    margin: 50px 0 0 0;
-    padding: 0;
-    font-family: `titleFont`, sans-serif;
-    (wo)transform: translateX(-50px);
+    (wmo)transform: translateX(-35px);
     color: #FF044C;
+    letter-spacing: 0px;
   }
-  h2 {
-    text: 1.2, 1.4;
-    width: 300px;
-    margin: 1em 0 0 0;
-    padding: 0;
-    (wo)transform: translateX(92px);
-  }
-  h2 > small {
-    display: block;
-    text: 0.7, 1.7, normal;
-    margin-top: 1em;
-  }
-));
+);
+
+function letItSnow() {
+  cssx(
+    .left {
+      background-image: `
+        showImages.reduce(function(value, image) {
+          value.push('site/imgs/' + value);
+          return value;
+        }, []).join(',')
+      `;
+      (wmo)animation: snow 10s linear infinite;
+    }
+    @keyframes snow {
+      0% { background-position: 0px 0px, 0px 0px, 0px 0px; }
+      50% { background-position: 500px 500px, 100px 200px, -100px 150px; }
+      100% { background-position: 500px 1000px, 200px 400px, -100px 300px; }
+    }
+  )
+};
+
+
+// --------------- the boring part ---------------
+
+document
+  .querySelector('button')
+  .addEventListener('click', letItSnow);
+ 
+/*
+  helpers which are available globally on the page
+  getRandomColor()
+  getRandomInt(min, max)
+*/

@@ -41,7 +41,7 @@ module.exports = {
     stylesheetId = getID();
     context.addToCSSXSelfInvoke = function (item, p) {
       funcLines = [item].concat(funcLines);
-      if (item.type === 'VariableDeclaration' && (context.inCallExpression || context.inReturnStatement)) {
+      if (item.type === 'VariableDeclaration') {
         objectLiterals.push({
           selector: p.selector.value ? t.stringLiteral(p.selector.value) : p.selector,
           rulesObjVar: item.declarations[0].id.name

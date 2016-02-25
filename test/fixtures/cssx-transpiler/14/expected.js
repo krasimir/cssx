@@ -30,10 +30,5 @@ var test = (function () {
   var _9 = {};
   _9['background'] = '#F00';
   _9['border'] = 'solid 1px #000';
-
-  var _8 = cssx('_8');
-
-  _8.add('', _9);
-
-  return _8;
+  return _9;
 }.apply(this));

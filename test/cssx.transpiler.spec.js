@@ -8,19 +8,23 @@ var expect = chai.expect;
 var d = describe;
 
 var tests = [];
-// var only = '6'.split(',');
+// var only = '16'.split(',');
 
 glob.sync(__dirname + '/fixtures/cssx-transpiler/**/actual.js').forEach(function (actual) {
   var testDir = path.dirname(actual), testDirParts = testDir.split('/');
   var testCaseDirName = testDirParts[testDirParts.length-1];
   var testName = 'test/fixtures/cssx-transpiler/' + testCaseDirName;
+  var includeTest = false;
 
-  if (
-    typeof only !== 'undefined' &&
-    only.length > 0 &&
-    (only.indexOf(testCaseDirName.toString()) >= 0 ||
-    only === 'all')
-  ) {
+  if (typeof only !== 'undefined') {
+    if (only.length > 0 && (only.indexOf(testCaseDirName.toString()) >= 0 || only === 'all')) {
+      includeTest = true;
+    }
+  } else {
+    includeTest = true;
+  }
+
+  if (includeTest) {
     tests.push({
       name: testName,
       actual: actual,
