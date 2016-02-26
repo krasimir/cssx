@@ -71,9 +71,9 @@ var styles = {
 };
 ```
 
-#### CSSX as a value of literal property
+#### CSSX as a value of object literal's property
 
-Sometimes you don't want to create a new stylesheet but still define styles. If we pass `cssx` expression to an object property then it is still wrapped in a closure but it is not executed. For example:
+Sometimes you don't want to create a new stylesheet but still define styles. If we pass `cssx` expression to an object property we get a function that fires the creation of our stylesheet. For example:
 
 ```js
 var obj = {
@@ -88,7 +88,7 @@ var obj = {
 };
 ```
 
-As it is this code is not doing anything. However if we run `obj.styles()` we'll get a new stylesheet that results to the following css:
+As it is this code is doing nothing. However if we run `obj.styles()` we'll get a new stylesheet that results to the following css:
 
 ```css
 body {
