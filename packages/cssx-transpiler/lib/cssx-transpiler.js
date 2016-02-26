@@ -71,7 +71,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  CSSXMediaQueryElement: __webpack_require__(398),
 	  CSSXKeyframesElement: __webpack_require__(400),
 	  CallExpression: __webpack_require__(401),
-	  ReturnStatement: __webpack_require__(402)
+	  ReturnStatement: __webpack_require__(402),
+	  ObjectProperty: __webpack_require__(403)
 	};
 	
 	module.exports = function (code, options) {
@@ -42059,7 +42060,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	  },
 	  exit: function (node, parent, index, context) {
-	    var rulesRegistration, newStylesheetExpr, createSelfInvoke, funcBody, funcExpr;
+	    var rulesRegistration;
+	    var newStylesheetExpr;
+	    var createSelfInvoke;
+	    var funcExpr;
+	    var funcCallExpr;
+	    var result;
 	
 	    delete context.addToCSSXSelfInvoke;
 	
@@ -42116,19 +42122,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    createSelfInvoke = function (expr) { return t.parenthesizedExpression(expr); };
 	
 	    // wrapping up the self-invoke function
-	    funcBody = t.blockStatement(funcLines);
-	    funcExpr = t.callExpression(
-	      t.memberExpression(
-	        t.functionExpression(null, [], funcBody),
-	        t.identifier('apply')
-	      ),
+	    funcExpr = t.functionExpression(null, [], t.blockStatement(funcLines));
+	    funcCallExpr = t.callExpression(
+	      t.memberExpression(funcExpr, t.identifier('apply')),
 	      [t.thisExpression()]
 	    );
 	
-	    if (isArray(parent)) {
-	      injectAt(parent, index, createSelfInvoke(funcExpr));
+	    if (context.inObjectProperty) {
+	      result = funcExpr;
 	    } else {
-	      parent[index] = createSelfInvoke(funcExpr);
+	      result = createSelfInvoke(funcCallExpr);
+	    }
+	
+	    if (isArray(parent)) {
+	      injectAt(parent, index, result);
+	    } else {
+	      parent[index] = result;
 	    }
 	  }
 	};
@@ -42466,6 +42475,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	  exit: function (node, parent, index, context) {
 	    if (context.nodeId === node.__id) {
 	      context.inReturnStatement = false;
+	      delete context.nodeId;
+	      delete node.__id;
+	    }
+	  }
+	};
+
+
+/***/ },
+/* 403 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var randomId = __webpack_require__(387);
+	
+	module.exports = {
+	  enter: function (node, parent, index, context) {
+	    if (node.type === 'ObjectProperty' && node.value.type === 'CSSXDefinition') {
+	      node.__id = context.nodeId = randomId();
+	      context.inObjectProperty = true;
+	    }
+	  },
+	  exit: function (node, parent, index, context) {
+	    if (context.nodeId === node.__id) {
+	      context.inObjectProperty = false;
 	      delete context.nodeId;
 	      delete node.__id;
 	    }

@@ -15,7 +15,8 @@ var visitors = {
   CSSXMediaQueryElement: require('./visitors/CSSXMediaQueryElement'),
   CSSXKeyframesElement: require('./visitors/CSSXKeyframesElement'),
   CallExpression: require('./visitors/CallExpression'),
-  ReturnStatement: require('./visitors/ReturnStatement')
+  ReturnStatement: require('./visitors/ReturnStatement'),
+  ObjectProperty: require('./visitors/ObjectProperty')
 };
 
 module.exports = function (code, options) {

@@ -50,7 +50,12 @@ module.exports = {
     };
   },
   exit: function (node, parent, index, context) {
-    var rulesRegistration, newStylesheetExpr, createSelfInvoke, funcBody, funcExpr;
+    var rulesRegistration;
+    var newStylesheetExpr;
+    var createSelfInvoke;
+    var funcExpr;
+    var funcCallExpr;
+    var result;
 
     delete context.addToCSSXSelfInvoke;
 
@@ -107,19 +112,22 @@ module.exports = {
     createSelfInvoke = function (expr) { return t.parenthesizedExpression(expr); };
 
     // wrapping up the self-invoke function
-    funcBody = t.blockStatement(funcLines);
-    funcExpr = t.callExpression(
-      t.memberExpression(
-        t.functionExpression(null, [], funcBody),
-        t.identifier('apply')
-      ),
+    funcExpr = t.functionExpression(null, [], t.blockStatement(funcLines));
+    funcCallExpr = t.callExpression(
+      t.memberExpression(funcExpr, t.identifier('apply')),
       [t.thisExpression()]
     );
 
-    if (isArray(parent)) {
-      injectAt(parent, index, createSelfInvoke(funcExpr));
+    if (context.inObjectProperty) {
+      result = funcExpr;
     } else {
-      parent[index] = createSelfInvoke(funcExpr);
+      result = createSelfInvoke(funcCallExpr);
+    }
+
+    if (isArray(parent)) {
+      injectAt(parent, index, result);
+    } else {
+      parent[index] = result;
     }
   }
 };

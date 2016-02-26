@@ -71,6 +71,33 @@ var styles = {
 };
 ```
 
+#### CSSX as a value of literal property
+
+Sometimes you don't want to create a new stylesheet but still define styles. If we pass `cssx` expression to an object property then it is still wrapped in a closure but it is not executed. For example:
+
+```js
+var obj = {
+  styles: cssx(
+    body {
+      color: `this.color`;
+      margin: 0;
+      padding: 0;
+    }
+  ),
+  color: '#ff2244'
+};
+```
+
+As it is this code is not doing anything. However if we run `obj.styles()` we'll get a new stylesheet that results to the following css:
+
+```css
+body {
+  padding: 0;
+  margin: 0;
+  color: #ff2244;
+}
+```
+
 ## Using JavaScript
 
 The biggest benefit of CSSX is the fact that it's written in JavaScript context. So it has an access to all the data in the current scope.
