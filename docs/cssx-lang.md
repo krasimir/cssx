@@ -115,7 +115,7 @@ cssx(
 
 There are three ways define dynamic expressions:
 
-* &#8216;` ... `&#8216; (grave accents (backticks))
+* `\` ... `\`; (grave accents (backticks))
 * `{{ ... }}`
 * `<% ... %>`
 
