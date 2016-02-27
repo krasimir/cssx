@@ -8,7 +8,7 @@ var expect = chai.expect;
 var d = describe;
 
 var tests = [];
-// var only = '18'.split(',');
+// var only = '20'.split(',');
 
 glob.sync(__dirname + '/fixtures/cssx-transpiler/**/actual.js').forEach(function (actual) {
   var testDir = path.dirname(actual), testDirParts = testDir.split('/');

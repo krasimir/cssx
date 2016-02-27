@@ -108,12 +108,18 @@ var value = 18;
 
 cssx(
   body {
-    font-`property`: `value + 2`px;
+    font-<% property %>: <% value + 2 %>px;
   }
 );
 ```
 
-The transpiler converts the strings wrapped in grave accents (backticks) to a valid JavaScript. The code above is transformed to the following:
+There are three ways define dynamic expressions:
+
+* `` ... `` (grave accents (backticks))
+* `{{ ... }}`
+* `<% ... %>`
+
+The transpiler converts the string inside the expression to a valid JavaScript. The code above is transformed to the following:
 
 ```js
 var property = 'size';
@@ -123,12 +129,12 @@ var value = 18;
   var _2 = {};
   _2["font-" + property] = value + 2 + "px";
 
-  var _1 = cssx.s('_1');
+  var _1 = cssx('_1');
 
   _1.add('body', _2);
 
   return _1;
-}).apply(this);
+}.apply(this));
 ```
 
 And it results in a valid CSS:

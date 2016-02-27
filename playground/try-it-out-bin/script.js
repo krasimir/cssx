@@ -12,7 +12,11 @@ var Bin = function () {
     foldGutter: true,
     gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
   };
-  var DEFAULT_JAVASCRIPT = "var sheet = cssx(\n\
+  var DEFAULT_JAVASCRIPT = "var rotation = 12;\n\
+var color = '#00F';\n\
+var y = 10;\n\
+\n\
+var sheet = cssx(\n\
   p {\n\
     font-size: 22px;\n\
     color: #9f0000;\n\
@@ -20,9 +24,9 @@ var Bin = function () {
   }\n\
   p span {\n\
     display: inline-block;\n\
-    color: #000;\n\
+    color: `color`;\n\
     font-weight: bold;\n\
-    (w)transform: translateY(10px) rotateZ(10deg);\n\
+    (w)transform: translateY(<% y %>px) rotateZ({{ rotation }}deg);\n\
   }\n\
 );";
   var DEFAULT_HTML = '<p>\n  Hello world.<br />\n  That\'s a <span>CSSX</span> demonstration.\n</p>';

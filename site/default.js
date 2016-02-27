@@ -19,7 +19,7 @@ cssx(
 function letItSnow(bgColor) {
   cssx(
     body, a, h1 { color: #FFF; }
-    body { background: `bgColor`; }
+    body { background: <% bgColor %>; }
     .left {
       background-image: 
         url("./site/imgs/s1.png"),

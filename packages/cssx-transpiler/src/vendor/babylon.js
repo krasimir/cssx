@@ -1,44 +1,44 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.babylon = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.babylon = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
 exports.__esModule = true;
 exports.parse = parse;
 
-var _parser = require("./parser");
+var _parser = _dereq_(5);
 
 var _parser2 = _interopRequireDefault(_parser);
 
-require("./parser/util");
+_dereq_(10);
 
-require("./parser/statement");
+_dereq_(9);
 
-require("./parser/lval");
+_dereq_(7);
 
-require("./parser/expression");
+_dereq_(4);
 
-require("./parser/node");
+_dereq_(8);
 
-require("./parser/location");
+_dereq_(6);
 
-require("./parser/comments");
+_dereq_(3);
 
-var _tokenizerTypes = require("./tokenizer/types");
+var _tokenizerTypes = _dereq_(26);
 
-require("./tokenizer");
+_dereq_(24);
 
-require("./tokenizer/context");
+_dereq_(23);
 
-var _pluginsFlow = require("./plugins/flow");
+var _pluginsFlow = _dereq_(20);
 
 var _pluginsFlow2 = _interopRequireDefault(_pluginsFlow);
 
-var _pluginsJsx = require("./plugins/jsx");
+var _pluginsJsx = _dereq_(21);
 
 var _pluginsJsx2 = _interopRequireDefault(_pluginsJsx);
 
-var _pluginsCssx = require("./plugins/cssx");
+var _pluginsCssx = _dereq_(14);
 
 var _pluginsCssx2 = _interopRequireDefault(_pluginsCssx);
 
@@ -51,7 +51,7 @@ function parse(input, options) {
 }
 
 exports.tokTypes = _tokenizerTypes.types;
-},{"./parser":5,"./parser/comments":3,"./parser/expression":4,"./parser/location":6,"./parser/lval":7,"./parser/node":8,"./parser/statement":9,"./parser/util":10,"./plugins/cssx":14,"./plugins/flow":20,"./plugins/jsx":21,"./tokenizer":24,"./tokenizer/context":23,"./tokenizer/types":26,"babel-runtime/helpers/interop-require-default":35}],2:[function(require,module,exports){
+},{"10":10,"14":14,"20":20,"21":21,"23":23,"24":24,"26":26,"3":3,"35":35,"4":4,"5":5,"6":6,"7":7,"8":8,"9":9}],2:[function(_dereq_,module,exports){
 /* @flow */
 // A second optional argument can be given to further configure
 "use strict";
@@ -94,7 +94,7 @@ function getOptions(opts /*:: ?: Object*/) /*: Object*/ {
 }
 
 // the parser process. These options are recognized:
-},{}],3:[function(require,module,exports){
+},{}],3:[function(_dereq_,module,exports){
 /* @flow */
 /* eslint max-len: 0 */
 
@@ -124,9 +124,9 @@ function getOptions(opts /*:: ?: Object*/) /*: Object*/ {
 
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _index = require("./index");
+var _index = _dereq_(5);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -247,7 +247,7 @@ pp.processComment = function (node) {
 
   stack.push(node);
 };
-},{"./index":5,"babel-runtime/helpers/interop-require-default":35}],4:[function(require,module,exports){
+},{"35":35,"5":5}],4:[function(_dereq_,module,exports){
 /* eslint indent: 0 */
 /* eslint max-len: 0 */
 
@@ -271,19 +271,19 @@ pp.processComment = function (node) {
 
 "use strict";
 
-var _Object$create = require("babel-runtime/core-js/object/create")["default"];
+var _Object$create = _dereq_(31)["default"];
 
-var _getIterator = require("babel-runtime/core-js/get-iterator")["default"];
+var _getIterator = _dereq_(30)["default"];
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _tokenizerTypes = require("../tokenizer/types");
+var _tokenizerTypes = _dereq_(26);
 
-var _index = require("./index");
+var _index = _dereq_(5);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _utilIdentifier = require("../util/identifier");
+var _utilIdentifier = _dereq_(27);
 
 var pp = _index2["default"].prototype;
 
@@ -1300,26 +1300,26 @@ pp.parseYield = function () {
   }
   return this.finishNode(node, "YieldExpression");
 };
-},{"../tokenizer/types":26,"../util/identifier":27,"./index":5,"babel-runtime/core-js/get-iterator":30,"babel-runtime/core-js/object/create":31,"babel-runtime/helpers/interop-require-default":35}],5:[function(require,module,exports){
+},{"26":26,"27":27,"30":30,"31":31,"35":35,"5":5}],5:[function(_dereq_,module,exports){
 /* @flow */
 
 "use strict";
 
-var _inherits = require("babel-runtime/helpers/inherits")["default"];
+var _inherits = _dereq_(34)["default"];
 
-var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
+var _classCallCheck = _dereq_(33)["default"];
 
-var _getIterator = require("babel-runtime/core-js/get-iterator")["default"];
+var _getIterator = _dereq_(30)["default"];
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
 exports.__esModule = true;
 
-var _utilIdentifier = require("../util/identifier");
+var _utilIdentifier = _dereq_(27);
 
-var _options = require("../options");
+var _options = _dereq_(2);
 
-var _tokenizer = require("../tokenizer");
+var _tokenizer = _dereq_(24);
 
 var _tokenizer2 = _interopRequireDefault(_tokenizer);
 
@@ -1409,14 +1409,14 @@ var Parser = (function (_Tokenizer) {
 })(_tokenizer2["default"]);
 
 exports["default"] = Parser;
-},{"../options":2,"../tokenizer":24,"../util/identifier":27,"babel-runtime/core-js/get-iterator":30,"babel-runtime/helpers/class-call-check":33,"babel-runtime/helpers/inherits":34,"babel-runtime/helpers/interop-require-default":35}],6:[function(require,module,exports){
+},{"2":2,"24":24,"27":27,"30":30,"33":33,"34":34,"35":35}],6:[function(_dereq_,module,exports){
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _utilLocation = require("../util/location");
+var _utilLocation = _dereq_(28);
 
-var _index = require("./index");
+var _index = _dereq_(5);
 
 var _index2 = _interopRequireDefault(_index);
 
@@ -1436,22 +1436,22 @@ pp.raise = function (pos, message) {
   err.loc = loc;
   throw err;
 };
-},{"../util/location":28,"./index":5,"babel-runtime/helpers/interop-require-default":35}],7:[function(require,module,exports){
+},{"28":28,"35":35,"5":5}],7:[function(_dereq_,module,exports){
 /* eslint indent: 0 */
 
 "use strict";
 
-var _getIterator = require("babel-runtime/core-js/get-iterator")["default"];
+var _getIterator = _dereq_(30)["default"];
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _tokenizerTypes = require("../tokenizer/types");
+var _tokenizerTypes = _dereq_(26);
 
-var _index = require("./index");
+var _index = _dereq_(5);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _utilIdentifier = require("../util/identifier");
+var _utilIdentifier = _dereq_(27);
 
 var pp = _index2["default"].prototype;
 
@@ -1738,18 +1738,18 @@ pp.checkLVal = function (expr, isBinding, checkClashes) {
       this.raise(expr.start, (isBinding ? "Binding" : "Assigning to") + " rvalue");
   }
 };
-},{"../tokenizer/types":26,"../util/identifier":27,"./index":5,"babel-runtime/core-js/get-iterator":30,"babel-runtime/helpers/interop-require-default":35}],8:[function(require,module,exports){
+},{"26":26,"27":27,"30":30,"35":35,"5":5}],8:[function(_dereq_,module,exports){
 "use strict";
 
-var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
+var _classCallCheck = _dereq_(33)["default"];
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _index = require("./index");
+var _index = _dereq_(5);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _utilLocation = require("../util/location");
+var _utilLocation = _dereq_(28);
 
 // Start an AST node, attaching a start offset.
 
@@ -1802,25 +1802,25 @@ pp.finishNode = function (node, type) {
 pp.finishNodeAt = function (node, type, pos, loc) {
   return finishNodeAt.call(this, node, type, pos, loc);
 };
-},{"../util/location":28,"./index":5,"babel-runtime/helpers/class-call-check":33,"babel-runtime/helpers/interop-require-default":35}],9:[function(require,module,exports){
+},{"28":28,"33":33,"35":35,"5":5}],9:[function(_dereq_,module,exports){
 /* eslint indent: 0 */
 /* eslint max-len: 0 */
 
 "use strict";
 
-var _Object$create = require("babel-runtime/core-js/object/create")["default"];
+var _Object$create = _dereq_(31)["default"];
 
-var _getIterator = require("babel-runtime/core-js/get-iterator")["default"];
+var _getIterator = _dereq_(30)["default"];
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _tokenizerTypes = require("../tokenizer/types");
+var _tokenizerTypes = _dereq_(26);
 
-var _index = require("./index");
+var _index = _dereq_(5);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _utilWhitespace = require("../util/whitespace");
+var _utilWhitespace = _dereq_(29);
 
 var pp = _index2["default"].prototype;
 
@@ -2825,20 +2825,20 @@ pp.parseImportSpecifierDefault = function (id, startPos, startLoc) {
   this.checkLVal(node.local, true);
   return this.finishNode(node, "ImportDefaultSpecifier");
 };
-},{"../tokenizer/types":26,"../util/whitespace":29,"./index":5,"babel-runtime/core-js/get-iterator":30,"babel-runtime/core-js/object/create":31,"babel-runtime/helpers/interop-require-default":35}],10:[function(require,module,exports){
+},{"26":26,"29":29,"30":30,"31":31,"35":35,"5":5}],10:[function(_dereq_,module,exports){
 /* @flow */
 
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _tokenizerTypes = require("../tokenizer/types");
+var _tokenizerTypes = _dereq_(26);
 
-var _index = require("./index");
+var _index = _dereq_(5);
 
 var _index2 = _interopRequireDefault(_index);
 
-var _utilWhitespace = require("../util/whitespace");
+var _utilWhitespace = _dereq_(29);
 
 var pp = _index2["default"].prototype;
 
@@ -2918,65 +2918,60 @@ pp.expect = function (type) {
 pp.unexpected = function (pos) {
   this.raise(pos != null ? pos : this.state.start, "Unexpected token");
 };
-},{"../tokenizer/types":26,"../util/whitespace":29,"./index":5,"babel-runtime/helpers/interop-require-default":35}],11:[function(require,module,exports){
+},{"26":26,"29":29,"35":35,"5":5}],11:[function(_dereq_,module,exports){
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _tokenizerContext = require("../../tokenizer/context");
+var _tokenizerContext = _dereq_(23);
 
-var _parser = require("../../parser");
+var _parser = _dereq_(5);
 
 var _parser2 = _interopRequireDefault(_parser);
 
-_tokenizerContext.types.cssx = new _tokenizerContext.TokContext('cssx');
-_tokenizerContext.types.cssxDefinition = new _tokenizerContext.TokContext('cssxDefinition');
-_tokenizerContext.types.cssxSelector = new _tokenizerContext.TokContext('cssxSelector');
-_tokenizerContext.types.cssxRules = new _tokenizerContext.TokContext('cssxRules');
-_tokenizerContext.types.cssxProperty = new _tokenizerContext.TokContext('cssxProperty');
-_tokenizerContext.types.cssxValue = new _tokenizerContext.TokContext('cssxValue');
-_tokenizerContext.types.cssxMediaQuery = new _tokenizerContext.TokContext('CSSXMediaQuery');
-_tokenizerContext.types.cssxKeyframes = new _tokenizerContext.TokContext('CSSXKeyframes');
+_tokenizerContext.types.cssx = new _tokenizerContext.TokContext("cssx");
+_tokenizerContext.types.cssxDefinition = new _tokenizerContext.TokContext("cssxDefinition");
+_tokenizerContext.types.cssxSelector = new _tokenizerContext.TokContext("cssxSelector");
+_tokenizerContext.types.cssxRules = new _tokenizerContext.TokContext("cssxRules");
+_tokenizerContext.types.cssxProperty = new _tokenizerContext.TokContext("cssxProperty");
+_tokenizerContext.types.cssxValue = new _tokenizerContext.TokContext("cssxValue");
+_tokenizerContext.types.cssxMediaQuery = new _tokenizerContext.TokContext("CSSXMediaQuery");
+_tokenizerContext.types.cssxKeyframes = new _tokenizerContext.TokContext("CSSXKeyframes");
 
 var pp = _parser2["default"].prototype;
 
 var registerInOut = function registerInOut(name, context) {
-  pp['cssx' + name + 'In'] = function () {
+  pp["cssx" + name + "In"] = function () {
     var curContext = this.curContext();
 
     if (curContext === context) return;
     this.state.context.push(context);
   };
 
-  pp['cssx' + name + 'Out'] = function () {
+  pp["cssx" + name + "Out"] = function () {
     var curContext = this.curContext();
 
     if (curContext !== context) {
-      this.raise(this.state.start, 'CSSX: Not in ' + context.token + ' context');
-    };
+      this.raise(this.state.start, "CSSX: Not in " + context.token + " context");
+    }
     this.state.context.length -= 1;
   };
 };
 
-registerInOut('', _tokenizerContext.types.cssx);
-registerInOut('MediaQuery', _tokenizerContext.types.cssxMediaQuery);
-registerInOut('Keyframes', _tokenizerContext.types.cssxKeyframes);
-registerInOut('Definition', _tokenizerContext.types.cssxDefinition);
-},{"../../parser":5,"../../tokenizer/context":23,"babel-runtime/helpers/interop-require-default":35}],12:[function(require,module,exports){
+registerInOut("", _tokenizerContext.types.cssx);
+registerInOut("MediaQuery", _tokenizerContext.types.cssxMediaQuery);
+registerInOut("Keyframes", _tokenizerContext.types.cssxKeyframes);
+registerInOut("Definition", _tokenizerContext.types.cssxDefinition);
+},{"23":23,"35":35,"5":5}],12:[function(_dereq_,module,exports){
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _parser = require("../../parser");
+var _parser = _dereq_(5);
 
 var _parser2 = _interopRequireDefault(_parser);
 
 var pp = _parser2["default"].prototype;
-
-var PARSER_OPTIONS = {
-  locations: true,
-  ranges: true
-};
 
 pp.cssxExpressionRegister = function (expressions) {
   if (expressions && expressions.length > 0) {
@@ -2989,14 +2984,13 @@ pp.cssxExpressionSet = function (node) {
   var _this = this;
 
   var length = undefined,
-      codeStr = undefined,
-      exprNode = undefined;
+      codeStr = undefined;
 
   if (this.state._cssxExpressions && this.state._cssxExpressions.length > 0) {
     node.expressions = this.state._cssxExpressions.map(function (expr) {
       length = expr.end - expr.start;
       codeStr = _this.state.input.substr(expr.start, length).substr(1, length - 2);
-      if (codeStr === '') return false;
+      if (codeStr === "") return false;
       return {
         start: expr.start,
         end: expr.end,
@@ -3011,22 +3005,22 @@ pp.cssxExpressionSet = function (node) {
   }
   this.state._cssxExpressions = false;
 };
-},{"../../parser":5,"babel-runtime/helpers/interop-require-default":35}],13:[function(require,module,exports){
+},{"35":35,"5":5}],13:[function(_dereq_,module,exports){
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _parser = require("../../parser");
+var _parser = _dereq_(5);
 
 var _parser2 = _interopRequireDefault(_parser);
 
-var _tokenizer = require("../../tokenizer");
+var _tokenizer = _dereq_(24);
 
-var _utilities = require('./utilities');
+var _utilities = _dereq_(19);
 
 var pp = _parser2["default"].prototype;
-var MediaQueryEntryPoint = '@media ';
-var keyframesEntryPoint = ['@keyframes', '@-webkit-keyframes', '@-moz-keyframes', '@-o-keyframes'];
+var MediaQueryEntryPoint = "@media ";
+var keyframesEntryPoint = ["@keyframes", "@-webkit-keyframes", "@-moz-keyframes", "@-o-keyframes"];
 
 pp.cssxIsMediaQuery = function () {
   if (this.state.value.toString().indexOf(MediaQueryEntryPoint) === 0) {
@@ -3036,7 +3030,7 @@ pp.cssxIsMediaQuery = function () {
 };
 
 pp.cssxIsKeyFramesEntryPoint = function () {
-  var value = this.state.value.toString().split(' ')[0];
+  var value = this.state.value.toString().split(" ")[0];
   if (keyframesEntryPoint.indexOf(value) >= 0) {
     return true;
   }
@@ -3100,7 +3094,7 @@ pp.cssxLookahead = function () {
     } catch (e) {
       // The next token cannot be parsed.
       // We still put something in the stack though so we
-      // don't break the logic that uses the result of
+      // don"t break the logic that uses the result of
       // this function
       stack.push({ type: null });
     }
@@ -3131,7 +3125,7 @@ pp.cssxDebugComments = function (comments) {
 };
 
 pp.cssxClearSpaceAtTheEnd = function (value) {
-  if (value.charAt(value.length - 1) === ' ') {
+  if (value.charAt(value.length - 1) === " ") {
     --this.state.pos;
     return value.substr(0, value.length - 1);
   }
@@ -3169,14 +3163,13 @@ pp.cssxStoreCurrentToken = function () {
 };
 
 pp.cssxSyncLocPropsToCurPos = function (p) {
-  var pos = typeof p === 'undefined' ? this.state.pos : p;
+  var pos = typeof p === "undefined" ? this.state.pos : p;
 
   this.state.start = this.state.end = pos;
   this.state.startLoc = this.state.endLoc = _utilities.posToLoc(pos, this.state.input);
 };
 
-pp.cssxSyncEndTokenStateToCurPos = function (p) {
-  var pos = typeof p === 'undefined' ? this.state.pos : p;
+pp.cssxSyncEndTokenStateToCurPos = function () {
   var meta = _utilities.posToLoc(this.state.pos, this.state.input, true);
 
   this.state.endLoc.line = meta.line;
@@ -3184,46 +3177,40 @@ pp.cssxSyncEndTokenStateToCurPos = function (p) {
   this.state.lineStart = meta.lineStart;
   this.state.curLine = meta.curLine;
 };
-},{"../../parser":5,"../../tokenizer":24,"./utilities":19,"babel-runtime/helpers/interop-require-default":35}],14:[function(require,module,exports){
+},{"19":19,"24":24,"35":35,"5":5}],14:[function(_dereq_,module,exports){
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
 exports.__esModule = true;
 exports["default"] = CSSX;
 
-var _tokenizerTypes = require("../../tokenizer/types");
+var _tokenizerTypes = _dereq_(26);
 
-var _tokenizerContext = require("../../tokenizer/context");
+var _tokenizerContext = _dereq_(23);
 
-var _parser = require("../../parser");
+var _parser = _dereq_(5);
 
 var _parser2 = _interopRequireDefault(_parser);
 
-var _utilLocation = require("../../util/location");
+_dereq_(18);
 
-var _utilities = require("./utilities");
+_dereq_(11);
 
-require("./types");
+_dereq_(15);
 
-require("./context");
+_dereq_(16);
 
-require("./parsers");
+_dereq_(13);
 
-require("./readers");
-
-require("./helpers");
-
-require("./expressions");
+_dereq_(12);
 
 var pp = _parser2["default"].prototype;
 
 function CSSX(instance) {
 
-  instance.extend('parseStatement', function (inner) {
+  instance.extend("parseStatement", function (inner) {
     return function (declaration, topLevel) {
-      var result = undefined;
-
       if (this.cssxMatchPreviousToken(_tokenizerTypes.types.cssxStart) && this.curContext() !== _tokenizerContext.types.cssxDefinition) {
         this.cssxDefinitionIn();
         return this.cssxParse();
@@ -3239,7 +3226,7 @@ function CSSX(instance) {
     };
   });
 
-  instance.extend('parseBlock', function (inner) {
+  instance.extend("parseBlock", function (inner) {
     return function (allowDirectives /*:: ?*/) {
       // istanbul ignore next
 
@@ -3249,9 +3236,9 @@ function CSSX(instance) {
         return inner.call(_this, allowDirectives);
       };
       var context = this.curContext(),
-          blockStmtNode;
+          blockStmtNode = undefined;
       var rules = [],
-          lastToken;
+          lastToken = undefined;
 
       if (context === _tokenizerContext.types.cssxRules && this.match(_tokenizerTypes.types.cssxRulesStart)) {
 
@@ -3268,14 +3255,14 @@ function CSSX(instance) {
         }
         blockStmtNode.body = rules;
         lastToken = this.cssxGetPreviousToken();
-        return this.finishNodeAt(blockStmtNode, 'CSSXRules', lastToken.end, lastToken.loc.end);
+        return this.finishNodeAt(blockStmtNode, "CSSXRules", lastToken.end, lastToken.loc.end);
       }
 
       return fallback();
     };
   });
 
-  instance.extend('readToken', function (inner) {
+  instance.extend("readToken", function (inner) {
     return function (code) {
       // istanbul ignore next
 
@@ -3341,7 +3328,7 @@ function CSSX(instance) {
     };
   });
 
-  instance.extend('getTokenFromCode', function (inner) {
+  instance.extend("getTokenFromCode", function (inner) {
     return function (code) {
       // istanbul ignore next
 
@@ -3354,7 +3341,7 @@ function CSSX(instance) {
       // when the selector starts with #
       if (code === 35 && (this.match(_tokenizerTypes.types.cssxStart) || this.match(_tokenizerTypes.types.cssxRulesEnd))) {
         ++this.state.pos;
-        return this.finishToken(_tokenizerTypes.types.string, '#');
+        return this.finishToken(_tokenizerTypes.types.string, "#");
       }
 
       return fallback();
@@ -3371,38 +3358,32 @@ function CSSX(instance) {
     };
   });
 
-  instance.extend('processComment', function (inner) {
+  instance.extend("processComment", function (inner) {
     return function (node) {
-      var last;
-
-      if (node.type === 'CSSXRule') {
+      if (node.type === "CSSXRule") {
         this.state.trailingComments.length = 0;
         this.state.leadingComments.length = 0;
       }
-
       return inner.call(this, node);
     };
   });
 }
 
-;
-
-pp.cssxEntryPoint = function (code) {
+pp.cssxEntryPoint = function () {
   var nextToken = this.lookahead();
-  var name = undefined,
-      parenL = undefined,
+  var parenL = undefined,
       future = undefined,
       cState = undefined,
       firstInCSSX = undefined;
 
-  if (nextToken.type === _tokenizerTypes.types.name && nextToken.value === 'cssx' && this.cssxMatchNextToken(_tokenizerTypes.types.name, _tokenizerTypes.types.parenL)) {
+  if (nextToken.type === _tokenizerTypes.types.name && nextToken.value === "cssx" && this.cssxMatchNextToken(_tokenizerTypes.types.name, _tokenizerTypes.types.parenL)) {
     cState = this.state.clone();
     future = this.cssxLookahead(3);
     parenL = future.stack[1];
     firstInCSSX = future.stack[2];
 
-    // Making sure that we don't parse
-    // cssx('something') or cssx("something")
+    // Making sure that we don"t parse
+    // cssx("something") or cssx("something")
     if (firstInCSSX.type === _tokenizerTypes.types.string) {
       return false;
     }
@@ -3421,36 +3402,36 @@ pp.cssxEntryPoint = function (code) {
   return false;
 };
 
-pp.cssxRulesEntryPoint = function (code) {
+pp.cssxRulesEntryPoint = function () {
   return this.match(_tokenizerTypes.types.braceL) && this.cssxMatchNextToken(_tokenizerTypes.types.name, _tokenizerTypes.types.colon);
 };
 
 /* useful watchers
 
-watch('this.state.type.label')
-watch('this.state.pos')
-watch('this.state.start')
-watch('this.state.end')
-watch('this.state.startLoc')
-watch('this.state.endLoc')
-watch('this.state.input.substr(0, this.state.pos)')
-watch('this.state.context.map(function(i){return i.token}).join(",")')
-watch('this.lookahead().type.label')
+watch("this.state.type.label")
+watch("this.state.pos")
+watch("this.state.start")
+watch("this.state.end")
+watch("this.state.startLoc")
+watch("this.state.endLoc")
+watch("this.state.input.substr(0, this.state.pos)")
+watch("this.state.context.map(function(i){return i.token}).join(",")")
+watch("this.lookahead().type.label")
 
-watch('String.fromCharCode(ch) + " / " + ch')
+watch("String.fromCharCode(ch) + " / " + ch")
 
 */
 module.exports = exports["default"];
-},{"../../parser":5,"../../tokenizer/context":23,"../../tokenizer/types":26,"../../util/location":28,"./context":11,"./expressions":12,"./helpers":13,"./parsers":15,"./readers":16,"./types":18,"./utilities":19,"babel-runtime/helpers/interop-require-default":35}],15:[function(require,module,exports){
+},{"11":11,"12":12,"13":13,"15":15,"16":16,"18":18,"23":23,"26":26,"35":35,"5":5}],15:[function(_dereq_,module,exports){
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _parser = require("../../parser");
+var _parser = _dereq_(5);
 
 var _parser2 = _interopRequireDefault(_parser);
 
-var _tokenizerTypes = require("../../tokenizer/types");
+var _tokenizerTypes = _dereq_(26);
 
 var pp = _parser2["default"].prototype;
 
@@ -3461,7 +3442,7 @@ pp.cssxParse = function () {
   this.skipSpace();
   this.cssxReadSelector();
   this.parseBlockBody(definition, true, false, _tokenizerTypes.types.cssxEnd);
-  this.finishNode(definition, 'CSSXDefinition');
+  this.finishNode(definition, "CSSXDefinition");
   return definition;
 };
 
@@ -3484,7 +3465,7 @@ pp.cssxParseExpression = function () {
     }
   }
 
-  result = this.finishNodeAt(exprNode, 'CSSXExpression', this.state.end, this.state.endLoc);
+  result = this.finishNodeAt(exprNode, "CSSXExpression", this.state.end, this.state.endLoc);
   this.next();
   return result;
 };
@@ -3500,13 +3481,13 @@ pp.cssxParseElement = function () {
 
   selectorNode.value = this.state.value;
   this.cssxExpressionSet(selectorNode);
-  elementNode.selector = this.finishNodeAt(selectorNode, 'CSSXSelector', this.state.end, this.state.endLoc);
+  elementNode.selector = this.finishNodeAt(selectorNode, "CSSXSelector", this.state.end, this.state.endLoc);
   this.next();
   if (!this.match(_tokenizerTypes.types.cssxRulesEnd)) {
     elementNode.body = this.parseBlock();
   }
   lastToken = this.cssxGetPreviousToken();
-  result = this.finishNodeAt(elementNode, 'CSSXElement', lastToken.end, lastToken.loc.end);
+  result = this.finishNodeAt(elementNode, "CSSXElement", lastToken.end, lastToken.loc.end);
   this.nextToken();
   return result;
 };
@@ -3517,7 +3498,7 @@ pp.cssxParseMediaQueryElement = function () {
   var _this = this;
 
   return this.cssxParseNestedSelectors({
-    name: 'CSSXMediaQueryElement',
+    name: "CSSXMediaQueryElement",
     context: {
       "in": function _in() {
         return _this.cssxMediaQueryIn();
@@ -3529,8 +3510,8 @@ pp.cssxParseMediaQueryElement = function () {
       end: _tokenizerTypes.types.cssxMediaQueryEnd
     },
     errors: {
-      unclosed: 'CSSX: unclosed media query block',
-      expectSelector: 'CSSX: expected css selector after media query definition'
+      unclosed: "CSSX: unclosed media query block",
+      expectSelector: "CSSX: expected css selector after media query definition"
     }
   });
 };
@@ -3541,7 +3522,7 @@ pp.cssxParseKeyframesElement = function () {
   var _this2 = this;
 
   return this.cssxParseNestedSelectors({
-    name: 'CSSXKeyframesElement',
+    name: "CSSXKeyframesElement",
     context: {
       "in": function _in() {
         return _this2.cssxKeyframesIn();
@@ -3553,8 +3534,8 @@ pp.cssxParseKeyframesElement = function () {
       end: _tokenizerTypes.types.cssxKeyframesEnd
     },
     errors: {
-      unclosed: 'CSSX: unclosed @keyframes block',
-      expectSelector: 'CSSX: expected keyframe as a start of the @keyframes block'
+      unclosed: "CSSX: unclosed @keyframes block",
+      expectSelector: "CSSX: expected keyframe as a start of the @keyframes block"
     }
   });
 };
@@ -3571,7 +3552,7 @@ pp.cssxParseNestedSelectors = function (options) {
   this.cssxStoreCurrentToken();
 
   if (!this.cssxMatchNextToken(_tokenizerTypes.types.braceL)) {
-    this.raise(this.state.pos, 'CSSX: expected { after query definition');
+    this.raise(this.state.pos, "CSSX: expected { after query definition");
   }
 
   ++this.state.pos;
@@ -3621,7 +3602,7 @@ pp.cssxParseRule = function (propertyNode, valueNode) {
   node.label = propertyNode;
   node.body = valueNode;
 
-  return this.finishNodeAt(node, 'CSSXRule', pos, locEnd);
+  return this.finishNodeAt(node, "CSSXRule", pos, locEnd);
 };
 
 pp.cssxParseRuleChild = function (type, value, pos, loc) {
@@ -3631,76 +3612,112 @@ pp.cssxParseRuleChild = function (type, value, pos, loc) {
   node.name = value;
   return this.finishNodeAt(node, type, this.state.lastTokEnd, this.state.lastTokEndLoc);
 };
-},{"../../parser":5,"../../tokenizer/types":26,"babel-runtime/helpers/interop-require-default":35}],16:[function(require,module,exports){
+},{"26":26,"35":35,"5":5}],16:[function(_dereq_,module,exports){
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
-var _parser = require("../../parser");
+var _parser = _dereq_(5);
 
 var _parser2 = _interopRequireDefault(_parser);
 
-var _utilIdentifier = require("../../util/identifier");
+var _utilIdentifier = _dereq_(27);
 
-var _tokenizerTypes = require("../../tokenizer/types");
+var _tokenizerTypes = _dereq_(26);
 
-var _tokenizerContext = require("../../tokenizer/context");
+var _tokenizerContext = _dereq_(23);
 
-var _settings = require("./settings");
+var _settings = _dereq_(17);
 
-var _utilities = require('./utilities');
+var _utilities = _dereq_(19);
 
 var pp = _parser2["default"].prototype;
+
+function codePointToString(code) {
+  // UTF-16 Decoding
+  if (code <= 0xFFFF) {
+    return String.fromCharCode(code);
+  } else {
+    return String.fromCharCode((code - 0x10000 >> 10) + 0xD800, (code - 0x10000 & 1023) + 0xDC00);
+  }
+}
 
 pp.cssxReadWord = function (readUntil) {
   // istanbul ignore next
 
   var _this = this;
 
-  var word = '';
+  var word = "";
   var first = true;
   var chunkStart = undefined,
       cut = undefined,
-      toggle = undefined;
+      cutPart = undefined;
   var readingDataURI = false;
   var readingNth = false;
   var readingExpression = false;
-  var dataURIPattern = ['url(data:', 41]; // 41 = )
-  var expressionPattern = [96, 96]; // 96 = `
+  var dataURIPattern = ["url(data:", 41]; // 41 = )
+  var expressionStartPatterns = ["`", "{{", "<%"];
+  var expressionEndPattern = ["`", "}}", "%>"];
   var nthPattern = [40, 41]; // 40 = (, 41 = )
   var expression = false;
   var expressions = [];
   var numOfCharRead = 0;
+  var expressionMarkerLength = null;
 
   chunkStart = this.state.pos;
   cut = function () {
     return _this.input.slice(chunkStart, _this.state.pos);
   };
+  cutPart = function (length) {
+    return _this.input.substr(_this.state.pos, length);
+  };
+
   this.state.containsEsc = false;
 
-  while (this.state.pos < this.input.length) {
-    var ch = this.fullCharCodeAtPos();
-
+  var _loop = function () {
+    var expressionStartPos = null;
+    var ch = _this.fullCharCodeAtPos();
+    var pos = _this.state.pos;
     if (cut() === dataURIPattern[0]) readingDataURI = true;
     if (ch === dataURIPattern[1]) readingDataURI = false;
 
+    expressionStartPatterns.forEach(function (esp) {
+      if (cutPart(esp.length) === esp && !readingExpression) {
+        readingExpression = true;
+        expressionStartPos = pos;
+        expressionMarkerLength = esp.length;
+      }
+    });
+
+    expressionEndPattern.forEach(function (eep) {
+      if (cutPart(eep.length) === eep && pos !== expressionStartPos) {
+        readingExpression = false;
+      }
+    });
+
     if (ch === nthPattern[0]) readingNth = true;
 
-    if (readUntil.call(this, ch) || readingDataURI || readingNth || ch === expressionPattern[0] || expression !== false) {
+    if (readUntil.call(_this, ch) || readingDataURI || readingNth || readingExpression || expression !== false) {
 
       var inc = ch <= 0xffff ? 1 : 2;
-      this.state.pos += inc;
+      _this.state.pos += inc;
 
       // expression block end detection
-      if (ch === expressionPattern[1] && expression) {
-        expression.end = this.state.pos;
-        expression.inner.end = numOfCharRead + 1;
+      if (!readingExpression && expression) {
+        if (expressionMarkerLength > 1) {
+          _this.state.pos += expressionMarkerLength - 1;
+        }
+        expression.end = _this.state.pos;
+        expression.inner.end = numOfCharRead + expressionMarkerLength;
         expressions.push(expression);
         expression = false;
+        if (expressionMarkerLength > 1) {
+          numOfCharRead += expressionMarkerLength - 1;
+        }
         // expression block start detection
-      } else if (ch === expressionPattern[0] && !expression) {
+      } else if (readingExpression && !expression) {
           expression = {
-            start: this.state.pos - 1,
+            start: _this.state.pos - 1,
             inner: { start: numOfCharRead }
           };
         }
@@ -3708,45 +3725,51 @@ pp.cssxReadWord = function (readUntil) {
       // new line detection
       if (ch === 10) {
         // new line
-        ++this.state.curLine;
-        this.state.lineStart = this.state.pos;
+        ++_this.state.curLine;
+        _this.state.lineStart = _this.state.pos;
       }
     } else if (ch === 92) {
       // "\"
-      this.state.containsEsc = true;
+      _this.state.containsEsc = true;
 
-      word += this.input.slice(chunkStart, this.state.pos);
-      var escStart = this.state.pos;
+      word += _this.input.slice(chunkStart, _this.state.pos);
+      var escStart = _this.state.pos;
 
-      if (this.input.charCodeAt(++this.state.pos) !== 117) {
+      if (_this.input.charCodeAt(++_this.state.pos) !== 117) {
         // "u"
-        this.raise(this.state.pos, "CSSX: expecting Unicode escape sequence \\uXXXX");
+        _this.raise(_this.state.pos, "CSSX: expecting Unicode escape sequence \\uXXXX");
       }
 
-      ++this.state.pos;
-      var esc = this.readCodePoint();
+      ++_this.state.pos;
+      var esc = _this.readCodePoint();
       if (!(first ? _utilIdentifier.isIdentifierStart : _utilIdentifier.isIdentifierChar)(esc, true)) {
-        this.raise(escStart, "CSSX: invalid Unicode escape");
+        _this.raise(escStart, "CSSX: invalid Unicode escape");
       }
 
       word += codePointToString(esc);
-      chunkStart = this.state.pos;
+      chunkStart = _this.state.pos;
     } else {
-      break;
+      return "break";
     }
     if (ch === nthPattern[1]) readingNth = false;
     first = false;
     ++numOfCharRead;
+  };
+
+  while (this.state.pos < this.input.length) {
+    var _ret = _loop();
+
+    // istanbul ignore next
+    if (_ret === "break") break;
   }
   word = word + cut();
   return { str: word, expressions: expressions };
 };
 
-pp.cssxReadSelector = function (lastToken) {
+pp.cssxReadSelector = function () {
   var startLoc = undefined,
       pos = undefined,
       value = undefined,
-      node = undefined,
       word = undefined;
   this.state.context.push(_tokenizerContext.types.cssxSelector);
   startLoc = this.state.curPosition();
@@ -3777,8 +3800,8 @@ pp.cssxReadProperty = function () {
   word = this.cssxReadWord(pp.cssxReadPropCharUntil);
   property = word.str;
 
-  if (property === '') {
-    this.raise(this.state.pos, 'CSSX: no CSS property provided');
+  if (property === "") {
+    this.raise(this.state.pos, "CSSX: no CSS property provided");
   }
 
   this.cssxExpressionRegister(word.expressions);
@@ -3788,17 +3811,16 @@ pp.cssxReadProperty = function () {
   this.finishToken(_tokenizerTypes.types.cssxProperty, property);
 
   if (this.lookahead().type !== _tokenizerTypes.types.colon) {
-    this.raise(this.state.pos, 'CSSX: expecting a colon after CSS property');
+    this.raise(this.state.pos, "CSSX: expecting a colon after CSS property");
   }
   this.next();
-  node = this.cssxParseRuleChild('CSSXProperty', property, pos, loc);
+  node = this.cssxParseRuleChild("CSSXProperty", property, pos, loc);
 
   return node;
 };
 
 pp.cssxReadValue = function () {
   var startLoc = undefined,
-      endLoc = undefined,
       pos = undefined,
       value = undefined,
       node = undefined,
@@ -3814,7 +3836,7 @@ pp.cssxReadValue = function () {
   this.state.startLoc = startLoc;
   this.finishToken(_tokenizerTypes.types.cssxValue, value);
   this.next();
-  node = this.cssxParseRuleChild('CSSXValue', value, pos, startLoc);
+  node = this.cssxParseRuleChild("CSSXValue", value, pos, startLoc);
 
   return node;
 };
@@ -3837,47 +3859,45 @@ pp.cssxReadValueCharUntil = function (code) {
 pp.cssxReadPropCharUntil = function (code) {
   return _settings.CSSXPropertyAllowedCodes.indexOf(code) >= 0 ? true : _utilIdentifier.isIdentifierChar(code);
 };
-},{"../../parser":5,"../../tokenizer/context":23,"../../tokenizer/types":26,"../../util/identifier":27,"./settings":17,"./utilities":19,"babel-runtime/helpers/interop-require-default":35}],17:[function(require,module,exports){
-'use strict';
+},{"17":17,"19":19,"23":23,"26":26,"27":27,"35":35,"5":5}],17:[function(_dereq_,module,exports){
+"use strict";
 
 exports.__esModule = true;
 
-var _tokenizerTypes = require("../../tokenizer/types");
+var _utilities = _dereq_(19);
 
-var _utilities = require('./utilities');
+var CSSXPropertyAllowedCodes = ["-"].map(_utilities.stringToCode);
 
-var CSSXPropertyAllowedCodes = ['-'].map(_utilities.stringToCode);
+var CSSXValueAllowedCodes = [" ", "\n", "\t", "#", ".", "-", "(", ")", "[", "]", "'", "\"", "%", ",", ":", "/", "\\", "!", "?"].map(_utilities.stringToCode);
 
-var CSSXValueAllowedCodes = [' ', '\n', '\t', '#', '.', '-', '(', ')', '[', ']', '\'', '"', '%', ',', ':', '/', '\\', '!', '?'].map(_utilities.stringToCode);
+var CSSXSelectorAllowedCodes = [" ", "*", ">", "+", "~", ".", ":", "=", "[", "]", "\"", "-", "!", "?", "@", "#", "$", "%", "^", "&", "'", "|", ",", "\n"].map(_utilities.stringToCode);
 
-var CSSXSelectorAllowedCodes = [' ', '*', '>', '+', '~', '.', ':', '=', '[', ']', '"', '-', '!', '?', '@', '#', '$', '%', '^', '&', '\'', '|', ',', '\n'].map(_utilities.stringToCode);
-
-exports['default'] = {
+exports["default"] = {
   CSSXPropertyAllowedCodes: CSSXPropertyAllowedCodes,
   CSSXValueAllowedCodes: CSSXValueAllowedCodes,
   CSSXSelectorAllowedCodes: CSSXSelectorAllowedCodes
 };
-module.exports = exports['default'];
-},{"../../tokenizer/types":26,"./utilities":19}],18:[function(require,module,exports){
+module.exports = exports["default"];
+},{"19":19}],18:[function(_dereq_,module,exports){
 "use strict";
 
-var _tokenizerTypes = require("../../tokenizer/types");
+var _tokenizerTypes = _dereq_(26);
 
-var _tokenizerContext = require("../../tokenizer/context");
+var _tokenizerContext = _dereq_(23);
 
-_tokenizerTypes.types.cssxStart = new _tokenizerTypes.TokenType('CSSXStart');
-_tokenizerTypes.types.cssxEnd = new _tokenizerTypes.TokenType('CSSXEnd');
-_tokenizerTypes.types.cssxSelector = new _tokenizerTypes.TokenType('CSSXSelector');
-_tokenizerTypes.types.cssxRulesStart = new _tokenizerTypes.TokenType('CSSXRulesStart');
-_tokenizerTypes.types.cssxRulesEnd = new _tokenizerTypes.TokenType('CSSXRulesEnd');
-_tokenizerTypes.types.cssxProperty = new _tokenizerTypes.TokenType('CSSXProperty');
-_tokenizerTypes.types.cssxValue = new _tokenizerTypes.TokenType('CSSXValue');
-_tokenizerTypes.types.cssxMediaQuery = new _tokenizerTypes.TokenType('CSSXMediaQuery');
-_tokenizerTypes.types.cssxMediaQueryStart = new _tokenizerTypes.TokenType('CSSXMediaQueryStart');
-_tokenizerTypes.types.cssxMediaQueryEnd = new _tokenizerTypes.TokenType('CSSXMediaQueryEnd');
-_tokenizerTypes.types.cssxKeyframes = new _tokenizerTypes.TokenType('CSSXKeyframes');
-_tokenizerTypes.types.cssxKeyframesStart = new _tokenizerTypes.TokenType('CSSXKeyframesStart');
-_tokenizerTypes.types.cssxKeyframesEnd = new _tokenizerTypes.TokenType('CSSXKeyframesEnd');
+_tokenizerTypes.types.cssxStart = new _tokenizerTypes.TokenType("CSSXStart");
+_tokenizerTypes.types.cssxEnd = new _tokenizerTypes.TokenType("CSSXEnd");
+_tokenizerTypes.types.cssxSelector = new _tokenizerTypes.TokenType("CSSXSelector");
+_tokenizerTypes.types.cssxRulesStart = new _tokenizerTypes.TokenType("CSSXRulesStart");
+_tokenizerTypes.types.cssxRulesEnd = new _tokenizerTypes.TokenType("CSSXRulesEnd");
+_tokenizerTypes.types.cssxProperty = new _tokenizerTypes.TokenType("CSSXProperty");
+_tokenizerTypes.types.cssxValue = new _tokenizerTypes.TokenType("CSSXValue");
+_tokenizerTypes.types.cssxMediaQuery = new _tokenizerTypes.TokenType("CSSXMediaQuery");
+_tokenizerTypes.types.cssxMediaQueryStart = new _tokenizerTypes.TokenType("CSSXMediaQueryStart");
+_tokenizerTypes.types.cssxMediaQueryEnd = new _tokenizerTypes.TokenType("CSSXMediaQueryEnd");
+_tokenizerTypes.types.cssxKeyframes = new _tokenizerTypes.TokenType("CSSXKeyframes");
+_tokenizerTypes.types.cssxKeyframesStart = new _tokenizerTypes.TokenType("CSSXKeyframesStart");
+_tokenizerTypes.types.cssxKeyframesEnd = new _tokenizerTypes.TokenType("CSSXKeyframesEnd");
 
 _tokenizerTypes.types.cssxRulesStart.updateContext = function (prevType) {
   if (prevType === _tokenizerTypes.types.cssxSelector) this.state.context.push(_tokenizerContext.types.cssxRules);
@@ -3887,23 +3907,23 @@ _tokenizerTypes.types.cssxRulesEnd.updateContext = function (prevType) {
     this.state.context.length -= 1; // out of cssxRules
   }
 };
-_tokenizerTypes.types.cssxEnd.updateContext = function (prevType) {
+_tokenizerTypes.types.cssxEnd.updateContext = function () {
   this.cssxDefinitionOut();
   this.cssxOut();
 };
-_tokenizerTypes.types.cssxSelector.updateContext = function (prevType) {
+_tokenizerTypes.types.cssxSelector.updateContext = function () {
   this.state.context.length -= 1;
 };
 
-_tokenizerTypes.types.cssxMediaQueryEnd.updateContext = function (prevType) {
+_tokenizerTypes.types.cssxMediaQueryEnd.updateContext = function () {
   this.cssxMediaQueryOut();
 };
 
-_tokenizerTypes.types.cssxKeyframesEnd.updateContext = function (prevType) {
+_tokenizerTypes.types.cssxKeyframesEnd.updateContext = function () {
   this.cssxKeyframesOut();
 };
-},{"../../tokenizer/context":23,"../../tokenizer/types":26}],19:[function(require,module,exports){
-'use strict';
+},{"23":23,"26":26}],19:[function(_dereq_,module,exports){
+"use strict";
 
 exports.__esModule = true;
 exports.stringToCode = stringToCode;
@@ -3914,8 +3934,6 @@ function stringToCode(ch) {
   return String(ch).charCodeAt(0);
 }
 
-;
-
 function posToLoc(pos, input, verbose) {
   var line = 1,
       loopPos = 0,
@@ -3923,7 +3941,7 @@ function posToLoc(pos, input, verbose) {
       lineStart = 0;
 
   while (loopPos < input.length && loopPos !== pos) {
-    if (input.charAt(loopPos) === '\n') {
+    if (input.charAt(loopPos) === "\n") {
       linePos = 0;
       lineStart = loopPos + 1;
       ++line;
@@ -3944,26 +3962,22 @@ function posToLoc(pos, input, verbose) {
   }
 }
 
-;
-
 function isNumber(code) {
   return code > 47 && code < 58;
 }
-
-;
-},{}],20:[function(require,module,exports){
+},{}],20:[function(_dereq_,module,exports){
 /* eslint indent: 0 */
 /* eslint max-len: 0 */
 
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
 exports.__esModule = true;
 
-var _tokenizerTypes = require("../tokenizer/types");
+var _tokenizerTypes = _dereq_(26);
 
-var _parser = require("../parser");
+var _parser = _dereq_(5);
 
 var _parser2 = _interopRequireDefault(_parser);
 
@@ -5017,30 +5031,30 @@ exports["default"] = function (instance) {
 };
 
 module.exports = exports["default"];
-},{"../parser":5,"../tokenizer/types":26,"babel-runtime/helpers/interop-require-default":35}],21:[function(require,module,exports){
+},{"26":26,"35":35,"5":5}],21:[function(_dereq_,module,exports){
 /* eslint indent: 0 */
 
 "use strict";
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
 exports.__esModule = true;
 
-var _xhtml = require("./xhtml");
+var _xhtml = _dereq_(22);
 
 var _xhtml2 = _interopRequireDefault(_xhtml);
 
-var _tokenizerTypes = require("../../tokenizer/types");
+var _tokenizerTypes = _dereq_(26);
 
-var _tokenizerContext = require("../../tokenizer/context");
+var _tokenizerContext = _dereq_(23);
 
-var _parser = require("../../parser");
+var _parser = _dereq_(5);
 
 var _parser2 = _interopRequireDefault(_parser);
 
-var _utilIdentifier = require("../../util/identifier");
+var _utilIdentifier = _dereq_(27);
 
-var _utilWhitespace = require("../../util/whitespace");
+var _utilWhitespace = _dereq_(29);
 
 var HEX_NUMBER = /^[\da-fA-F]+$/;
 var DECIMAL_NUMBER = /^\d+$/;
@@ -5484,7 +5498,7 @@ exports["default"] = function (instance) {
 };
 
 module.exports = exports["default"];
-},{"../../parser":5,"../../tokenizer/context":23,"../../tokenizer/types":26,"../../util/identifier":27,"../../util/whitespace":29,"./xhtml":22,"babel-runtime/helpers/interop-require-default":35}],22:[function(require,module,exports){
+},{"22":22,"23":23,"26":26,"27":27,"29":29,"35":35,"5":5}],22:[function(_dereq_,module,exports){
 "use strict";
 
 exports.__esModule = true;
@@ -5744,7 +5758,7 @@ exports["default"] = {
   diams: "♦"
 };
 module.exports = exports["default"];
-},{}],23:[function(require,module,exports){
+},{}],23:[function(_dereq_,module,exports){
 /* @flow */
 
 // The algorithm used to determine whether a regexp can appear at a
@@ -5753,13 +5767,13 @@ module.exports = exports["default"];
 
 "use strict";
 
-var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
+var _classCallCheck = _dereq_(33)["default"];
 
 exports.__esModule = true;
 
-var _types = require("./types");
+var _types = _dereq_(26);
 
-var _utilWhitespace = require("../util/whitespace");
+var _utilWhitespace = _dereq_(29);
 
 var TokContext = function TokContext(token /*: string*/, isExpr /*:: ?: boolean*/, preserveSpace /*:: ?: boolean*/, override /*:: ?: Function*/) {
   _classCallCheck(this, TokContext);
@@ -5851,30 +5865,30 @@ _types.types.backQuote.updateContext = function () {
   }
   this.state.exprAllowed = false;
 };
-},{"../util/whitespace":29,"./types":26,"babel-runtime/helpers/class-call-check":33}],24:[function(require,module,exports){
+},{"26":26,"29":29,"33":33}],24:[function(_dereq_,module,exports){
 /* @noflow */
 /* eslint max-len: 0 */
 /* eslint indent: 0 */
 
 "use strict";
 
-var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
+var _classCallCheck = _dereq_(33)["default"];
 
-var _interopRequireDefault = require("babel-runtime/helpers/interop-require-default")["default"];
+var _interopRequireDefault = _dereq_(35)["default"];
 
 exports.__esModule = true;
 
-var _utilIdentifier = require("../util/identifier");
+var _utilIdentifier = _dereq_(27);
 
-var _types = require("./types");
+var _types = _dereq_(26);
 
-var _context = require("./context");
+var _context = _dereq_(23);
 
-var _utilLocation = require("../util/location");
+var _utilLocation = _dereq_(28);
 
-var _utilWhitespace = require("../util/whitespace");
+var _utilWhitespace = _dereq_(29);
 
-var _state = require("./state");
+var _state = _dereq_(25);
 
 var _state2 = _interopRequireDefault(_state);
 
@@ -6739,18 +6753,18 @@ var Tokenizer = (function () {
 })();
 
 exports["default"] = Tokenizer;
-},{"../util/identifier":27,"../util/location":28,"../util/whitespace":29,"./context":23,"./state":25,"./types":26,"babel-runtime/helpers/class-call-check":33,"babel-runtime/helpers/interop-require-default":35}],25:[function(require,module,exports){
+},{"23":23,"25":25,"26":26,"27":27,"28":28,"29":29,"33":33,"35":35}],25:[function(_dereq_,module,exports){
 "use strict";
 
-var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
+var _classCallCheck = _dereq_(33)["default"];
 
 exports.__esModule = true;
 
-var _utilLocation = require("../util/location");
+var _utilLocation = _dereq_(28);
 
-var _context = require("./context");
+var _context = _dereq_(23);
 
-var _types = require("./types");
+var _types = _dereq_(26);
 
 /*:: import type { TokContext } from "./context";*/
 /*:: import type { Token } from "./index";*/
@@ -6865,7 +6879,7 @@ module.exports = exports["default"];
 // escape sequences must not be interpreted as keywords.
 
 // TODO
-},{"../util/location":28,"./context":23,"./types":26,"babel-runtime/helpers/class-call-check":33}],26:[function(require,module,exports){
+},{"23":23,"26":26,"28":28,"33":33}],26:[function(_dereq_,module,exports){
 // ## Token types
 
 // The assignment of fine-grained, information-carrying type objects
@@ -6886,7 +6900,7 @@ module.exports = exports["default"];
 
 "use strict";
 
-var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
+var _classCallCheck = _dereq_(33)["default"];
 
 exports.__esModule = true;
 
@@ -7027,7 +7041,7 @@ kw("instanceof", { beforeExpr: true, binop: 7 });
 kw("typeof", { beforeExpr: true, prefix: true, startsExpr: true });
 kw("void", { beforeExpr: true, prefix: true, startsExpr: true });
 kw("delete", { beforeExpr: true, prefix: true, startsExpr: true });
-},{"babel-runtime/helpers/class-call-check":33}],27:[function(require,module,exports){
+},{"33":33}],27:[function(_dereq_,module,exports){
 /* eslint max-len: 0 */
 
 // This is a trick taken from Esprima. It turns out that, on
@@ -7126,15 +7140,15 @@ function isIdentifierChar(code) {
   if (code <= 0xffff) return code >= 0xaa && nonASCIIidentifier.test(String.fromCharCode(code));
   return isInAstralSet(code, astralIdentifierStartCodes) || isInAstralSet(code, astralIdentifierCodes);
 }
-},{}],28:[function(require,module,exports){
+},{}],28:[function(_dereq_,module,exports){
 "use strict";
 
-var _classCallCheck = require("babel-runtime/helpers/class-call-check")["default"];
+var _classCallCheck = _dereq_(33)["default"];
 
 exports.__esModule = true;
 exports.getLineInfo = getLineInfo;
 
-var _whitespace = require("./whitespace");
+var _whitespace = _dereq_(29);
 
 // These are used when `options.locations` is on, for the
 // `startLoc` and `endLoc` properties.
@@ -7177,7 +7191,7 @@ function getLineInfo(input, offset) {
     }
   }
 }
-},{"./whitespace":29,"babel-runtime/helpers/class-call-check":33}],29:[function(require,module,exports){
+},{"29":29,"33":33}],29:[function(_dereq_,module,exports){
 /* @flow */
 
 // Matches a whole line break (where CRLF is considered a single
@@ -7199,13 +7213,13 @@ function isNewLine(code /*: number*/) /*: boolean*/ {
 
 var nonASCIIwhitespace = /[\u1680\u180e\u2000-\u200a\u202f\u205f\u3000\ufeff]/;
 exports.nonASCIIwhitespace = nonASCIIwhitespace;
-},{}],30:[function(require,module,exports){
-module.exports = { "default": require("core-js/library/fn/get-iterator"), __esModule: true };
-},{"core-js/library/fn/get-iterator":36}],31:[function(require,module,exports){
-module.exports = { "default": require("core-js/library/fn/object/create"), __esModule: true };
-},{"core-js/library/fn/object/create":37}],32:[function(require,module,exports){
-module.exports = { "default": require("core-js/library/fn/object/set-prototype-of"), __esModule: true };
-},{"core-js/library/fn/object/set-prototype-of":38}],33:[function(require,module,exports){
+},{}],30:[function(_dereq_,module,exports){
+module.exports = { "default": _dereq_(36), __esModule: true };
+},{"36":36}],31:[function(_dereq_,module,exports){
+module.exports = { "default": _dereq_(37), __esModule: true };
+},{"37":37}],32:[function(_dereq_,module,exports){
+module.exports = { "default": _dereq_(38), __esModule: true };
+},{"38":38}],33:[function(_dereq_,module,exports){
 "use strict";
 
 exports["default"] = function (instance, Constructor) {
@@ -7215,12 +7229,12 @@ exports["default"] = function (instance, Constructor) {
 };
 
 exports.__esModule = true;
-},{}],34:[function(require,module,exports){
+},{}],34:[function(_dereq_,module,exports){
 "use strict";
 
-var _Object$create = require("babel-runtime/core-js/object/create")["default"];
+var _Object$create = _dereq_(31)["default"];
 
-var _Object$setPrototypeOf = require("babel-runtime/core-js/object/set-prototype-of")["default"];
+var _Object$setPrototypeOf = _dereq_(32)["default"];
 
 exports["default"] = function (subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
@@ -7239,7 +7253,7 @@ exports["default"] = function (subClass, superClass) {
 };
 
 exports.__esModule = true;
-},{"babel-runtime/core-js/object/create":31,"babel-runtime/core-js/object/set-prototype-of":32}],35:[function(require,module,exports){
+},{"31":31,"32":32}],35:[function(_dereq_,module,exports){
 "use strict";
 
 exports["default"] = function (obj) {
@@ -7249,35 +7263,35 @@ exports["default"] = function (obj) {
 };
 
 exports.__esModule = true;
-},{}],36:[function(require,module,exports){
-require('../modules/web.dom.iterable');
-require('../modules/es6.string.iterator');
-module.exports = require('../modules/core.get-iterator');
-},{"../modules/core.get-iterator":72,"../modules/es6.string.iterator":75,"../modules/web.dom.iterable":76}],37:[function(require,module,exports){
-var $ = require('../../modules/$');
+},{}],36:[function(_dereq_,module,exports){
+_dereq_(76);
+_dereq_(75);
+module.exports = _dereq_(72);
+},{"72":72,"75":75,"76":76}],37:[function(_dereq_,module,exports){
+var $ = _dereq_(59);
 module.exports = function create(P, D){
   return $.create(P, D);
 };
-},{"../../modules/$":59}],38:[function(require,module,exports){
-require('../../modules/es6.object.set-prototype-of');
-module.exports = require('../../modules/$.core').Object.setPrototypeOf;
-},{"../../modules/$.core":44,"../../modules/es6.object.set-prototype-of":74}],39:[function(require,module,exports){
+},{"59":59}],38:[function(_dereq_,module,exports){
+_dereq_(74);
+module.exports = _dereq_(44).Object.setPrototypeOf;
+},{"44":44,"74":74}],39:[function(_dereq_,module,exports){
 module.exports = function(it){
   if(typeof it != 'function')throw TypeError(it + ' is not a function!');
   return it;
 };
-},{}],40:[function(require,module,exports){
+},{}],40:[function(_dereq_,module,exports){
 module.exports = function(){ /* empty */ };
-},{}],41:[function(require,module,exports){
-var isObject = require('./$.is-object');
+},{}],41:[function(_dereq_,module,exports){
+var isObject = _dereq_(54);
 module.exports = function(it){
   if(!isObject(it))throw TypeError(it + ' is not an object!');
   return it;
 };
-},{"./$.is-object":54}],42:[function(require,module,exports){
+},{"54":54}],42:[function(_dereq_,module,exports){
 // getting tag from 19.1.3.6 Object.prototype.toString()
-var cof = require('./$.cof')
-  , TAG = require('./$.wks')('toStringTag')
+var cof = _dereq_(43)
+  , TAG = _dereq_(70)('toStringTag')
   // ES3 wrong here
   , ARG = cof(function(){ return arguments; }()) == 'Arguments';
 
@@ -7291,18 +7305,18 @@ module.exports = function(it){
     // ES3 arguments fallback
     : (B = cof(O)) == 'Object' && typeof O.callee == 'function' ? 'Arguments' : B;
 };
-},{"./$.cof":43,"./$.wks":70}],43:[function(require,module,exports){
+},{"43":43,"70":70}],43:[function(_dereq_,module,exports){
 var toString = {}.toString;
 
 module.exports = function(it){
   return toString.call(it).slice(8, -1);
 };
-},{}],44:[function(require,module,exports){
+},{}],44:[function(_dereq_,module,exports){
 var core = module.exports = {version: '1.2.6'};
 if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
-},{}],45:[function(require,module,exports){
+},{}],45:[function(_dereq_,module,exports){
 // optional / simple context binding
-var aFunction = require('./$.a-function');
+var aFunction = _dereq_(39);
 module.exports = function(fn, that, length){
   aFunction(fn);
   if(that === undefined)return fn;
@@ -7321,21 +7335,21 @@ module.exports = function(fn, that, length){
     return fn.apply(that, arguments);
   };
 };
-},{"./$.a-function":39}],46:[function(require,module,exports){
+},{"39":39}],46:[function(_dereq_,module,exports){
 // 7.2.1 RequireObjectCoercible(argument)
 module.exports = function(it){
   if(it == undefined)throw TypeError("Can't call method on  " + it);
   return it;
 };
-},{}],47:[function(require,module,exports){
+},{}],47:[function(_dereq_,module,exports){
 // Thank's IE8 for his funny defineProperty
-module.exports = !require('./$.fails')(function(){
+module.exports = !_dereq_(49)(function(){
   return Object.defineProperty({}, 'a', {get: function(){ return 7; }}).a != 7;
 });
-},{"./$.fails":49}],48:[function(require,module,exports){
-var global    = require('./$.global')
-  , core      = require('./$.core')
-  , ctx       = require('./$.ctx')
+},{"49":49}],48:[function(_dereq_,module,exports){
+var global    = _dereq_(50)
+  , core      = _dereq_(44)
+  , ctx       = _dereq_(45)
   , PROTOTYPE = 'prototype';
 
 var $export = function(type, name, source){
@@ -7379,7 +7393,7 @@ $export.P = 8;  // proto
 $export.B = 16; // bind
 $export.W = 32; // wrap
 module.exports = $export;
-},{"./$.core":44,"./$.ctx":45,"./$.global":50}],49:[function(require,module,exports){
+},{"44":44,"45":45,"50":50}],49:[function(_dereq_,module,exports){
 module.exports = function(exec){
   try {
     return !!exec();
@@ -7387,61 +7401,61 @@ module.exports = function(exec){
     return true;
   }
 };
-},{}],50:[function(require,module,exports){
+},{}],50:[function(_dereq_,module,exports){
 // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 var global = module.exports = typeof window != 'undefined' && window.Math == Math
   ? window : typeof self != 'undefined' && self.Math == Math ? self : Function('return this')();
 if(typeof __g == 'number')__g = global; // eslint-disable-line no-undef
-},{}],51:[function(require,module,exports){
+},{}],51:[function(_dereq_,module,exports){
 var hasOwnProperty = {}.hasOwnProperty;
 module.exports = function(it, key){
   return hasOwnProperty.call(it, key);
 };
-},{}],52:[function(require,module,exports){
-var $          = require('./$')
-  , createDesc = require('./$.property-desc');
-module.exports = require('./$.descriptors') ? function(object, key, value){
+},{}],52:[function(_dereq_,module,exports){
+var $          = _dereq_(59)
+  , createDesc = _dereq_(61);
+module.exports = _dereq_(47) ? function(object, key, value){
   return $.setDesc(object, key, createDesc(1, value));
 } : function(object, key, value){
   object[key] = value;
   return object;
 };
-},{"./$":59,"./$.descriptors":47,"./$.property-desc":61}],53:[function(require,module,exports){
+},{"47":47,"59":59,"61":61}],53:[function(_dereq_,module,exports){
 // fallback for non-array-like ES3 and non-enumerable old V8 strings
-var cof = require('./$.cof');
+var cof = _dereq_(43);
 module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
   return cof(it) == 'String' ? it.split('') : Object(it);
 };
-},{"./$.cof":43}],54:[function(require,module,exports){
+},{"43":43}],54:[function(_dereq_,module,exports){
 module.exports = function(it){
   return typeof it === 'object' ? it !== null : typeof it === 'function';
 };
-},{}],55:[function(require,module,exports){
+},{}],55:[function(_dereq_,module,exports){
 'use strict';
-var $              = require('./$')
-  , descriptor     = require('./$.property-desc')
-  , setToStringTag = require('./$.set-to-string-tag')
+var $              = _dereq_(59)
+  , descriptor     = _dereq_(61)
+  , setToStringTag = _dereq_(64)
   , IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-require('./$.hide')(IteratorPrototype, require('./$.wks')('iterator'), function(){ return this; });
+_dereq_(52)(IteratorPrototype, _dereq_(70)('iterator'), function(){ return this; });
 
 module.exports = function(Constructor, NAME, next){
   Constructor.prototype = $.create(IteratorPrototype, {next: descriptor(1, next)});
   setToStringTag(Constructor, NAME + ' Iterator');
 };
-},{"./$":59,"./$.hide":52,"./$.property-desc":61,"./$.set-to-string-tag":64,"./$.wks":70}],56:[function(require,module,exports){
+},{"52":52,"59":59,"61":61,"64":64,"70":70}],56:[function(_dereq_,module,exports){
 'use strict';
-var LIBRARY        = require('./$.library')
-  , $export        = require('./$.export')
-  , redefine       = require('./$.redefine')
-  , hide           = require('./$.hide')
-  , has            = require('./$.has')
-  , Iterators      = require('./$.iterators')
-  , $iterCreate    = require('./$.iter-create')
-  , setToStringTag = require('./$.set-to-string-tag')
-  , getProto       = require('./$').getProto
-  , ITERATOR       = require('./$.wks')('iterator')
+var LIBRARY        = _dereq_(60)
+  , $export        = _dereq_(48)
+  , redefine       = _dereq_(62)
+  , hide           = _dereq_(52)
+  , has            = _dereq_(51)
+  , Iterators      = _dereq_(58)
+  , $iterCreate    = _dereq_(55)
+  , setToStringTag = _dereq_(64)
+  , getProto       = _dereq_(59).getProto
+  , ITERATOR       = _dereq_(70)('iterator')
   , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
   , FF_ITERATOR    = '@@iterator'
   , KEYS           = 'keys'
@@ -7497,13 +7511,13 @@ module.exports = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED
   }
   return methods;
 };
-},{"./$":59,"./$.export":48,"./$.has":51,"./$.hide":52,"./$.iter-create":55,"./$.iterators":58,"./$.library":60,"./$.redefine":62,"./$.set-to-string-tag":64,"./$.wks":70}],57:[function(require,module,exports){
+},{"48":48,"51":51,"52":52,"55":55,"58":58,"59":59,"60":60,"62":62,"64":64,"70":70}],57:[function(_dereq_,module,exports){
 module.exports = function(done, value){
   return {value: value, done: !!done};
 };
-},{}],58:[function(require,module,exports){
+},{}],58:[function(_dereq_,module,exports){
 module.exports = {};
-},{}],59:[function(require,module,exports){
+},{}],59:[function(_dereq_,module,exports){
 var $Object = Object;
 module.exports = {
   create:     $Object.create,
@@ -7517,9 +7531,9 @@ module.exports = {
   getSymbols: $Object.getOwnPropertySymbols,
   each:       [].forEach
 };
-},{}],60:[function(require,module,exports){
+},{}],60:[function(_dereq_,module,exports){
 module.exports = true;
-},{}],61:[function(require,module,exports){
+},{}],61:[function(_dereq_,module,exports){
 module.exports = function(bitmap, value){
   return {
     enumerable  : !(bitmap & 1),
@@ -7528,14 +7542,14 @@ module.exports = function(bitmap, value){
     value       : value
   };
 };
-},{}],62:[function(require,module,exports){
-module.exports = require('./$.hide');
-},{"./$.hide":52}],63:[function(require,module,exports){
+},{}],62:[function(_dereq_,module,exports){
+module.exports = _dereq_(52);
+},{"52":52}],63:[function(_dereq_,module,exports){
 // Works with __proto__ only. Old v8 can't work with null proto objects.
 /* eslint-disable no-proto */
-var getDesc  = require('./$').getDesc
-  , isObject = require('./$.is-object')
-  , anObject = require('./$.an-object');
+var getDesc  = _dereq_(59).getDesc
+  , isObject = _dereq_(54)
+  , anObject = _dereq_(41);
 var check = function(O, proto){
   anObject(O);
   if(!isObject(proto) && proto !== null)throw TypeError(proto + ": can't set as prototype!");
@@ -7544,7 +7558,7 @@ module.exports = {
   set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
     function(test, buggy, set){
       try {
-        set = require('./$.ctx')(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
+        set = _dereq_(45)(Function.call, getDesc(Object.prototype, '__proto__').set, 2);
         set(test, []);
         buggy = !(test instanceof Array);
       } catch(e){ buggy = true; }
@@ -7557,24 +7571,24 @@ module.exports = {
     }({}, false) : undefined),
   check: check
 };
-},{"./$":59,"./$.an-object":41,"./$.ctx":45,"./$.is-object":54}],64:[function(require,module,exports){
-var def = require('./$').setDesc
-  , has = require('./$.has')
-  , TAG = require('./$.wks')('toStringTag');
+},{"41":41,"45":45,"54":54,"59":59}],64:[function(_dereq_,module,exports){
+var def = _dereq_(59).setDesc
+  , has = _dereq_(51)
+  , TAG = _dereq_(70)('toStringTag');
 
 module.exports = function(it, tag, stat){
   if(it && !has(it = stat ? it : it.prototype, TAG))def(it, TAG, {configurable: true, value: tag});
 };
-},{"./$":59,"./$.has":51,"./$.wks":70}],65:[function(require,module,exports){
-var global = require('./$.global')
+},{"51":51,"59":59,"70":70}],65:[function(_dereq_,module,exports){
+var global = _dereq_(50)
   , SHARED = '__core-js_shared__'
   , store  = global[SHARED] || (global[SHARED] = {});
 module.exports = function(key){
   return store[key] || (store[key] = {});
 };
-},{"./$.global":50}],66:[function(require,module,exports){
-var toInteger = require('./$.to-integer')
-  , defined   = require('./$.defined');
+},{"50":50}],66:[function(_dereq_,module,exports){
+var toInteger = _dereq_(67)
+  , defined   = _dereq_(46);
 // true  -> String#at
 // false -> String#codePointAt
 module.exports = function(TO_STRING){
@@ -7590,63 +7604,63 @@ module.exports = function(TO_STRING){
       : TO_STRING ? s.slice(i, i + 2) : (a - 0xd800 << 10) + (b - 0xdc00) + 0x10000;
   };
 };
-},{"./$.defined":46,"./$.to-integer":67}],67:[function(require,module,exports){
+},{"46":46,"67":67}],67:[function(_dereq_,module,exports){
 // 7.1.4 ToInteger
 var ceil  = Math.ceil
   , floor = Math.floor;
 module.exports = function(it){
   return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
 };
-},{}],68:[function(require,module,exports){
+},{}],68:[function(_dereq_,module,exports){
 // to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = require('./$.iobject')
-  , defined = require('./$.defined');
+var IObject = _dereq_(53)
+  , defined = _dereq_(46);
 module.exports = function(it){
   return IObject(defined(it));
 };
-},{"./$.defined":46,"./$.iobject":53}],69:[function(require,module,exports){
+},{"46":46,"53":53}],69:[function(_dereq_,module,exports){
 var id = 0
   , px = Math.random();
 module.exports = function(key){
   return 'Symbol('.concat(key === undefined ? '' : key, ')_', (++id + px).toString(36));
 };
-},{}],70:[function(require,module,exports){
-var store  = require('./$.shared')('wks')
-  , uid    = require('./$.uid')
-  , Symbol = require('./$.global').Symbol;
+},{}],70:[function(_dereq_,module,exports){
+var store  = _dereq_(65)('wks')
+  , uid    = _dereq_(69)
+  , Symbol = _dereq_(50).Symbol;
 module.exports = function(name){
   return store[name] || (store[name] =
     Symbol && Symbol[name] || (Symbol || uid)('Symbol.' + name));
 };
-},{"./$.global":50,"./$.shared":65,"./$.uid":69}],71:[function(require,module,exports){
-var classof   = require('./$.classof')
-  , ITERATOR  = require('./$.wks')('iterator')
-  , Iterators = require('./$.iterators');
-module.exports = require('./$.core').getIteratorMethod = function(it){
+},{"50":50,"65":65,"69":69}],71:[function(_dereq_,module,exports){
+var classof   = _dereq_(42)
+  , ITERATOR  = _dereq_(70)('iterator')
+  , Iterators = _dereq_(58);
+module.exports = _dereq_(44).getIteratorMethod = function(it){
   if(it != undefined)return it[ITERATOR]
     || it['@@iterator']
     || Iterators[classof(it)];
 };
-},{"./$.classof":42,"./$.core":44,"./$.iterators":58,"./$.wks":70}],72:[function(require,module,exports){
-var anObject = require('./$.an-object')
-  , get      = require('./core.get-iterator-method');
-module.exports = require('./$.core').getIterator = function(it){
+},{"42":42,"44":44,"58":58,"70":70}],72:[function(_dereq_,module,exports){
+var anObject = _dereq_(41)
+  , get      = _dereq_(71);
+module.exports = _dereq_(44).getIterator = function(it){
   var iterFn = get(it);
   if(typeof iterFn != 'function')throw TypeError(it + ' is not iterable!');
   return anObject(iterFn.call(it));
 };
-},{"./$.an-object":41,"./$.core":44,"./core.get-iterator-method":71}],73:[function(require,module,exports){
+},{"41":41,"44":44,"71":71}],73:[function(_dereq_,module,exports){
 'use strict';
-var addToUnscopables = require('./$.add-to-unscopables')
-  , step             = require('./$.iter-step')
-  , Iterators        = require('./$.iterators')
-  , toIObject        = require('./$.to-iobject');
+var addToUnscopables = _dereq_(40)
+  , step             = _dereq_(57)
+  , Iterators        = _dereq_(58)
+  , toIObject        = _dereq_(68);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
 // 22.1.3.29 Array.prototype.values()
 // 22.1.3.30 Array.prototype[@@iterator]()
-module.exports = require('./$.iter-define')(Array, 'Array', function(iterated, kind){
+module.exports = _dereq_(56)(Array, 'Array', function(iterated, kind){
   this._t = toIObject(iterated); // target
   this._i = 0;                   // next index
   this._k = kind;                // kind
@@ -7670,16 +7684,16 @@ Iterators.Arguments = Iterators.Array;
 addToUnscopables('keys');
 addToUnscopables('values');
 addToUnscopables('entries');
-},{"./$.add-to-unscopables":40,"./$.iter-define":56,"./$.iter-step":57,"./$.iterators":58,"./$.to-iobject":68}],74:[function(require,module,exports){
+},{"40":40,"56":56,"57":57,"58":58,"68":68}],74:[function(_dereq_,module,exports){
 // 19.1.3.19 Object.setPrototypeOf(O, proto)
-var $export = require('./$.export');
-$export($export.S, 'Object', {setPrototypeOf: require('./$.set-proto').set});
-},{"./$.export":48,"./$.set-proto":63}],75:[function(require,module,exports){
+var $export = _dereq_(48);
+$export($export.S, 'Object', {setPrototypeOf: _dereq_(63).set});
+},{"48":48,"63":63}],75:[function(_dereq_,module,exports){
 'use strict';
-var $at  = require('./$.string-at')(true);
+var $at  = _dereq_(66)(true);
 
 // 21.1.3.27 String.prototype[@@iterator]()
-require('./$.iter-define')(String, 'String', function(iterated){
+_dereq_(56)(String, 'String', function(iterated){
   this._t = String(iterated); // target
   this._i = 0;                // next index
 // 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -7692,9 +7706,9 @@ require('./$.iter-define')(String, 'String', function(iterated){
   this._i += point.length;
   return {value: point, done: false};
 });
-},{"./$.iter-define":56,"./$.string-at":66}],76:[function(require,module,exports){
-require('./es6.array.iterator');
-var Iterators = require('./$.iterators');
+},{"56":56,"66":66}],76:[function(_dereq_,module,exports){
+_dereq_(73);
+var Iterators = _dereq_(58);
 Iterators.NodeList = Iterators.HTMLCollection = Iterators.Array;
-},{"./$.iterators":58,"./es6.array.iterator":73}]},{},[1])(1)
+},{"58":58,"73":73}]},{},[1])(1)
 });

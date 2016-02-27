@@ -10,7 +10,8 @@ module.exports = function (node) {
 
   mutations = expressions.map(function (expr) {
     bit = value.substr(expr.contextLoc.start, expr.contextLoc.end - expr.contextLoc.start);
-    replaceWith = '(' + bit.replace(/^`([\s\S]+)`$/m, '$1') + ')';
+    replaceWith = '(' + bit.replace(/^(`|{{|<%)([\s\S]+)(`|}}|%>)$/mg, '$2') + ')';
+
     return {
       start: expr.contextLoc.start,
       end: expr.contextLoc.end,
