@@ -6,6 +6,12 @@
 
 ---
 
+Demos
+
+* [Transpilation process](http://krasimir.github.io/cssx/playground/try-it-out/) - you write JavaScript that contains CSSX and see AST, transpiled JavaScript and the produced CSS
+* [JS + HTML + output](http://krasimir.github.io/cssx/playground/try-it-out-bin/) - you write JavaScript that contains CSSX + HTML markup and see the result when the CSS is applied to the DOM
+* [JS + output](http://krasimir.github.io/cssx/) - same as a above
+
 Language:
 
 * [CSSX language](./docs/cssx-lang.md)
