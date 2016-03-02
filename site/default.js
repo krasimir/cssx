@@ -1,11 +1,13 @@
+var colors = ['#F0CB13', '#FF044C', '#004B63'];
+
 // styles applied immediately
 cssx(
   body {
-    background: #F0CB13;
+    background: <% colors[0] %>;
   }
   h1 {
     (wmo)transform: translateX(-35px);
-    color: #FF044C;
+    color: <% colors[1] %>;
     letter-spacing: 0px;
   }
   @keyframes snow {
@@ -36,5 +38,5 @@ function letItSnow(bgColor) {
 document
   .querySelector('button')
   .addEventListener('click', function () {
-    letItSnow('#004B63');
+    letItSnow(colors[2]);
   });

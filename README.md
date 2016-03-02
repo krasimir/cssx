@@ -1,8 +1,8 @@
 # CSSX - CSS in JavaScript
 
-> Generate and/or apply CSS with JavaScript. Try it out [here](http://krasimir.github.io/cssx/playground/try-it-out-bin/).
+> > Generate and/or apply CSS with JavaScript. Try it out [here](http://krasimir.github.io/cssx/playground/try-it-out-bin/).
 
-![demo CSSX](./docs/img/demo.jpg)
+CSSX is not only about writing vanilla CSS in JavaScript. Even though you get this the main idea here is to have a good API for managing styles. CSSX doesn't inline styles so you keep your markup clean. It works directly with injected stylesheets. 
 
 ---
 
