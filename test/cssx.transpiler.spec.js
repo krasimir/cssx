@@ -1,14 +1,13 @@
 var CSSXTranspiler = require('../packages/cssx-transpiler/lib/cssx-transpiler');
 var path = require('path');
 var fs = require('fs');
-var babylon = require('../packages/cssx-transpiler/src/vendor/babylon');
 var glob = require("glob");
 var chai = require('chai');
 var expect = chai.expect;
 var d = describe;
 
 var tests = [];
-// var only = '20'.split(',');
+// var only = '1'.split(',');
 
 glob.sync(__dirname + '/fixtures/cssx-transpiler/**/actual.js').forEach(function (actual) {
   var testDir = path.dirname(actual), testDirParts = testDir.split('/');

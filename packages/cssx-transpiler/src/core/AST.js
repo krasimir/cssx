@@ -1,8 +1,8 @@
 var babylon = require('../vendor/babylon');
+var cssxPlugin = require('babylon-plugin-cssx');
 
 var BABYLON_PLUGINS = [
   'jsx',
-  'cssx',
   'flow',
   'asyncFunctions',
   'classConstructorCall',
@@ -15,7 +15,8 @@ var BABYLON_PLUGINS = [
   'exponentiationOperator',
   'asyncGenerators',
   'functionBind',
-  'functionSent'
+  'functionSent',
+  cssxPlugin
 ];
 
 module.exports = function (code, opts) {
