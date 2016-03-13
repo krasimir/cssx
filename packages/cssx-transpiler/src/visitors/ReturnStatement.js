@@ -2,7 +2,7 @@ var randomId = require('../helpers/randomId');
 
 module.exports = {
   enter: function (node, parent, index, context) {
-    if (node.argument.type === 'CSSXDefinition') {
+    if (node.argument && node.argument.type === 'CSSXDefinition') {
       node.__id = context.nodeId = randomId();
       context.inReturnStatement = true;
     }
