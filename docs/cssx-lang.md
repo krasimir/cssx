@@ -3,38 +3,41 @@
 CSSX is not a new language. It's still the CSS that we know and use every day. The difference is that we write it inside a JavaScript context. That's possible because we now have an access to [CSSX transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler). It understand and successfully transforms expressions like this:
 
 ```js
-var sheet = cssx(
+var sheet = <style>
   body {
     margin: 0;
     padding: 0;
   }
-);
+</style>;
 ```
 
-The `cssx` call (in this format) returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object which we use to manage our styles. For example, to append a new CSS rule we use the `add` method:
+The `<style>` tag (in this format) returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object which we use to manage our styles. For example, to append a new CSS rule for all paragraphs on our page we can use the `add` method:
 
 ```js
-sheet.add('p', cssx({
-  font-size: 1em;
-  line-height: 1.2em;
-}));
+sheet.add(
+  'p', 
+  <style>{
+    font-size: 1em;
+    line-height: 1.2em;
+  }</style>
+);
 ```
 
 ## Language expressions
 
-#### `cssx(<selector> { <styles> } ...)`
+#### `<style>selector { styles } ...</style>`
 
 It returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object.
 
 Example:
 
 ```js
-var sheet = cssx(
+var sheet = <style>
   body {
     margin: 0;
     padding: 0;
   }
-);
+</style>;
 ```
 
 Same as:
@@ -47,19 +50,19 @@ sheet.add('body', {
 });
 ```
 
-The `id` passed to `cssx` is optional. If you don't provide one the library will generate it for you. However, we should say that running only `cssx()` generates a new stylesheet every time. So if we plan to execute such code many times it's good to provide that ID.
+The `id` passed to `cssx` is optional. If you don't provide one the library will generate it for you. However, we should say that running only `cssx()` generates a new stylesheet every time. So if we plan to execute such code many times it's good to provide an ID.
 
-#### `cssx({ styles })`
+#### `<style>{ styles }</style>`
 
-It returns a vanilla JavaScript object.
+It returns a vanilla JavaScript object literal.
 
 Example:
 
 ```js
-var styles = cssx({
+var styles = <style>{
   font-size: 1em;
   line-height: 1.2em;
-});
+}</style>;
 ```
 
 Same as :
@@ -73,17 +76,17 @@ var styles = {
 
 #### CSSX as a value of object literal's property
 
-Sometimes you don't want to create a new stylesheet but still define styles. If we pass `cssx` expression to an object property we get a function that fires the creation of our stylesheet. For example:
+Sometimes you don't want to create a new stylesheet but still define multiple styles. If we pass `<style>` expression to an object property we get a function that fires the creation of our stylesheet. For example:
 
 ```js
 var obj = {
-  styles: cssx(
+  styles: <style>
     body {
-      color: `this.color`;
+      color: {{ this.color }};
       margin: 0;
       padding: 0;
     }
-  ),
+  </style>,
   color: '#ff2244'
 };
 ```
@@ -106,14 +109,14 @@ The biggest benefit of CSSX is the fact that it's written in JavaScript context.
 var property = 'size';
 var value = 18;
 
-cssx(
+<style>
   body {
-    font-<% property %>: <% value + 2 %>px;
+    font-{{ property }}: {{ value + 2 }}px;
   }
-);
+</style>
 ```
 
-There are three ways define dynamic expressions:
+There are three ways to define dynamic expressions:
 
 * &#96; ... &#96; (grave accents (backticks))
 * `{{ ... }}`
@@ -137,7 +140,7 @@ var value = 18;
 }.apply(this));
 ```
 
-And it results in a valid CSS:
+And the produced CSS:
 
 ```css
 body {
@@ -151,11 +154,11 @@ body {
 
 ```js
 // input
-cssx(
+<style>
   .icon {
     (wmo)transform: translateX(20px);
   }
-);
+</style>
 
 // output
 .icon {
@@ -185,3 +188,7 @@ Where
 * `c` - `-tc-` Tall Components
 
 *There is only one case where CSSX library generates prefixes automatically and that's when we use `@keyframes`.*
+
+## Where to go from here
+
+Check out [CSSX client-side](https://github.com/krasimir/cssx/tree/master/packages/cssx) library or learn how to use the [transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler).

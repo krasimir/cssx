@@ -23,7 +23,7 @@
 
 ## How it works
 
-CSSX is a tiny library that provides a JavaScript API for defining CSS styles. We create a stylesheet and register rules same as we do with the regular CSS files. The library generates valid CSS and injects it into the page as a `<style>` tag. Every change in the stylesheet afterwards is translated into a change in the same `<style>` tag.
+CSSX is a tiny library that provides a JavaScript API for defining CSS styles. We create a stylesheet and register rules same as we do with the regular CSS files. The library generates valid CSS and injects it into head of the page as a `<style>` tag. Every change in the stylesheet afterwards is translated into a change in the same `<style>` tag.
 
 *Why is this useful?*. Well, JavaScript is a rich language and it gives us more flexibility. There are parts of our applications that require different styles. In such cases we normally use different CSS classes. We add or remove them based on conditional logic. So we have to amend two different parts of our codebase - our CSS and our JavaScript. For example:
 
@@ -311,6 +311,7 @@ The function may accept only one argument and if that's the case then it is cons
 
 ---
 
-# Contribution
+# Where to go from here
 
-Check out [https://github.com/krasimir/cssx](https://github.com/krasimir/cssx).
+* [CSSX *language](https://github.com/krasimir/cssx/blob/master/docs/cssx-lang.md)
+* [CSSX transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler)

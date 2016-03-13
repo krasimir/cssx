@@ -13,12 +13,12 @@ var code = require('fs').readFileSync('./file.js', { encoding: 'utf8' }).toStrin
 /* let's say that code =
 
   var styles = function (margin) {
-    cssx(
+    <style>
       body {
         margin: `margin`px;
         padding: 0;
       }
-    )
+    </style>
   };
 
 */
@@ -38,7 +38,7 @@ console.log(transpiled);
       _1.add('body', _2);
 
       return _1;
-    }).apply(this);
+    }.apply(this))
   };
 
 */
@@ -68,6 +68,7 @@ While transpiling the module is creating bunch of unique ids in the format of `_
 
 ---
 
-# Contribution
+# Where to go from here
 
-Check out [https://github.com/krasimir/cssx](https://github.com/krasimir/cssx).
+* [CSSX *language](https://github.com/krasimir/cssx/blob/master/docs/cssx-lang.md)
+* [CSSX client-side library](https://github.com/krasimir/cssx/tree/master/packages/cssx)

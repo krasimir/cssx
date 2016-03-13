@@ -16,7 +16,7 @@ var Bin = function () {
 var color = '#00F';\n\
 var y = 10;\n\
 \n\
-var sheet = cssx(\n\
+var sheet = <style>\n\
   p {\n\
     font-size: 22px;\n\
     color: #9f0000;\n\
@@ -24,11 +24,11 @@ var sheet = cssx(\n\
   }\n\
   p span {\n\
     display: inline-block;\n\
-    color: `color`;\n\
+    color: {{ color }};\n\
     font-weight: bold;\n\
-    (w)transform: translateY(<% y %>px) rotateZ({{ rotation }}deg);\n\
+    (w)transform: translateY({{ y }}px) rotateZ({{ rotation }}deg);\n\
   }\n\
-);";
+</style>;";
   var DEFAULT_HTML = '<p>\n  Hello world.<br />\n  That\'s a <span>CSSX</span> demonstration.\n</p>';
 
   // ********************************************************************
