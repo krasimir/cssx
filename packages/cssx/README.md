@@ -313,5 +313,5 @@ The function may accept only one argument and if that's the case then it is cons
 
 # Where to go from here
 
-* [CSSX *language](https://github.com/krasimir/cssx/blob/master/docs/cssx-lang.md)
+* [CSSX *language*](https://github.com/krasimir/cssx/blob/master/docs/cssx-lang.md)
 * [CSSX transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler)
