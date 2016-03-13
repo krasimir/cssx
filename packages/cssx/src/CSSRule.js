@@ -1,3 +1,5 @@
+var isArray = require('./helpers/isArray');
+
 var ids = 0;
 var getId = function () { return 'r' + (++ids); }, CSSRule;
 
@@ -42,9 +44,19 @@ CSSRule = function (selector, props, stylesheet) {
       _nestedChildren = c;
     },
     descendant: function (s, p) {
+      if (isArray(s)) {
+        return s.map(function (rule) {
+          return stylesheet.add(rule[0], rule[1], record, false);
+        });
+      }
       return stylesheet.add(s, p, this, false);
     },
     nested: function (s, p) {
+      if (isArray(s)) {
+        return s.map(function (rule) {
+          return stylesheet.add(rule[0], rule[1], record, true);
+        });
+      }
       return stylesheet.add(s, p, this, true);
     },
     d: function (s, p) {

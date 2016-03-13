@@ -523,8 +523,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 6 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
+	var isArray = __webpack_require__(17);
+	
 	var ids = 0;
 	var getId = function () { return 'r' + (++ids); }, CSSRule;
 	
@@ -569,9 +571,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      _nestedChildren = c;
 	    },
 	    descendant: function (s, p) {
+	      if (isArray(s)) {
+	        return s.map(function (rule) {
+	          return stylesheet.add(rule[0], rule[1], record, false);
+	        });
+	      }
 	      return stylesheet.add(s, p, this, false);
 	    },
 	    nested: function (s, p) {
+	      if (isArray(s)) {
+	        return s.map(function (rule) {
+	          return stylesheet.add(rule[0], rule[1], record, true);
+	        });
+	      }
 	      return stylesheet.add(s, p, this, true);
 	    },
 	    d: function (s, p) {
