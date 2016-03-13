@@ -70,5 +70,5 @@ While transpiling the module is creating bunch of unique ids in the format of `_
 
 # Where to go from here
 
-* [CSSX *language](https://github.com/krasimir/cssx/blob/master/docs/cssx-lang.md)
+* [CSSX *language*](https://github.com/krasimir/cssx/blob/master/docs/cssx-lang.md)
 * [CSSX client-side library](https://github.com/krasimir/cssx/tree/master/packages/cssx)
