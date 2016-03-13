@@ -85,8 +85,17 @@ module.exports = {
       return line;
     });
 
+    // styles for only one rule
+    if (
+      objectLiterals.length >= 1 &&
+      (typeof objectLiterals[0].selector === 'object' ?
+        objectLiterals[0].selector.value === '' :
+        objectLiterals[0].selector === '')
+    ) {
+      funcLines.push(t.returnStatement(t.identifier(objectLiterals[0].rulesObjVar)));
+
     // styles passed to a method
-    if (context.inCallExpression) {
+    } else if (context.inCallExpression || context.inReturnStatement) {
       funcLines.push(
         t.returnStatement(
           t.arrayExpression(objectLiterals.map(function (o) {
@@ -94,14 +103,7 @@ module.exports = {
           }))
         )
       );
-    // styles for only one rule
-    } else if (
-      objectLiterals.length >= 1 &&
-      (typeof objectLiterals[0].selector === 'object' ?
-        objectLiterals[0].selector.value === '' :
-        objectLiterals[0].selector === '')
-    ) {
-      funcLines.push(t.returnStatement(t.identifier(objectLiterals[0].rulesObjVar)));
+
     // autocreating a stylesheet
     } else {
       funcLines.push(newStylesheetExpr);
