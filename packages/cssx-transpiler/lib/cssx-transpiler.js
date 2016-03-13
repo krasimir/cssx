@@ -48966,6 +48966,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return node;
 	};
 	
+	var checkForStyleDefinition = function (node) {
+	  return node.body &&
+	    node.body.length === 1 &&
+	    node.body[0].type === 'CallExpression' &&
+	    node.body[0].callee && node.body[0].callee.name === 'cssx' &&
+	    node.body[0].arguments && node.body[0].arguments.length === 1 &&
+	    node.body[0].arguments[0].type === 'Identifier';
+	};
+	
 	var funcLines, objectLiterals, stylesheetId;
 	
 	module.exports = {
@@ -48991,10 +49000,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var funcCallExpr;
 	    var result;
 	
+	    var applyResult = function (r) {
+	      if (isArray(parent)) {
+	        injectAt(parent, index, r);
+	      } else {
+	        parent[index] = r;
+	      }
+	    };
+	
 	    delete context.addToCSSXSelfInvoke;
 	
 	    if (node.body.length === 0) {
 	      delete parent[index];
+	      return;
+	    }
+	
+	    // make sure that we keep the stylesheet definitions
+	    if (checkForStyleDefinition(node)) {
+	      applyResult(node.body[0]);
 	      return;
 	    }
 	
@@ -49060,11 +49083,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      result = createSelfInvoke(funcCallExpr);
 	    }
 	
-	    if (isArray(parent)) {
-	      injectAt(parent, index, result);
-	    } else {
-	      parent[index] = result;
-	    }
+	    applyResult(result);
 	  }
 	};
 
@@ -49106,14 +49125,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	  );
 	};
 	
+	var formCSSXSheetDefinition = function (selectorNode) {
+	  return t.callExpression(
+	    t.identifier(settings.CSSXCalleeObj),
+	    selectorNode ? [ t.identifier(selectorNode.value) ] : []
+	  );
+	};
+	
 	module.exports = {
 	  enter: function (node, parent, index) {},
 	  exit: function (node, parent, index) {
 	    var args = [], el;
 	
 	    node.selector ? args.push(node.selector) : null;
-	    node.body ? args.push(node.body) : null;
-	    el = formCSSXElement(args);
+	
+	    if (node.body) {
+	      args.push(node.body);
+	      el = formCSSXElement(args);
+	    } else {
+	      el = formCSSXSheetDefinition(node.selector);
+	    }
 	
 	    if (typeof parent !== 'undefined' && index !== 'undefined') {
 	      parent[index] = el;
