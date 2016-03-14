@@ -8,7 +8,7 @@ class Navigation extends React.Component {
   }
   componentWillMount() {
     var color = this.state.color;
-    cssx(
+    <style>
       li {
         padding-left: 0;
         (w)transition: padding-left 300ms ease;
@@ -25,7 +25,7 @@ class Navigation extends React.Component {
       .btn:hover {
         background-color: `shadeColor(color, 0.2)`;
       }
-    );
+    </style>;
   }
   render() {
     return <ul>{ this._getItems() }</ul>;
@@ -44,12 +44,16 @@ class Navigation extends React.Component {
   _handleClick(index) {
     cssx('selected')
       .clear()
-      .add('li:nth-child(' + (index + 1) + ')', cssx({
-        padding-left: 2em;
-      }))
-      .descendant('.btn', cssx({
-        background-color: `this.state.color`;
-      }));
+      .add(
+        <style>
+          li:nth-child({{ index + 1 }}) {
+            padding-left: 2em;
+          }
+          li:nth-child({{ index + 1 }}) .btn {
+            background-color: {{ this.state.color }};
+          }
+        </style>
+      );
   }
 }
 
