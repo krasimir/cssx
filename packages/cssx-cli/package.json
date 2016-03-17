@@ -29,6 +29,7 @@
     "browserify-cssx": "3.7.1",
     "cssx": "3.7.1",
     "fs-extra": "0.26.7",
+    "glob": "7.0.3",
     "gulp": "3.9.1",
     "gulp-callback": "0.0.3",
     "gulp-cssx": "3.7.1",
