@@ -80,7 +80,7 @@ Language:
 
 * [CSSX language](./docs/cssx-lang.md)
 
-Packages:
+Tools:
 
 * [CSSX client-side library](./packages/cssx) ([download](./packages/cssx/lib) or `npm i cssx`)
 * [CSSX-transpiler](./packages/cssx-transpiler) ([download](./packages/cssx-transpiler/lib) or `npm i cssx-transpiler`)
