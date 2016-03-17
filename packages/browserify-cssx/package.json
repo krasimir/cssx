@@ -1,0 +1,30 @@
+{
+  "name": "browserify-cssx",
+  "version": "3.6.0",
+  "description": "Browserify transform plugin that transpiles CSSX",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krasimir/cssx/tree/master/packages/browserify-cssx"
+  },
+  "keywords": [
+    "css",
+    "cssx",
+    "transpiler",
+    "browserify"
+  ],
+  "author": {
+    "name": "Krasimir Tsonev",
+    "email": "info@krasimirtsonev.com",
+    "url": "http://krasimirtsonev.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/krasimir/cssx/issues"
+  },
+  "homepage": "https://github.com/krasimir/cssx",
+  "dependencies": {
+    "cssx-transpiler": "3.6.0",
+    "through2": "2.0.1"
+  }
+}

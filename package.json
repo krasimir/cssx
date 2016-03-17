@@ -7,7 +7,7 @@
     "dev": "webpack --progress --colors --watch --mode=dev",
     "make": "webpack --mode=dev && webpack --mode=build && npm run test",
     "update-site": "git checkout gh-pages && git merge origin/master && git push origin gh-pages && git checkout master",
-    "release": "npm run make && node ./scripts/release.js && cd ./packages/cssx && npm publish && cd ../cssx-transpiler && npm publish && cd ../gulp-cssx && npm publish && cd ../cssx-loader && npm publish && cd ../../ && git add . && git commit -m \"Version updated\" && git push origin master && npm run update-site"
+    "release": "npm run make && node ./scripts/release.js && cd ./packages/cssx && npm publish && cd ../cssx-transpiler && npm publish && cd ../gulp-cssx && npm publish && cd ../cssx-loader && npm publish && cd ../cssx-cli && npm publish && cd ../../ && git add . && git commit -m \"Version updated\" && git push origin master && npm run update-site"
   },
   "repository": {
     "type": "git",
@@ -35,9 +35,11 @@
     "chai": "3.4.1",
     "eslint": "1.7.2",
     "eslint-loader": "1.1.0",
+    "exec": "0.2.1",
     "glob": "6.0.3",
     "json-loader": "0.5.4",
     "mocha": "2.3.4",
+    "rimraf": "2.5.2",
     "setimmediate": "1.0.4",
     "sinon": "1.17.2",
     "sinon-chai": "2.8.0",

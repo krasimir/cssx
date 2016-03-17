@@ -84,8 +84,10 @@ Tools:
 
 * [CSSX client-side library](./packages/cssx) ([download](./packages/cssx/lib) or `npm i cssx`)
 * [CSSX-transpiler](./packages/cssx-transpiler) ([download](./packages/cssx-transpiler/lib) or `npm i cssx-transpiler`)
+* [CSSX-CLI](./packages/cssx-cli) (`npm i cssx-cli -g`)
 * [gulp plugin](./packages/gulp-cssx) (`npm i gulp-cssx -D`)
 * [webpack loader](./packages/cssx-loader) (`npm i cssx-loader -D`)
+* [browserify transform](./packages/browserify-cssx) (`npm i browserify-cssx -D`)
 
 Examples:
 
