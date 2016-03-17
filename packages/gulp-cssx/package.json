@@ -1,6 +1,6 @@
 {
   "name": "gulp-cssx",
-  "version": "3.7.1",
+  "version": "3.7.2",
   "description": "Gulp plugin for transpiling CSSX syntax",
   "main": "index.js",
   "repository": {
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/krasimir/cssx",
   "dependencies": {
-    "cssx-transpiler": "3.7.1",
+    "cssx-transpiler": "3.7.2",
     "gulp": "3.9.0",
     "gulp-util": "3.0.7",
     "map-stream": "0.0.6"
