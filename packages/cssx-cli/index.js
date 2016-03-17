@@ -8,8 +8,8 @@ var gulpCSSX = require('gulp-cssx');
 var plumber = require('gulp-plumber');
 var gcallback = require('gulp-callback');
 var browserify = require('browserify');
-var fs = require('fs');
 var cssxTransform = require('browserify-cssx');
+var fs = require('fs');
 var cssx = require('cssx');
 var fsExtra = require('fs-extra');
 

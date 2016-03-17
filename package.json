@@ -37,12 +37,14 @@
     "eslint-loader": "1.1.0",
     "exec": "0.2.1",
     "glob": "6.0.3",
+    "gulp": "3.9.1",
     "json-loader": "0.5.4",
     "mocha": "2.3.4",
     "rimraf": "2.5.2",
     "setimmediate": "1.0.4",
     "sinon": "1.17.2",
     "sinon-chai": "2.8.0",
+    "stream-assert-gulp": "0.4.9",
     "webpack": "1.12.9",
     "yargs": "3.32.0"
   }
