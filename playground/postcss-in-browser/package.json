@@ -1,7 +1,7 @@
 {
-  "name": "postcss-in-browser",
+  "name": "cssx-and-postcss-in-browser",
   "version": "1.0.0",
-  "description": "",
+  "description": "CSSX + PostCSS plugin in a browser",
   "main": "index.js",
   "scripts": {
     "build": "./node_modules/.bin/cssx -i ./src/index.js -o ./lib && browserify ./lib/index.js -o ./dist/app.js"
