@@ -35,4 +35,4 @@ body {
 }
 ```
 
-*If you want to try it go to the [CSSX repl](http://krasimir.github.io/cssx/playground/try-it-out/) and paste the example code on the right side of the screen.*
+*If you want to try it go to the [CSSX repl](http://krasimir.github.io/cssx/playground/try-it-out/) and paste the example code in the right side of the screen.*
