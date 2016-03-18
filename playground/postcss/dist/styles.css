@@ -1,0 +1,13 @@
+body {
+  margin: 10px;
+}
+p {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  background: #F00;
+}
+p small {
+  font-size: 10px;
+}

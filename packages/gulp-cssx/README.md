@@ -24,7 +24,7 @@ gulp.task('default', ['cssx']);
 or if you want to produce a CSS file:
 
 ```js
-var rename = require("gulp-rename");
+var rename = require('gulp-rename');
 
 gulp.src(dir('src/index.js'))
   .pipe(cssx({ execute: true }))
