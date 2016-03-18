@@ -39,7 +39,7 @@ body {
 
 ## Available plugins
 
-We may use the enormous [PostCSS plugins collection](https://github.com/postcss/postcss/blob/master/docs/plugins.md). There are tons of really cool plugins and we could mix them together with CSSX. The code above is a code that is transpiled and goes directly in the browser. 
+We may use the enormous [PostCSS plugins collection](https://github.com/postcss/postcss/blob/master/docs/plugins.md). There are tons of really cool plugins and we could mix them together with CSSX. 
 
 ```js
 // cssx client-side library
