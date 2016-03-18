@@ -378,4 +378,37 @@ d('Given the cssx library', function () {
     });
   });
 
+  describe('when using a plugin', function () {
+    it('should run the plugin against the produced CSS', function () {
+      var sheet, p;
+      var pluginA = function (styles) {
+        if (styles.a) styles.a += 100;
+        if (styles.c) styles.c += 200;
+        return styles;
+      };
+      var pluginB = function (styles) {
+        if (styles['line-height']) styles['font-size'] = '1px';
+        return styles;
+      }
+      var STYLES = {
+        '.span foo::after': {
+          a: 1,
+          b: 2
+        },
+        'h1 > span': {
+          c: 3,
+          d: 4
+        }
+      };
+
+      cssx.plugins([ pluginA, pluginB ]);
+      sheet = cssx();
+      sheet.add(STYLES);
+      p = sheet.add('p', { 'line-height': '60px' });
+      p.d('small', { 'line-height': '45px' });
+
+      expect(cssx.getCSS()).to.be.equal('.span foo::after {\n  a: 101;\n  b: 2;\n}\nh1 > span {\n  c: 203;\n  d: 4;\n}\np {\n  line-height: 60px;\n  font-size: 1px;\n}\np small {\n  line-height: 45px;\n  font-size: 1px;\n}\n');
+    });
+  });
+
 });

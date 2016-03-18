@@ -1,4 +1,4 @@
-var factory, goGlobal, stylesheets, api, randomId;
+var factory, goGlobal, stylesheets, api, randomId, plugins = [];
 
 require('./polyfills');
 
@@ -25,7 +25,7 @@ function createStyleSheet(id) {
   return s;
 };
 
-api = function (id) { return createStyleSheet(id); };
+api = function (id) { return createStyleSheet(id, plugins); };
 
 api.domChanges = function (flag) {
   factory.disableDOMChanges = !flag;
@@ -55,6 +55,9 @@ api.getCSS = function () {
     css += stylesheets[i].getCSS();
   }
   return css;
+};
+api.plugins = function (arr) {
+  plugins = plugins.concat(arr);
 };
 
 module.exports = api;

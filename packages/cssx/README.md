@@ -103,6 +103,10 @@ Creates a **stylesheet** object which represents a single `<style>` tag.
 
 It removes all added rules from all stylesheets.
 
+#### `cssx.plugins(<array>)`
+
+Accepts array of functions. More about plugins [here](https://github.com/krasimir/cssx/blob/master/docs/plugins.md).
+
 #### `cssx.getStylesheets()`
 
 Returns an array with all the CSSX stylesheets.

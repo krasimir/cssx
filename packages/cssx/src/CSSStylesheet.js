@@ -10,7 +10,7 @@ var graphRulePropName = '__$__cssx_rule';
 var ids = 0;
 var getId = function () { return 'x' + (++ids); };
 
-module.exports = function (id) {
+module.exports = function (id, plugins) {
   var _id = id || getId();
   var _api = {};
   var _rules = [];
@@ -103,7 +103,7 @@ module.exports = function (id) {
     return _api.compileImmediate();
   };
   _api.compileImmediate = function () {
-    _css = generate(getOnlyTopRules(), module.exports.minify);
+    _css = generate(getOnlyTopRules(), module.exports.minify, plugins);
     if (!module.exports.disableDOMChanges) {
       _remove = applyToDOM(_css, _id);
     }

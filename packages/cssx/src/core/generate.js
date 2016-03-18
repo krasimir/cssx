@@ -1,14 +1,23 @@
 var isEmpty = require('../helpers/isEmpty');
 var resolveSelector = require('../helpers/resolveSelector');
 var prefix = require('../helpers/prefix');
+var applyPlugins, areThereAnyPlugins = false, n;
 
-module.exports = function (rules, minify) {
+module.exports = function (rules, minify, plugins) {
 
   // duplicate those that need prefixing
   rules = prefix.selector(rules);
 
+  areThereAnyPlugins = plugins && plugins.length > 0;
+  applyPlugins = function (props) {
+    for (n = 0; n < plugins.length; n++) {
+      props = plugins[n](props);
+    }
+    return props;
+  };
+
   return (function generate(rules, parent, minify, nesting, nested) {
-    var i, j, rule, props, prop, children, nestedChildren, selector, cssValue, tab;
+    var i, j, rule, props, propsFinal, prop, children, nestedChildren, selector, tab;
     var css = '';
     var newLine = minify ? '' : '\n';
     var interval = minify ? '' : ' ';
@@ -26,9 +35,13 @@ module.exports = function (rules, minify) {
         css += nesting + selector + interval + '{' + newLine;
         props = prefix.property(props);
         if (props) {
+          propsFinal = {};
           for (prop in props) {
-            cssValue = typeof props[prop] === 'function' ? props[prop]() : props[prop];
-            css += tab + prop + ':' + interval + cssValue + ';' + newLine;
+            propsFinal[prop] = typeof props[prop] === 'function' ? props[prop]() : props[prop];
+          }
+          propsFinal = areThereAnyPlugins ? applyPlugins(propsFinal) : propsFinal;
+          for (prop in propsFinal) {
+            css += tab + prop + ':' + interval + propsFinal[prop] + ';' + newLine;
           }
         }
         for (j = 0; j < nestedChildren.length; j++) {
