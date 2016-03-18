@@ -1,0 +1,16 @@
+{
+  "name": "postcss-in-browser",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "./node_modules/.bin/cssx -i ./src/index.js -o ./lib && browserify ./lib/index.js -o ./dist/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "cssx": "3.8.0",
+    "postcss-color-gray": "3.0.0",
+    "postcss-js": "0.1.2"
+  }
+}

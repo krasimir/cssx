@@ -36,3 +36,43 @@ body {
 ```
 
 *If you want to try it go to the [CSSX repl](http://krasimir.github.io/cssx/playground/try-it-out/) and paste the example code in the right side of the screen.*
+
+## Available plugins
+
+We may use the enormous [PostCSS plugins collection](https://github.com/postcss/postcss/blob/master/docs/plugins.md). There are tons of really cool plugins and you may use them together with CSSX. The code above is a code that is transpiled and goes directly in the browser. 
+
+```js
+// cssx client-side library
+var cssx = require('cssx');
+
+// postcss for the browser
+var postcssJs = require('postcss-js');
+
+// postcss plugin
+var colorGrey = require('postcss-color-gray');
+
+// registering postcss plugin
+var postcssPlugins = postcssJs.sync([ colorGrey ]);
+
+// creating a CSSX plugin function
+var plugin = function (styles) {
+  return postcssPlugins(styles);
+};
+
+// registering the CSSX plugin
+cssx.plugins([ plugin ]);
+
+// creating a simple stylesheet
+var sheet = <style>
+  body {
+    color: gray(85);
+  }
+</style>;
+```
+
+The result is a `<style>` tag injected into the page:
+
+![cssx plugin](./imgs/plugin-preview.png)
+
+*Check out the full working example [here](https://github.com/krasimir/cssx/tree/master/playground/postcss-in-browser)*
+
