@@ -66,6 +66,7 @@ cssx.plugins([ plugin ]);
 var sheet = <style>
   body {
     color: gray(85);
+    display: flex;
   }
 </style>;
 ```
