@@ -1,0 +1,1 @@
+Run `npm i` and then `npm run build` to get the transpilation and bundling working.
