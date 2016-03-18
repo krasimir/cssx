@@ -85,10 +85,14 @@ Tools:
 * [CSSX client-side library](./packages/cssx) ([download](./packages/cssx/lib) or `npm i cssx`)
 * [CSSX-transpiler](./packages/cssx-transpiler) ([download](./packages/cssx-transpiler/lib) or `npm i cssx-transpiler`)
 * [CSSX-CLI](./packages/cssx-cli) (`npm i cssx-cli -g`)
-* [gulp plugin](./packages/gulp-cssx) (`npm i gulp-cssx -D`)
-* [webpack loader](./packages/cssx-loader) (`npm i cssx-loader -D`)
-* [browserify transform](./packages/browserify-cssx) (`npm i browserify-cssx -D`)
+* [Gulp plugin](./packages/gulp-cssx) (`npm i gulp-cssx -D`)
+* [Webpack loader](./packages/cssx-loader) (`npm i cssx-loader -D`)
+* [Browserify transform](./packages/browserify-cssx) (`npm i browserify-cssx -D`)
 * [CSSX component for React](https://github.com/krasimir/react-cssx)
+
+Plugins:
+
+* [CSSX plugins](./docs/plugins.md)
 
 Examples:
 
