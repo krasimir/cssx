@@ -92,7 +92,7 @@ Tools:
 
 Plugins:
 
-* [CSSX plugins](./docs/plugins.md)
+* [CSSX plugins](./docs/plugins.md) - See how to create CSSX plugins or use PostCSS plugin collection together with CSSX.
 
 Examples:
 
