@@ -5,7 +5,7 @@ Install it globally with `npm install -g cssx-cli`.
 ## Options
 
 * `-i` (input) - accepts a glob pattern or a single file
-* `-o` (output) - outout directory
+* `-o` (output) - output directory
 * `-m` (mode) - `css` or `js`. It depends of what you want to produce at the end.
 
 ## Examples

@@ -88,6 +88,7 @@ Tools:
 * [gulp plugin](./packages/gulp-cssx) (`npm i gulp-cssx -D`)
 * [webpack loader](./packages/cssx-loader) (`npm i cssx-loader -D`)
 * [browserify transform](./packages/browserify-cssx) (`npm i browserify-cssx -D`)
+* [CSSX component for React](https://github.com/krasimir/react-cssx)
 
 Examples:
 
