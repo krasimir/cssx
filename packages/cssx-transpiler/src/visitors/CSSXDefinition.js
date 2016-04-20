@@ -48,11 +48,12 @@ module.exports = {
     funcLines = [];
     objectLiterals = [];
     stylesheetId = getID();
-    context.addToCSSXSelfInvoke = function (item, p) {
+    context.addToCSSXSelfInvoke = function (item, parent) {
       funcLines = [item].concat(funcLines);
+      // console.log('\n\n', item);
       if (item.type === 'VariableDeclaration') {
         objectLiterals.push({
-          selector: p.selector.value ? t.stringLiteral(p.selector.value) : p.selector,
+          selector: parent.selector.value ? t.stringLiteral(parent.selector.value) : parent.selector,
           rulesObjVar: item.declarations[0].id.name
         });
       }
@@ -65,6 +66,7 @@ module.exports = {
     var funcExpr;
     var funcCallExpr;
     var result;
+    var pure = context.inCallExpression || context.inReturnStatement; // no CSSX lib involved
 
     var applyResult = function (r) {
       if (isArray(parent)) {
@@ -87,18 +89,25 @@ module.exports = {
       return;
     }
 
-    newStylesheetExpr = t.variableDeclaration(
-      'var',
-      [
-        t.variableDeclarator(
-          t.identifier(stylesheetId),
-          t.callExpression(
-            t.identifier(settings.CSSXCalleeObj),
-            [t.stringLiteral(stylesheetId)]
+    if (!pure) {
+      newStylesheetExpr = t.variableDeclaration(
+        'var',
+        [
+          t.variableDeclarator(
+            t.identifier(stylesheetId),
+            t.callExpression(
+              t.identifier(settings.CSSXCalleeObj),
+              [t.stringLiteral(stylesheetId)]
+            )
           )
-        )
-      ]
-    );
+        ]
+      );
+    } else {
+      newStylesheetExpr = t.variableDeclaration(
+        'var',
+        [ t.variableDeclarator(t.identifier(stylesheetId), t.arrayExpression())]
+      );
+    }
 
     rulesRegistration = node.body.map(function (line) {
       line = updateStyleSheet(line, stylesheetId);
@@ -118,14 +127,17 @@ module.exports = {
       funcLines.push(t.returnStatement(t.identifier(objectLiterals[0].rulesObjVar)));
 
     // styles passed to a method
-    } else if (context.inCallExpression || context.inReturnStatement) {
-      funcLines.push(
-        t.returnStatement(
-          t.arrayExpression(objectLiterals.map(function (o) {
-            return t.arrayExpression([o.selector, t.identifier(o.rulesObjVar)]);
-          }))
-        )
-      );
+    } else if (pure) {
+      funcLines.push(newStylesheetExpr);
+      funcLines = funcLines.concat(rulesRegistration);
+      funcLines.push(t.returnStatement(t.identifier(stylesheetId)));
+      // funcLines.push(
+      //   t.returnStatement(
+      //     t.arrayExpression(objectLiterals.map(function (o) {
+      //       return t.arrayExpression([o.selector, t.identifier(o.rulesObjVar)]);
+      //     }))
+      //   )
+      // );
 
     // autocreating a stylesheet
     } else {

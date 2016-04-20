@@ -48982,11 +48982,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    funcLines = [];
 	    objectLiterals = [];
 	    stylesheetId = getID();
-	    context.addToCSSXSelfInvoke = function (item, p) {
+	    context.addToCSSXSelfInvoke = function (item, parent) {
 	      funcLines = [item].concat(funcLines);
+	      // console.log('\n\n', item);
 	      if (item.type === 'VariableDeclaration') {
 	        objectLiterals.push({
-	          selector: p.selector.value ? t.stringLiteral(p.selector.value) : p.selector,
+	          selector: parent.selector.value ? t.stringLiteral(parent.selector.value) : parent.selector,
 	          rulesObjVar: item.declarations[0].id.name
 	        });
 	      }
@@ -48999,6 +49000,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var funcExpr;
 	    var funcCallExpr;
 	    var result;
+	    var pure = context.inCallExpression || context.inReturnStatement; // no CSSX lib involved
 	
 	    var applyResult = function (r) {
 	      if (isArray(parent)) {
@@ -49021,18 +49023,25 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 	
-	    newStylesheetExpr = t.variableDeclaration(
-	      'var',
-	      [
-	        t.variableDeclarator(
-	          t.identifier(stylesheetId),
-	          t.callExpression(
-	            t.identifier(settings.CSSXCalleeObj),
-	            [t.stringLiteral(stylesheetId)]
+	    if (!pure) {
+	      newStylesheetExpr = t.variableDeclaration(
+	        'var',
+	        [
+	          t.variableDeclarator(
+	            t.identifier(stylesheetId),
+	            t.callExpression(
+	              t.identifier(settings.CSSXCalleeObj),
+	              [t.stringLiteral(stylesheetId)]
+	            )
 	          )
-	        )
-	      ]
-	    );
+	        ]
+	      );
+	    } else {
+	      newStylesheetExpr = t.variableDeclaration(
+	        'var',
+	        [ t.variableDeclarator(t.identifier(stylesheetId), t.arrayExpression())]
+	      );
+	    }
 	
 	    rulesRegistration = node.body.map(function (line) {
 	      line = updateStyleSheet(line, stylesheetId);
@@ -49052,14 +49061,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	      funcLines.push(t.returnStatement(t.identifier(objectLiterals[0].rulesObjVar)));
 	
 	    // styles passed to a method
-	    } else if (context.inCallExpression || context.inReturnStatement) {
-	      funcLines.push(
-	        t.returnStatement(
-	          t.arrayExpression(objectLiterals.map(function (o) {
-	            return t.arrayExpression([o.selector, t.identifier(o.rulesObjVar)]);
-	          }))
-	        )
-	      );
+	    } else if (pure) {
+	      funcLines.push(newStylesheetExpr);
+	      funcLines = funcLines.concat(rulesRegistration);
+	      funcLines.push(t.returnStatement(t.identifier(stylesheetId)));
+	      // funcLines.push(
+	      //   t.returnStatement(
+	      //     t.arrayExpression(objectLiterals.map(function (o) {
+	      //       return t.arrayExpression([o.selector, t.identifier(o.rulesObjVar)]);
+	      //     }))
+	      //   )
+	      // );
 	
 	    // autocreating a stylesheet
 	    } else {
@@ -49115,17 +49127,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	var t = __webpack_require__(42);
 	var settings = __webpack_require__(424);
 	
-	var formCSSXElement = function (args) {
+	var formCSSXElement = function (args, pure) {
+	  if (!pure) {
+	    return t.callExpression(
+	      t.MemberExpression(
+	        t.identifier(settings.CSSXCalleeObj),
+	        t.identifier(settings.CSSXCalleeProp)
+	      ),
+	      args
+	    );
+	  }
 	  return t.callExpression(
-	    t.MemberExpression(
+	    t.memberExpression(
 	      t.identifier(settings.CSSXCalleeObj),
-	      t.identifier(settings.CSSXCalleeProp)
+	      t.identifier('push')
 	    ),
-	    args
+	    [t.arrayExpression(args)]
 	  );
 	};
 	
-	var formCSSXSheetDefinition = function (selectorNode) {
+	var formCSSXSheetDefinition = function (selectorNode, pure) {
 	  return t.callExpression(
 	    t.identifier(settings.CSSXCalleeObj),
 	    selectorNode ? [ t.identifier(selectorNode.value) ] : []
@@ -49133,17 +49154,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	
 	module.exports = {
-	  enter: function (node, parent, index) {},
-	  exit: function (node, parent, index) {
+	  enter: function (node, parent, index, context) {},
+	  exit: function (node, parent, index, context) {
 	    var args = [], el;
+	    var pure = context.inCallExpression || context.inReturnStatement; // no CSSX lib involved
 	
 	    node.selector ? args.push(node.selector) : null;
 	
 	    if (node.body) {
 	      args.push(node.body);
-	      el = formCSSXElement(args);
+	      el = formCSSXElement(args, pure);
 	    } else {
-	      el = formCSSXSheetDefinition(node.selector);
+	      el = formCSSXSheetDefinition(node.selector, pure);
 	    }
 	
 	    if (typeof parent !== 'undefined' && index !== 'undefined') {
@@ -49358,26 +49380,73 @@ return /******/ (function(modules) { // webpackBootstrap
 	var getID = __webpack_require__(421);
 	
 	module.exports = {
-	  enter: function (node, parent, index) {},
-	  exit: function (node, parent, index) {
-	    var id = getID(), lines = [];
+	  enter: function (node, parent, index, context) {},
+	  exit: function (node, parent, index, context) {
+	    var id = getID(), tempArrId = getID(), lines = [];
+	    var pure = context.inCallExpression || context.inReturnStatement; // no CSSX lib involved
 	
-	    lines.push(t.variableDeclaration(
-	      'var',
-	      [
-	        t.variableDeclarator(
-	          t.identifier(id),
-	          formCSSXElement([
-	            t.stringLiteral(node.query)
-	          ])
+	    if (!pure) {
+	      lines.push(t.variableDeclaration(
+	        'var',
+	        [
+	          t.variableDeclarator(
+	            t.identifier(id),
+	            formCSSXElement([ t.stringLiteral(node.query) ])
+	          )
+	        ]
+	      ));
+	      lines = lines.concat(node.body.map(function (cssxElementNode) {
+	        cssxElementNode.callee.object.name = id;
+	        cssxElementNode.callee.property.name = settings.CSSXClientNestedMethodName;
+	        return t.expressionStatement(cssxElementNode);
+	      }));
+	    } else {
+	      lines.push(t.variableDeclaration(
+	        'var', [
+	          t.variableDeclarator(
+	            t.identifier(id),
+	            t.objectExpression([])
+	          ),
+	          t.variableDeclarator(
+	            t.identifier(tempArrId),
+	            t.arrayExpression()
+	          )
+	
+	        ]
+	      ));
+	      lines.push(t.expressionStatement(
+	        t.assignmentExpression(
+	          '=',
+	          t.memberExpression(
+	            t.identifier(id),
+	            t.stringLiteral(node.query),
+	            true
+	          ),
+	          t.identifier(tempArrId)
 	        )
-	      ]
-	    ));
-	    lines = lines.concat(node.body.map(function (cssxElementNode) {
-	      cssxElementNode.callee.object.name = id;
-	      cssxElementNode.callee.property.name = settings.CSSXClientNestedMethodName;
-	      return t.expressionStatement(cssxElementNode);
-	    }));
+	      ));
+	      lines = lines.concat(node.body.map(function (cssxElementNode) {
+	        if (!pure) {
+	          cssxElementNode.callee.object.name = id;
+	          cssxElementNode.callee.property.name = settings.CSSXClientNestedMethodName;
+	          return t.expressionStatement(cssxElementNode);
+	        }
+	        cssxElementNode.callee = t.memberExpression(
+	          t.identifier(tempArrId),
+	          t.identifier('push')
+	        );
+	        cssxElementNode.callee.property.name = 'push';
+	        return t.expressionStatement(cssxElementNode);
+	      }));
+	    }
+	
+	    if (pure) {
+	      lines.push(t.callExpression(
+	        t.memberExpression(t.identifier(settings.CSSXCalleeObj), t.identifier('push')),
+	        [t.identifier(id)]
+	      ));
+	    }
+	
 	    if (isArray(parent)) {
 	      injectAt(parent, index, lines);
 	    } else {

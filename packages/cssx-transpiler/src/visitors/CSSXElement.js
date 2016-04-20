@@ -1,17 +1,26 @@
 var t = require('babel-types');
 var settings = require('../settings');
 
-var formCSSXElement = function (args) {
+var formCSSXElement = function (args, pure) {
+  if (!pure) {
+    return t.callExpression(
+      t.MemberExpression(
+        t.identifier(settings.CSSXCalleeObj),
+        t.identifier(settings.CSSXCalleeProp)
+      ),
+      args
+    );
+  }
   return t.callExpression(
-    t.MemberExpression(
+    t.memberExpression(
       t.identifier(settings.CSSXCalleeObj),
-      t.identifier(settings.CSSXCalleeProp)
+      t.identifier('push')
     ),
-    args
+    [t.arrayExpression(args)]
   );
 };
 
-var formCSSXSheetDefinition = function (selectorNode) {
+var formCSSXSheetDefinition = function (selectorNode, pure) {
   return t.callExpression(
     t.identifier(settings.CSSXCalleeObj),
     selectorNode ? [ t.identifier(selectorNode.value) ] : []
@@ -19,17 +28,18 @@ var formCSSXSheetDefinition = function (selectorNode) {
 };
 
 module.exports = {
-  enter: function (node, parent, index) {},
-  exit: function (node, parent, index) {
+  enter: function (node, parent, index, context) {},
+  exit: function (node, parent, index, context) {
     var args = [], el;
+    var pure = context.inCallExpression || context.inReturnStatement; // no CSSX lib involved
 
     node.selector ? args.push(node.selector) : null;
 
     if (node.body) {
       args.push(node.body);
-      el = formCSSXElement(args);
+      el = formCSSXElement(args, pure);
     } else {
-      el = formCSSXSheetDefinition(node.selector);
+      el = formCSSXSheetDefinition(node.selector, pure);
     }
 
     if (typeof parent !== 'undefined' && index !== 'undefined') {

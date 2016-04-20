@@ -15,9 +15,9 @@ var data = {
 var image = 'bg.jpg';
 
 (function () {
-  var _7 = {};
-  _7[data.prop] = "url(\"../public/" + image + ".jpg\") no-repeat";
-  _7['text-decoration'] = 'none';
+  var _8 = {};
+  _8[data.prop] = "url(\"../public/" + image + ".jpg\") no-repeat";
+  _8['text-decoration'] = 'none';
   var _5 = {};
   _5['color'] = '#000';
   _5[getSomeProp()[0]] = 'underline';
@@ -42,7 +42,7 @@ var image = 'bg.jpg';
 
   _6.n('p > a', _5);
 
-  _1.add(data.sel.join(', '), _7);
+  _1.add(data.sel.join(', '), _8);
 
   return _1;
 }.apply(this))

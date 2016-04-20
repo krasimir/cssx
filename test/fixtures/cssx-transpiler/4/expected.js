@@ -1,7 +1,7 @@
 (function () {
-  var _7 = {};
-  _7['background'] = 'url("../public/bg.jpg") no-repeat';
-  _7['text-decoration'] = 'none';
+  var _8 = {};
+  _8['background'] = 'url("../public/bg.jpg") no-repeat';
+  _8['text-decoration'] = 'none';
   var _5 = {};
   _5['color'] = '#000';
   _5['text-decoration'] = 'underline';
@@ -26,7 +26,7 @@
 
   _6.n('p > a', _5);
 
-  _1.add('section p > a', _7);
+  _1.add('section p > a', _8);
 
   return _1;
 }.apply(this))

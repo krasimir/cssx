@@ -15,7 +15,8 @@ function setStyles (fontSize, margin) {
   </style>
 }
 
-var sheet = setStyles(20, 6);
+var sheet = <style></style>;
+sheet.add(setStyles(20, 6));
 sheet.add(
   <style>
     p > a {

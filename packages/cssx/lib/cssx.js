@@ -391,12 +391,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _id;
 	  };
 	  _api.add = function (selector, props, parent, isWrapper) {
-	    var rule, r, s;
+	    var rule, r, s, scope;
 	
 	    if (arguments.length === 1 && typeof selector === 'object') {
 	      if (isArray(selector)) {
-	        selector.forEach(function (s) {
-	          _api.add(s[0], s[1]);
+	        selector.forEach(function (sel) {
+	          if (isArray(sel)) {
+	            _api.add(sel[0], sel[1]);
+	          } else {
+	            // nested
+	            for (s in sel) {
+	              scope = _api.add(s);
+	              sel[s].forEach(function (nestedStyles) {
+	                scope.n(nestedStyles[0], nestedStyles[1]);
+	              });
+	            }
+	          }
 	        });
 	      } else {
 	        for (s in selector) {

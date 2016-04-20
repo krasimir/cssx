@@ -23,7 +23,13 @@ sheet.add((function () {
   var _6 = {};
   _6['line-height'] = '12px';
   _6['font-size'] = '10px';
-  return [['p', _6], ['ul > foo', _7]];
+  var _5 = [];
+
+  _5.push(['p', _6]);
+
+  _5.push(['ul > foo', _7]);
+
+  return _5;
 }.apply(this)));
 
 var test = (function () {
