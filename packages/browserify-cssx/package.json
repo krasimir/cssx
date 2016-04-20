@@ -1,6 +1,6 @@
 {
   "name": "browserify-cssx",
-  "version": "3.8.0",
+  "version": "3.8.1",
   "description": "Browserify transform plugin that transpiles CSSX",
   "main": "index.js",
   "repository": {
@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/krasimir/cssx",
   "dependencies": {
-    "cssx-transpiler": "3.8.0",
+    "cssx-transpiler": "3.8.1",
     "through2": "2.0.1"
   }
 }
