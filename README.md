@@ -37,21 +37,25 @@ function setStyles(fontSize, margin) {
     _3['margin'] = margin + "px";
     _3['line-height'] = fontSize * 1.2 + "px";
     _3['font-size'] = fontSize + "px";
+    var _2 = [];
 
-    var _2 = cssx('_2');
-
-    _2.add('body', _3);
+    _2.push(['body', _3]);
 
     return _2;
   }.apply(this));
 }
 
-var sheet = setStyles(20, 6);
+var sheet = cssx();
+sheet.add(setStyles(20, 6));
 sheet.add((function () {
   var _6 = {};
   _6['color'] = '#F00';
   _6['text-decoration'] = 'none';
-  return [['p > a', _6]];
+  var _5 = [];
+
+  _5.push(['p > a', _6]);
+
+  return _5;
 }.apply(this)));
 ```
 
