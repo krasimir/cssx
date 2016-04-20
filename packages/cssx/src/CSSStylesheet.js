@@ -19,6 +19,7 @@ module.exports = function (id, plugins) {
   var _css = '';
   var _graph = {};
   var _queries = {};
+  var _scope = '';
 
   var ruleExists = function (selector, parent) {
     var i, rule, areParentsMatching, areThereNoParents;
@@ -113,7 +114,7 @@ module.exports = function (id, plugins) {
     return _api.compileImmediate();
   };
   _api.compileImmediate = function () {
-    _css = generate(getOnlyTopRules(), module.exports.minify, plugins);
+    _css = generate(getOnlyTopRules(), module.exports.minify, plugins, _scope);
     if (!module.exports.disableDOMChanges) {
       _remove = applyToDOM(_css, _id);
     }
@@ -189,7 +190,9 @@ module.exports = function (id, plugins) {
   _api.define = function (prop, func) {
     _customProperties[prop] = func;
   };
-
+  _api.scope = function (scope) {
+    _scope = scope;
+  };
   _api._getCustomProps = function () {
     return _customProperties;
   };

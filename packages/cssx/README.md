@@ -251,6 +251,22 @@ It clears the registered styles.
 
 Returns the CSS based on the added rules. Under the hood calls `compileImmediate`.
 
+#### `<stylesheet>.scope(<selector>)`
+
+All the selectors inside the stylesheet are prefixed with the given `<selector>`.
+
+```
+var sheet = <style></style>;
+sheet.scope('#component');
+sheet.add('p', { 'font-size': '10px' });
+
+/* produces
+#component p {
+  font-size: 10px;
+}
+*/
+```
+
 ---
 
 ## Rule API

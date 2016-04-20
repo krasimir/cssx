@@ -1,0 +1,17 @@
+#component p {
+  font-size: 10px;
+}
+#component b {
+  margin-top: 10px;
+}
+#component header a {
+  display: block;
+}
+@media (max-width: 600px) {
+  #component header a {
+    display: inline;
+  }
+}
+#component footer p {
+  float: left;
+}

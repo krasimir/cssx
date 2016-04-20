@@ -351,6 +351,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _css = '';
 	  var _graph = {};
 	  var _queries = {};
+	  var _scope = '';
 	
 	  var ruleExists = function (selector, parent) {
 	    var i, rule, areParentsMatching, areThereNoParents;
@@ -445,7 +446,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _api.compileImmediate();
 	  };
 	  _api.compileImmediate = function () {
-	    _css = generate(getOnlyTopRules(), module.exports.minify, plugins);
+	    _css = generate(getOnlyTopRules(), module.exports.minify, plugins, _scope);
 	    if (!module.exports.disableDOMChanges) {
 	      _remove = applyToDOM(_css, _id);
 	    }
@@ -521,7 +522,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _api.define = function (prop, func) {
 	    _customProperties[prop] = func;
 	  };
-	
+	  _api.scope = function (scope) {
+	    _scope = scope;
+	  };
 	  _api._getCustomProps = function () {
 	    return _customProperties;
 	  };
@@ -1107,7 +1110,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var prefix = __webpack_require__(16);
 	var applyPlugins, areThereAnyPlugins = false, n;
 	
-	module.exports = function (rules, minify, plugins) {
+	module.exports = function (rules, minify, plugins, scope) {
 	
 	  // duplicate those that need prefixing
 	  rules = prefix.selector(rules);
@@ -1119,6 +1122,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return props;
 	  };
+	
+	  var scopeTheSelector = function (selector) {
+	    if (scope === '') return selector;
+	    if (selector.indexOf(scope) === 0 || selector.indexOf('@') === 0) return selector;
+	    return scope + ' ' + selector;
+	  }
 	
 	  return (function generate(rules, parent, minify, nesting, nested) {
 	    var i, j, rule, props, propsFinal, prop, children, nestedChildren, selector, tab;
@@ -1134,6 +1143,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      nestedChildren = rule.getNestedChildren();
 	      selector = (parent ? parent + ' ' : '');
 	      selector += resolveSelector(rule.selector);
+	      selector = scopeTheSelector(selector);
 	      props = typeof rule.props === 'function' ? rule.props() : rule.props;
 	      if (!isEmpty(props) || nestedChildren.length > 0) {
 	        css += nesting + selector + interval + '{' + newLine;

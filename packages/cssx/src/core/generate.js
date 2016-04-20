@@ -3,7 +3,7 @@ var resolveSelector = require('../helpers/resolveSelector');
 var prefix = require('../helpers/prefix');
 var applyPlugins, areThereAnyPlugins = false, n;
 
-module.exports = function (rules, minify, plugins) {
+module.exports = function (rules, minify, plugins, scope) {
 
   // duplicate those that need prefixing
   rules = prefix.selector(rules);
@@ -15,6 +15,12 @@ module.exports = function (rules, minify, plugins) {
     }
     return props;
   };
+
+  var scopeTheSelector = function (selector) {
+    if (scope === '') return selector;
+    if (selector.indexOf(scope) === 0 || selector.indexOf('@') === 0) return selector;
+    return scope + ' ' + selector;
+  }
 
   return (function generate(rules, parent, minify, nesting, nested) {
     var i, j, rule, props, propsFinal, prop, children, nestedChildren, selector, tab;
@@ -30,6 +36,7 @@ module.exports = function (rules, minify, plugins) {
       nestedChildren = rule.getNestedChildren();
       selector = (parent ? parent + ' ' : '');
       selector += resolveSelector(rule.selector);
+      selector = scopeTheSelector(selector);
       props = typeof rule.props === 'function' ? rule.props() : rule.props;
       if (!isEmpty(props) || nestedChildren.length > 0) {
         css += nesting + selector + interval + '{' + newLine;
