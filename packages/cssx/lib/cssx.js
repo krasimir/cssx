@@ -1112,6 +1112,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	module.exports = function (rules, minify, plugins, scope) {
 	
+	  var scopeTheSelector = function (selector) {
+	    if (scope === '') return selector;
+	    if (selector.indexOf(scope) === 0 || selector.indexOf('@') === 0) return selector;
+	    return scope + ' ' + selector;
+	  };
+	
 	  // duplicate those that need prefixing
 	  rules = prefix.selector(rules);
 	
@@ -1122,12 +1128,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return props;
 	  };
-	
-	  var scopeTheSelector = function (selector) {
-	    if (scope === '') return selector;
-	    if (selector.indexOf(scope) === 0 || selector.indexOf('@') === 0) return selector;
-	    return scope + ' ' + selector;
-	  }
 	
 	  return (function generate(rules, parent, minify, nesting, nested) {
 	    var i, j, rule, props, propsFinal, prop, children, nestedChildren, selector, tab;
