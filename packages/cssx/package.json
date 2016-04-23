@@ -1,6 +1,6 @@
 {
   "name": "cssx",
-  "version": "3.8.2",
+  "version": "4.0.0",
   "description": "CSS in JavaScript",
   "main": "lib/cssx.js",
   "repository": {
