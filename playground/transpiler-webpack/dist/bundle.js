@@ -1411,6 +1411,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	var enabled = true;
+	var sheet = cssx();
 	
 	module.exports = function (e) {
 	  var button = e.target;
@@ -1419,18 +1420,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  enabled = !enabled;
 	  button.innerText = enabled ? 'disable input' : 'enable input';
 	
-	  (function () {
-	    var _2 = {};
-	    _2['color'] = enabled ? '#000' : '#ccc';
-	    _2['border'] = "solid " + (enabled ? '2px #999' : '1px #B0B0B0');
+	  sheet.add((function () {
+	    var _14 = {};
+	    _14['color'] = enabled ? '#000' : '#ccc';
+	    _14['border'] = "solid " + (enabled ? '2px #999' : '1px #B0B0B0');
+	    var _13 = [];
 	
-	    var _1 = cssx('_1');
+	    _13.push(['input', _14]);
 	
-	    _1.add('input', _2);
-	
-	    return _1;
-	  }).apply(this);
-	  ;
+	    return _13;
+	  }.apply(this)));
 	  input.disabled = !enabled;
 	};
 
@@ -1439,42 +1438,45 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports) {
 
 	var animationApply = 'ball-animation 1s ease infinite alternate';
-	var animation = (function () {
+	var animation = cssx();
+	animation.add((function () {
 	  var _7 = {};
 	  _7['background-color'] = 'rgb(200, 0, 0)';
 	  _7['(w)animation'] = animationApply;
-	  var _5 = {};
-	  _5['(w)transform'] = 'translateX(60px)';
 	  var _4 = {};
-	  _4['(w)transform'] = 'translateX(0)';
+	  _4['(w)transform'] = 'translateX(60px)';
+	  var _3 = {};
+	  _3['(w)transform'] = 'translateX(0)';
+	  var _2 = [];
+	  var _5 = {},
+	      _6 = [];
+	  _5['@keyframes ball-animation'] = _6;
 	
-	  var _3 = cssx('_3');
+	  _6.push(['0%', _3]);
 	
-	  var _6 = _3.add('@keyframes ball-animation');
+	  _6.push(['100%', _4]);
 	
-	  _6.n('0%', _4);
+	  _2.push(_5);
 	
-	  _6.n('100%', _5);
+	  _2.push(['.ball', _7]);
 	
-	  _3.add('.ball', _7);
-	
-	  return _3;
-	}).apply(this);;
+	  return _2;
+	}.apply(this)));
 	
 	module.exports = {
 	  updateEndpoint: function (endPoint) {
-	    animation.update('@keyframes ball-animation 100%', function () {
+	    animation.update('@keyframes ball-animation 100%', (function () {
 	      var _9 = {};
 	      _9['(w)transform'] = "translateX(" + endPoint + "px)";
 	      return _9;
-	    }.apply(this));
+	    }.apply(this)));
 	  },
 	  updateColor: function (color) {
-	    animation.update('.ball', function () {
+	    animation.update('.ball', (function () {
 	      var _11 = {};
 	      _11['background-color'] = "rgb(" + color + ", 0, 0)";
 	      return _11;
-	    }.apply(this));
+	    }.apply(this)));
 	  }
 	};
 

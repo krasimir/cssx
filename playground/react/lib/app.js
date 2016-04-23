@@ -54,15 +54,13 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _Navigation = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./Navigation\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var _Navigation = __webpack_require__(159);
 	
 	var _Navigation2 = _interopRequireDefault(_Navigation);
 	
 	__webpack_require__(160);
 	
-	function _interopRequireDefault(obj) {
-	  return obj && obj.__esModule ? obj : { default: obj };
-	}
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var ITEMS = ['React', 'Angular', 'Vue', 'Ember', 'Knockout', 'Vanilla'];
 	
@@ -19672,7 +19670,138 @@
 
 
 /***/ },
-/* 159 */,
+/* 159 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactDom = __webpack_require__(158);
+	
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Navigation = function (_React$Component) {
+	  _inherits(Navigation, _React$Component);
+	
+	  function Navigation(props) {
+	    _classCallCheck(this, Navigation);
+	
+	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Navigation).call(this, props));
+	
+	    _this.state = {
+	      color: '#2276BF'
+	    };
+	    _this.sheet = cssx();
+	    return _this;
+	  }
+	
+	  _createClass(Navigation, [{
+	    key: 'componentWillMount',
+	    value: function componentWillMount() {
+	      var color = this.state.color;
+	      this.sheet.add(function () {
+	        var _5 = {};
+	        _5['background-color'] = shadeColor(color, 0.2);
+	        var _4 = {};
+	        _4['(w)transition'] = 'background-color 400ms ease';
+	        _4['background-color'] = shadeColor(color, 0.5);
+	        _4['border-radius'] = '6px';
+	        _4['border-bottom'] = "solid 2px " + color;
+	        _4['padding'] = '0.6em 1em';
+	        _4['cursor'] = 'pointer';
+	        _4['display'] = 'block';
+	        var _3 = {};
+	        _3['(w)transition'] = 'padding-left 300ms ease';
+	        _3['padding-left'] = '0';
+	        var _2 = [];
+	
+	        _2.push(['li', _3]);
+	
+	        _2.push(['.btn', _4]);
+	
+	        _2.push(['.btn:hover', _5]);
+	
+	        return _2;
+	      }.apply(this));
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'ul',
+	        null,
+	        this._getItems()
+	      );
+	    }
+	  }, {
+	    key: '_getItems',
+	    value: function _getItems() {
+	      var _this2 = this;
+	
+	      return this.props.items.map(function (item, i) {
+	        return _react2.default.createElement(
+	          'li',
+	          { key: i },
+	          _react2.default.createElement(
+	            'a',
+	            { className: 'btn', onClick: _this2._handleClick.bind(_this2, i) },
+	            item
+	          )
+	        );
+	      });
+	    }
+	  }, {
+	    key: '_handleClick',
+	    value: function _handleClick(index) {
+	      cssx('selected').clear().add(function () {
+	        var _9 = {};
+	        _9['background-color'] = this.state.color;
+	        var _8 = {};
+	        _8['padding-left'] = '2em';
+	        var _7 = [];
+	
+	        _7.push(["li:nth-child(" + (index + 1) + ")", _8]);
+	
+	        _7.push(["li:nth-child(" + (index + 1) + ") .btn", _9]);
+	
+	        return _7;
+	      }.apply(this));
+	    }
+	  }]);
+	
+	  return Navigation;
+	}(_react2.default.Component);
+	
+	function shadeColor(color, percent) {
+	  var f = parseInt(color.slice(1), 16),
+	      t = percent < 0 ? 0 : 255,
+	      p = percent < 0 ? percent * -1 : percent,
+	      R = f >> 16,
+	      G = f >> 8 & 0x00FF,
+	      B = f & 0x0000FF;
+	  return "#" + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
+	}
+	
+	exports.default = Navigation;
+
+/***/ },
 /* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -19732,13 +19861,13 @@
 	/* 0 */
 	/***/ function(module, exports, __webpack_require__) {
 	
-		var factory, goGlobal, stylesheets, api, randomId;
+		var factory, goGlobal, stylesheets, api, randomId, plugins = [];
 		
 		__webpack_require__(1);
 		
 		factory = __webpack_require__(5);
-		goGlobal = __webpack_require__(17);
-		randomId = __webpack_require__(18);
+		goGlobal = __webpack_require__(18);
+		randomId = __webpack_require__(19);
 		
 		stylesheets = [];
 		
@@ -19759,7 +19888,7 @@
 		  return s;
 		};
 		
-		api = function (id) { return createStyleSheet(id); };
+		api = function (id) { return createStyleSheet(id, plugins); };
 		
 		api.domChanges = function (flag) {
 		  factory.disableDOMChanges = !flag;
@@ -19789,6 +19918,9 @@
 		    css += stylesheets[i].getCSS();
 		  }
 		  return css;
+		};
+		api.plugins = function (arr) {
+		  plugins = plugins.concat(arr);
 		};
 		
 		module.exports = api;
@@ -20006,24 +20138,27 @@
 	/***/ function(module, exports, __webpack_require__) {
 	
 		var CSSRule = __webpack_require__(6);
-		var applyToDOM = __webpack_require__(7);
-		var nextTick = __webpack_require__(8);
-		var resolveSelector = __webpack_require__(12);
-		var generate = __webpack_require__(13);
-		var warning = __webpack_require__(16);
+		var applyToDOM = __webpack_require__(8);
+		var nextTick = __webpack_require__(9);
+		var resolveSelector = __webpack_require__(13);
+		var generate = __webpack_require__(14);
+		var warning = __webpack_require__(17);
+		var isArray = __webpack_require__(7);
 		
 		var graphRulePropName = '__$__cssx_rule';
 		var ids = 0;
 		var getId = function () { return 'x' + (++ids); };
 		
-		module.exports = function (id) {
+		module.exports = function (id, plugins) {
 		  var _id = id || getId();
 		  var _api = {};
 		  var _rules = [];
+		  var _customProperties = {};
 		  var _remove = null;
 		  var _css = '';
 		  var _graph = {};
 		  var _queries = {};
+		  var _scope = '';
 		
 		  var ruleExists = function (selector, parent) {
 		    var i, rule, areParentsMatching, areThereNoParents;
@@ -20064,7 +20199,32 @@
 		    return _id;
 		  };
 		  _api.add = function (selector, props, parent, isWrapper) {
-		    var rule, r = ruleExists(selector, parent);
+		    var rule, r, s, scope;
+		
+		    if (arguments.length === 1 && typeof selector === 'object') {
+		      if (isArray(selector)) {
+		        selector.forEach(function (sel) {
+		          if (isArray(sel)) {
+		            _api.add(sel[0], sel[1]);
+		          } else {
+		            // nested
+		            for (s in sel) {
+		              scope = _api.add(s);
+		              sel[s].forEach(function (nestedStyles) {
+		                scope.n(nestedStyles[0], nestedStyles[1]);
+		              });
+		            }
+		          }
+		        });
+		      } else {
+		        for (s in selector) {
+		          _api.add(s, selector[s]);
+		        }
+		      }
+		      return _api;
+		    }
+		
+		    r = ruleExists(selector, parent);
 		
 		    if (r) {
 		      rule = r.update(false, props);
@@ -20093,7 +20253,7 @@
 		    return _api.compileImmediate();
 		  };
 		  _api.compileImmediate = function () {
-		    _css = generate(getOnlyTopRules(), module.exports.minify);
+		    _css = generate(getOnlyTopRules(), module.exports.minify, plugins, _scope);
 		    if (!module.exports.disableDOMChanges) {
 		      _remove = applyToDOM(_css, _id);
 		    }
@@ -20116,7 +20276,16 @@
 		    return _css;
 		  };
 		  _api.update = function (selector, props) {
-		    var rule = this.query(selector);
+		    var rule, s;
+		
+		    if (arguments.length === 1 && typeof selector === 'object') {
+		      for (s in selector) {
+		        _api.update(s, selector[s]);
+		      }
+		      return _api;
+		    }
+		
+		    rule = this.query(selector);
 		
 		    if (!rule) {
 		      warning('There is no rule matching "' + selector + '"');
@@ -20157,6 +20326,15 @@
 		  _api.graph = function () {
 		    return _graph;
 		  };
+		  _api.define = function (prop, func) {
+		    _customProperties[prop] = func;
+		  };
+		  _api.scope = function (scope) {
+		    _scope = scope;
+		  };
+		  _api._getCustomProps = function () {
+		    return _customProperties;
+		  };
 		
 		  return _api;
 		};
@@ -20168,19 +20346,36 @@
 	
 	/***/ },
 	/* 6 */
-	/***/ function(module, exports) {
+	/***/ function(module, exports, __webpack_require__) {
 	
-		var ids = 0;
-		var getId = function () { return 'r' + (++ids); };
+		var isArray = __webpack_require__(7);
 		
-		var CSSRule = function (selector, props, stylesheet) {
+		var ids = 0;
+		var getId = function () { return 'r' + (++ids); }, CSSRule;
+		
+		function resolveCustomProps(actual, custom) {
+		  var result = actual, prop, newProp, value;
+		
+		  for (prop in custom) {
+		    if (typeof actual[prop] !== 'undefined') {
+		      value = custom[prop](actual[prop]);
+		      delete actual[prop];
+		      for (newProp in value) {
+		        actual[newProp] = value[newProp];
+		      }
+		    }
+		  }
+		  return result;
+		};
+		
+		CSSRule = function (selector, props, stylesheet) {
 		  var _id = getId();
 		  var _children = [];
 		  var _nestedChildren = [];
 		
 		  var record = {
 		    selector: selector,
-		    props: props,
+		    props: resolveCustomProps(props, stylesheet._getCustomProps()),
 		    parent: null,
 		    addChild: function (c, isWrapper) {
 		      (isWrapper ? _nestedChildren : _children).push(c);
@@ -20199,9 +20394,19 @@
 		      _nestedChildren = c;
 		    },
 		    descendant: function (s, p) {
+		      if (isArray(s)) {
+		        return s.map(function (rule) {
+		          return stylesheet.add(rule[0], rule[1], record, false);
+		        });
+		      }
 		      return stylesheet.add(s, p, this, false);
 		    },
 		    nested: function (s, p) {
+		      if (isArray(s)) {
+		        return s.map(function (rule) {
+		          return stylesheet.add(rule[0], rule[1], record, true);
+		        });
+		      }
 		      return stylesheet.add(s, p, this, true);
 		    },
 		    d: function (s, p) {
@@ -20222,6 +20427,7 @@
 		      if (p) {
 		        if (typeof p === 'function') p = p();
 		        if (!this.props) this.props = {};
+		        p = resolveCustomProps(p, stylesheet._getCustomProps());
 		        for (propName in p) {
 		          this.props[propName] = p[propName];
 		        }
@@ -20233,7 +20439,7 @@
 		      return _id;
 		    },
 		    clone: function () {
-		      var rule = CSSRule(this.selector, this.props);
+		      var rule = CSSRule(this.selector, this.props, stylesheet);
 		
 		      rule.parent = this.parent;
 		      rule.setChildren(this.getChildren());
@@ -20251,6 +20457,15 @@
 	
 	/***/ },
 	/* 7 */
+	/***/ function(module, exports) {
+	
+		module.exports = function (v) {
+		  return Object.prototype.toString.call(v) === '[object Array]';
+		};
+	
+	
+	/***/ },
+	/* 8 */
 	/***/ function(module, exports) {
 	
 		var cache = {};
@@ -20304,12 +20519,12 @@
 	
 	
 	/***/ },
-	/* 8 */
+	/* 9 */
 	/***/ function(module, exports, __webpack_require__) {
 	
 		/* WEBPACK VAR INJECTION */(function(setImmediate) {var cache = {};
 		
-		__webpack_require__(11);
+		__webpack_require__(12);
 		
 		module.exports = function (work, id) {
 		  if (!cache[id]) {
@@ -20321,13 +20536,13 @@
 		  }
 		};
 		
-		/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate))
+		/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).setImmediate))
 	
 	/***/ },
-	/* 9 */
+	/* 10 */
 	/***/ function(module, exports, __webpack_require__) {
 	
-		/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(10).nextTick;
+		/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(11).nextTick;
 		var apply = Function.prototype.apply;
 		var slice = Array.prototype.slice;
 		var immediateIds = {};
@@ -20403,10 +20618,10 @@
 		exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 		  delete immediateIds[id];
 		};
-		/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate, __webpack_require__(9).clearImmediate))
+		/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).setImmediate, __webpack_require__(10).clearImmediate))
 	
 	/***/ },
-	/* 10 */
+	/* 11 */
 	/***/ function(module, exports) {
 	
 		// shim for using process in browser
@@ -20503,7 +20718,7 @@
 	
 	
 	/***/ },
-	/* 11 */
+	/* 12 */
 	/***/ function(module, exports, __webpack_require__) {
 	
 		/* WEBPACK VAR INJECTION */(function(global, clearImmediate, process) {(function (global, undefined) {
@@ -20682,10 +20897,10 @@
 		    attachTo.clearImmediate = clearImmediate;
 		}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 		
-		/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(9).clearImmediate, __webpack_require__(10)))
+		/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(10).clearImmediate, __webpack_require__(11)))
 	
 	/***/ },
-	/* 12 */
+	/* 13 */
 	/***/ function(module, exports) {
 	
 		module.exports = function (selector) {
@@ -20694,20 +20909,35 @@
 	
 	
 	/***/ },
-	/* 13 */
+	/* 14 */
 	/***/ function(module, exports, __webpack_require__) {
 	
-		var isEmpty = __webpack_require__(14);
-		var resolveSelector = __webpack_require__(12);
-		var prefix = __webpack_require__(15);
+		var isEmpty = __webpack_require__(15);
+		var resolveSelector = __webpack_require__(13);
+		var prefix = __webpack_require__(16);
+		var applyPlugins, areThereAnyPlugins = false, n;
 		
-		module.exports = function (rules, minify) {
+		module.exports = function (rules, minify, plugins, scope) {
+		
+		  var scopeTheSelector = function (selector) {
+		    if (scope === '') return selector;
+		    if (selector.indexOf(scope) === 0 || selector.indexOf('@') === 0) return selector;
+		    return scope + ' ' + selector;
+		  };
 		
 		  // duplicate those that need prefixing
 		  rules = prefix.selector(rules);
 		
+		  areThereAnyPlugins = plugins && plugins.length > 0;
+		  applyPlugins = function (props) {
+		    for (n = 0; n < plugins.length; n++) {
+		      props = plugins[n](props);
+		    }
+		    return props;
+		  };
+		
 		  return (function generate(rules, parent, minify, nesting, nested) {
-		    var i, j, rule, props, prop, children, nestedChildren, selector, cssValue, tab;
+		    var i, j, rule, props, propsFinal, prop, children, nestedChildren, selector, tab;
 		    var css = '';
 		    var newLine = minify ? '' : '\n';
 		    var interval = minify ? '' : ' ';
@@ -20720,14 +20950,19 @@
 		      nestedChildren = rule.getNestedChildren();
 		      selector = (parent ? parent + ' ' : '');
 		      selector += resolveSelector(rule.selector);
+		      selector = scopeTheSelector(selector);
 		      props = typeof rule.props === 'function' ? rule.props() : rule.props;
 		      if (!isEmpty(props) || nestedChildren.length > 0) {
 		        css += nesting + selector + interval + '{' + newLine;
 		        props = prefix.property(props);
 		        if (props) {
+		          propsFinal = {};
 		          for (prop in props) {
-		            cssValue = typeof props[prop] === 'function' ? props[prop]() : props[prop];
-		            css += tab + prop + ':' + interval + cssValue + ';' + newLine;
+		            propsFinal[prop] = typeof props[prop] === 'function' ? props[prop]() : props[prop];
+		          }
+		          propsFinal = areThereAnyPlugins ? applyPlugins(propsFinal) : propsFinal;
+		          for (prop in propsFinal) {
+		            css += tab + prop + ':' + interval + propsFinal[prop] + ';' + newLine;
 		          }
 		        }
 		        for (j = 0; j < nestedChildren.length; j++) {
@@ -20745,7 +20980,7 @@
 	
 	
 	/***/ },
-	/* 14 */
+	/* 15 */
 	/***/ function(module, exports) {
 	
 		module.exports = function (obj) {
@@ -20761,10 +20996,10 @@
 	
 	
 	/***/ },
-	/* 15 */
+	/* 16 */
 	/***/ function(module, exports, __webpack_require__) {
 	
-		var resolveSelector = __webpack_require__(12);
+		var resolveSelector = __webpack_require__(13);
 		var SELECTORS = {
 		  '@keyframes': [
 		    '@-webkit-keyframes',
@@ -20795,11 +21030,12 @@
 		
 		module.exports = {
 		  selector: function (rules) {
-		    var result = [], keyword, newRule;
+		    var result = [], keyword, newRule, sel;
 		
 		    rules.forEach(function (rule) {
-		      keyword = resolveSelector(rule.selector).split(' ')[0];
+		      sel = resolveSelector(rule.selector);
 		      result.push(rule);
+		      if (sel) keyword = resolveSelector(rule.selector).split(' ')[0];
 		      if (SELECTORS[keyword]) {
 		        SELECTORS[keyword].forEach(function (prefixed) {
 		          newRule = rule.clone();
@@ -20830,7 +21066,7 @@
 	
 	
 	/***/ },
-	/* 16 */
+	/* 17 */
 	/***/ function(module, exports) {
 	
 		module.exports = function (message) {
@@ -20841,7 +21077,7 @@
 	
 	
 	/***/ },
-	/* 17 */
+	/* 18 */
 	/***/ function(module, exports) {
 	
 		/* WEBPACK VAR INJECTION */(function(global) {module.exports = function (api) {
@@ -20856,7 +21092,7 @@
 		/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 	
 	/***/ },
-	/* 18 */
+	/* 19 */
 	/***/ function(module, exports) {
 	
 		var ids = 0;

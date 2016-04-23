@@ -28,3 +28,5 @@ module.exports = {
 };
 
 ```
+
+*If you use `cssx-loader` along with React make sure that you place it at the end of the `loaders` array. It's important that you get the CSSX `<style>` tags resolved first, before they reach the JSX transpiler.*

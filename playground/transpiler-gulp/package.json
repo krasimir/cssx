@@ -10,7 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "gulp": "3.9.0",
-    "gulp-cssx": "3.0.0",
+    "gulp-cssx": "4.0.0",
     "gulp-plumber": "1.0.1",
     "gulp-util": "3.0.7",
     "map-stream": "0.0.6"

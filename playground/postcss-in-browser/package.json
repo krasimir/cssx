@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cssx": "3.8.0",
+    "cssx": "4.0.0",
     "postcss-color-gray": "3.0.0",
     "postcss-js": "0.1.2"
   }
