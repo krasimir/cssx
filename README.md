@@ -28,24 +28,32 @@ sheet.add(<style>
 The code above is transpiled into valid JavaScript that uses the [CSSX client-side library](./packages/cssx):
 
 ```js
-function setStyles (fontSize, margin) {
-  return <style>
-    body {
-      font-size: {{ fontSize }}px;
-      line-height: {{ fontSize * 1.2 }}px;
-      margin: {{ margin }}px;
-    }
-  </style>
+function setStyles(fontSize, margin) {
+  return (function () {
+    var _3 = {};
+    _3['margin'] = margin + "px";
+    _3['line-height'] = fontSize * 1.2 + "px";
+    _3['font-size'] = fontSize + "px";
+    var _2 = [];
+
+    _2.push(['body', _3]);
+
+    return _2;
+  }.apply(this));
 }
 
 var sheet = cssx();
 sheet.add(setStyles(20, 6));
-sheet.add(<style>
-  p > a {
-    text-decoration: none;
-    color: #F00;
-  }
-</style>);
+sheet.add((function () {
+  var _6 = {};
+  _6['color'] = '#F00';
+  _6['text-decoration'] = 'none';
+  var _5 = [];
+
+  _5.push(['p > a', _6]);
+
+  return _5;
+}.apply(this)));
 ```
 
 And it results in the following CSS:
