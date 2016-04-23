@@ -29,20 +29,23 @@ var image = 'bg.jpg';
   _2['clear'] = 'both';
   _2['display'] = 'table';
   _2['content'] = '" "';
+  var _1 = [];
 
-  var _1 = cssx('_1');
+  _1.push(["section::" + pseudoClass, _2]);
 
-  _1.add("section::" + pseudoClass, _2);
+  _1.push(['section small', _3]);
 
-  _1.add('section small', _3);
+  var _6 = {},
+      _7 = [];
+  _6['@media screen and (max-width: 1000px)'] = _7;
 
-  var _6 = _1.add('@media screen and (max-width: 1000px)');
+  _7.push(['p', _4]);
 
-  _6.n('p', _4);
+  _7.push(['p > a', _5]);
 
-  _6.n('p > a', _5);
+  _1.push(_6);
 
-  _1.add(data.sel.join(', '), _8);
+  _1.push([data.sel.join(', '), _8]);
 
   return _1;
 }.apply(this))

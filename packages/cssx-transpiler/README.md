@@ -1,6 +1,6 @@
 # CSSX-Transpiler
 
-> Transpiler CSSX to valid JavaScript
+> Transpile `<style>` tags to valid JavaScript
 
 ---
 
@@ -13,7 +13,7 @@ var code = require('fs').readFileSync('./file.js', { encoding: 'utf8' }).toStrin
 /* let's say that code =
 
   var styles = function (margin) {
-    <style>
+    return <style>
       body {
         margin: `margin`px;
         padding: 0;
@@ -28,17 +28,16 @@ console.log(transpiled);
 /*
 
   var styles = function (margin) {
-    (function () {
-      var _2 = {};
-      _2['padding'] = '0';
-      _2['margin'] = margin + "px";
+    return (function () {
+      var _3 = {};
+      _3['padding'] = '0';
+      _3['margin'] = margin + "px";
+      var _2 = [];
 
-      var _1 = cssx('_1');
+      _2.push(['body', _3]);
 
-      _1.add('body', _2);
-
-      return _1;
-    }.apply(this))
+      return _2;
+    }.apply(this));
   };
 
 */
@@ -65,6 +64,58 @@ Returns abstract syntax tree.
 #### `cssxTranspiler.reset()`
 
 While transpiling the module is creating bunch of unique ids in the format of `_<number>`. This method resets the number to 0.
+
+---
+
+## Transformations
+
+CSSX transpiler uses array of arrays to represent CSS styles. For example:
+
+```css
+.container {
+  margin: 10px;
+  padding: 20px;
+}
+```
+
+is transformed to
+
+```json
+[
+  [
+    ".container",
+    {
+      "padding": "20px",
+      "margin": "10px"
+    }
+  ]
+]
+```
+
+Nested styles like media queries are treated a little bit different. They are wrapped in objects:
+
+```css
+@media (max-width: 450px) {
+  .container {
+    width: 100%;
+  }
+}
+```
+
+```json
+[
+  {
+    "@media (max-width: 450px)": [
+      [
+        ".container",
+        {
+          "width": "100%"
+        }
+      ]
+    ]
+  }
+]
+```
 
 ---
 

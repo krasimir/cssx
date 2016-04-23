@@ -1,18 +1,17 @@
-var DefaultStyles = "var sheet = <style>\n\
+var DefaultStyles = "var sheet = cssx();\n\nsheet.add(<style>\n\
   body {\n\
     margin: 0;\n\
     padding: 0;\n\
   }\n\
-</style>\n\
+</style>);\n\
 \n\
 var size = 10;\n\
 var ratio = 1.5;\n\
 \n\
-sheet.add(\n\
-  'p',\n\
-  <style>{\n\
+sheet.add(<style>\n\
+  p {\n\
     font-size: {{ size }}px;\n\
     line-height: {{ size*ratio }}px;\n\
     (wmo)transform: transitionX(10px);\n\
-  }</style>\n\
-);";
+  }\n\
+</style>);";

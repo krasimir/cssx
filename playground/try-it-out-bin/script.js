@@ -15,8 +15,9 @@ var Bin = function () {
   var DEFAULT_JAVASCRIPT = "var rotation = 12;\n\
 var color = '#00F';\n\
 var y = 10;\n\
+var sheet = cssx();\n\
 \n\
-var sheet = <style>\n\
+sheet.add(<style>\n\
   p {\n\
     font-size: 22px;\n\
     color: #9f0000;\n\
@@ -28,7 +29,7 @@ var sheet = <style>\n\
     font-weight: bold;\n\
     (w)transform: translateY({{ y }}px) rotateZ({{ rotation }}deg);\n\
   }\n\
-</style>;";
+</style>);";
   var DEFAULT_HTML = '<p>\n  Hello world.<br />\n  That\'s a <span>CSSX</span> demonstration.\n</p>';
 
   // ********************************************************************

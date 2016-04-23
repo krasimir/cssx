@@ -9,11 +9,11 @@ var getStyles = function (size) {
   );
 }
 
-var sheet = <style>
+var sheet = cssx();
+sheet.add(<style>
   p {
     font-size: 1em;
     line-height: {{ ratio }}em;
   }
-</style>
-
+</style>);
 sheet.add(getStyles(10));

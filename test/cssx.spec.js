@@ -14,7 +14,7 @@ chai.use(sinonChai);
 cssx.minify(false);
 cssx.nextTick(false);
 
-// var only = '8'.split(',');
+// var only = '2'.split(',');
 var expect = chai.expect;
 var removeChild = sinon.spy();
 var document = {
@@ -302,7 +302,7 @@ d('Given the cssx library', function () {
         }
       });
     });
-    it('should have a proper graph 6', function () {
+    it('should have a proper graph 7', function () {
       var s = cssx();
       s.add('body');
       s.add('body p');

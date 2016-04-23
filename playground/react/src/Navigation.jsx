@@ -4,11 +4,14 @@ import ReactDOM from 'react-dom';
 class Navigation extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { color: '#2276BF' };
+    this.state = {
+      color: '#2276BF'
+    };
+    this.sheet = cssx();
   }
   componentWillMount() {
     var color = this.state.color;
-    <style>
+    this.sheet.add(<style>
       li {
         padding-left: 0;
         (w)transition: padding-left 300ms ease;
@@ -25,7 +28,7 @@ class Navigation extends React.Component {
       .btn:hover {
         background-color: `shadeColor(color, 0.2)`;
       }
-    </style>;
+    </style>);
   }
   render() {
     return <ul>{ this._getItems() }</ul>;

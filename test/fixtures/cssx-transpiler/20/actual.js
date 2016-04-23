@@ -1,16 +1,10 @@
 var obj = {
-  styles: cssx(
+  styles: <style>
     body {
-      color: <% this.color %>;
+      color: #FFF;
       margin: 0;
       padding: 0;
-      font-<%property%>: <% value %>px;
     }
-    <% b(a+b).reduce(function () {
-      return m;
-    })%> {
-      b-<% bar %>: something <% foo %> px <% bar %> s; 
-    }
-  ),
-  color: '#FF0'
+  </style>,
+  color: '#ff2244'
 };

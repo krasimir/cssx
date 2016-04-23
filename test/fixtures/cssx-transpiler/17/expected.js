@@ -5,10 +5,9 @@
     value.push('site/imgs/' + value);return value;
   }, []).join(',');
   _2['margin'] = value + "px";
+  var _1 = [];
 
-  var _1 = cssx('_1');
-
-  _1.add('.left', _2);
+  _1.push(['.left', _2]);
 
   return _1;
 }.apply(this))

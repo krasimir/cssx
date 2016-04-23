@@ -54,13 +54,15 @@
 	
 	var _reactDom2 = _interopRequireDefault(_reactDom);
 	
-	var _Navigation = __webpack_require__(161);
+	var _Navigation = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./Navigation\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 	
 	var _Navigation2 = _interopRequireDefault(_Navigation);
 	
 	__webpack_require__(160);
 	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	function _interopRequireDefault(obj) {
+	  return obj && obj.__esModule ? obj : { default: obj };
+	}
 	
 	var ITEMS = ['React', 'Angular', 'Vue', 'Ember', 'Knockout', 'Vanilla'];
 	
@@ -20872,133 +20874,6 @@
 	});
 	;
 	//# sourceMappingURL=cssx.js.map
-
-/***/ },
-/* 161 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _react = __webpack_require__(1);
-	
-	var _react2 = _interopRequireDefault(_react);
-	
-	var _reactDom = __webpack_require__(158);
-	
-	var _reactDom2 = _interopRequireDefault(_reactDom);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var Navigation = function (_React$Component) {
-	  _inherits(Navigation, _React$Component);
-	
-	  function Navigation(props) {
-	    _classCallCheck(this, Navigation);
-	
-	    var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(Navigation).call(this, props));
-	
-	    _this.state = { color: '#2276BF' };
-	    return _this;
-	  }
-	
-	  _createClass(Navigation, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      var color = this.state.color;
-	      (function () {
-	        var _83 = {};
-	        _83['background-color'] = shadeColor(color, 0.2);
-	        var _82 = {};
-	        _82['(w)transition'] = 'background-color 400ms ease';
-	        _82['background-color'] = shadeColor(color, 0.5);
-	        _82['border-radius'] = '6px';
-	        _82['border-bottom'] = "solid 2px " + color;
-	        _82['padding'] = '0.6em 1em';
-	        _82['cursor'] = 'pointer';
-	        _82['display'] = 'block';
-	        var _81 = {};
-	        _81['(w)transition'] = 'padding-left 300ms ease';
-	        _81['padding-left'] = '0';
-	
-	        var _80 = cssx('_80');
-	
-	        _80.add('li', _81);
-	
-	        _80.add('.btn', _82);
-	
-	        _80.add('.btn:hover', _83);
-	
-	        return _80;
-	      }).apply(this);
-	      ;
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2.default.createElement(
-	        'ul',
-	        null,
-	        this._getItems()
-	      );
-	    }
-	  }, {
-	    key: '_getItems',
-	    value: function _getItems() {
-	      var _this2 = this;
-	
-	      return this.props.items.map(function (item, i) {
-	        return _react2.default.createElement(
-	          'li',
-	          { key: i },
-	          _react2.default.createElement(
-	            'a',
-	            { className: 'btn', onClick: _this2._handleClick.bind(_this2, i) },
-	            item
-	          )
-	        );
-	      });
-	    }
-	  }, {
-	    key: '_handleClick',
-	    value: function _handleClick(index) {
-	      cssx('selected').clear().add('li:nth-child(' + (index + 1) + ')', function () {
-	        var _85 = {};
-	        _85['padding-left'] = '2em';
-	        return _85;
-	      }.apply(this)).descendant('.btn', function () {
-	        var _87 = {};
-	        _87['background-color'] = this.state.color;
-	        return _87;
-	      }.apply(this));
-	    }
-	  }]);
-	
-	  return Navigation;
-	}(_react2.default.Component);
-	
-	function shadeColor(color, percent) {
-	  var f = parseInt(color.slice(1), 16),
-	      t = percent < 0 ? 0 : 255,
-	      p = percent < 0 ? percent * -1 : percent,
-	      R = f >> 16,
-	      G = f >> 8 & 0x00FF,
-	      B = f & 0x0000FF;
-	  return "#" + (0x1000000 + (Math.round((t - R) * p) + R) * 0x10000 + (Math.round((t - G) * p) + G) * 0x100 + (Math.round((t - B) * p) + B)).toString(16).slice(1);
-	}
-	
-	exports.default = Navigation;
 
 /***/ }
 /******/ ]);

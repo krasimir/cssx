@@ -1,7 +1,3 @@
-var sheet = <style>
-  body {
-    margin: 10px;
-  }
-</style>;
+var sheet = cssx();
 
 require('./paragraph.js')(sheet);

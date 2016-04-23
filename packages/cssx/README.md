@@ -8,6 +8,7 @@
 
 * [cssx.js](http://krasimir.github.io/cssx/packages/cssx/lib/cssx.js) - CSSX library (uncompressed)
 * [cssx.min.js](http://krasimir.github.io/cssx/packages/cssx/lib/cssx.min.js) - CSSX library (compressed)
+* Or get the same file via CDN [cdnjs.com/libraries/cssx](https://cdnjs.com/libraries/cssx)
 
 (For source maps check [here](./lib))
 

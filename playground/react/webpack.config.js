@@ -12,18 +12,18 @@ module.exports = {
     loaders: [
       {
         test: /(\.jsx|\.js)$/,
+        loader: 'cssx-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /(\.jsx|\.js)$/,
         loader: 'babel',
         exclude: /(node_modules|bower_components)/,
         query: {
           cacheDirectory: true,
           presets: ['es2015', 'react']
         }
-      },
-      {
-        test: /(\.jsx|\.js)$/,
-        loader: 'cssx-loader',
-        exclude: /node_modules/
-      }
+      }      
     ]
   },
   resolve: {

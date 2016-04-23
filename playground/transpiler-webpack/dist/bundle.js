@@ -125,13 +125,18 @@ return /******/ (function(modules) { // webpackBootstrap
 			/* 0 */
 			/***/function (module, exports, __webpack_require__) {
 	
-				var factory, goGlobal, stylesheets, api, randomId;
+				var factory,
+				    goGlobal,
+				    stylesheets,
+				    api,
+				    randomId,
+				    plugins = [];
 	
 				__webpack_require__(1);
 	
 				factory = __webpack_require__(5);
-				goGlobal = __webpack_require__(17);
-				randomId = __webpack_require__(18);
+				goGlobal = __webpack_require__(18);
+				randomId = __webpack_require__(19);
 	
 				stylesheets = [];
 	
@@ -153,7 +158,7 @@ return /******/ (function(modules) { // webpackBootstrap
 				};
 	
 				api = function (id) {
-					return createStyleSheet(id);
+					return createStyleSheet(id, plugins);
 				};
 	
 				api.domChanges = function (flag) {
@@ -185,6 +190,9 @@ return /******/ (function(modules) { // webpackBootstrap
 						css += stylesheets[i].getCSS();
 					}
 					return css;
+				};
+				api.plugins = function (arr) {
+					plugins = plugins.concat(arr);
 				};
 	
 				module.exports = api;
@@ -405,11 +413,12 @@ return /******/ (function(modules) { // webpackBootstrap
 			/***/function (module, exports, __webpack_require__) {
 	
 				var CSSRule = __webpack_require__(6);
-				var applyToDOM = __webpack_require__(7);
-				var nextTick = __webpack_require__(8);
-				var resolveSelector = __webpack_require__(12);
-				var generate = __webpack_require__(13);
-				var warning = __webpack_require__(16);
+				var applyToDOM = __webpack_require__(8);
+				var nextTick = __webpack_require__(9);
+				var resolveSelector = __webpack_require__(13);
+				var generate = __webpack_require__(14);
+				var warning = __webpack_require__(17);
+				var isArray = __webpack_require__(7);
 	
 				var graphRulePropName = '__$__cssx_rule';
 				var ids = 0;
@@ -417,14 +426,16 @@ return /******/ (function(modules) { // webpackBootstrap
 					return 'x' + ++ids;
 				};
 	
-				module.exports = function (id) {
+				module.exports = function (id, plugins) {
 					var _id = id || getId();
 					var _api = {};
 					var _rules = [];
+					var _customProperties = {};
 					var _remove = null;
 					var _css = '';
 					var _graph = {};
 					var _queries = {};
+					var _scope = '';
 	
 					var ruleExists = function (selector, parent) {
 						var i, rule, areParentsMatching, areThereNoParents;
@@ -465,8 +476,32 @@ return /******/ (function(modules) { // webpackBootstrap
 						return _id;
 					};
 					_api.add = function (selector, props, parent, isWrapper) {
-						var rule,
-						    r = ruleExists(selector, parent);
+						var rule, r, s, scope;
+	
+						if (arguments.length === 1 && typeof selector === 'object') {
+							if (isArray(selector)) {
+								selector.forEach(function (sel) {
+									if (isArray(sel)) {
+										_api.add(sel[0], sel[1]);
+									} else {
+										// nested
+										for (s in sel) {
+											scope = _api.add(s);
+											sel[s].forEach(function (nestedStyles) {
+												scope.n(nestedStyles[0], nestedStyles[1]);
+											});
+										}
+									}
+								});
+							} else {
+								for (s in selector) {
+									_api.add(s, selector[s]);
+								}
+							}
+							return _api;
+						}
+	
+						r = ruleExists(selector, parent);
 	
 						if (r) {
 							rule = r.update(false, props);
@@ -495,7 +530,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						return _api.compileImmediate();
 					};
 					_api.compileImmediate = function () {
-						_css = generate(getOnlyTopRules(), module.exports.minify);
+						_css = generate(getOnlyTopRules(), module.exports.minify, plugins, _scope);
 						if (!module.exports.disableDOMChanges) {
 							_remove = applyToDOM(_css, _id);
 						}
@@ -518,7 +553,16 @@ return /******/ (function(modules) { // webpackBootstrap
 						return _css;
 					};
 					_api.update = function (selector, props) {
-						var rule = this.query(selector);
+						var rule, s;
+	
+						if (arguments.length === 1 && typeof selector === 'object') {
+							for (s in selector) {
+								_api.update(s, selector[s]);
+							}
+							return _api;
+						}
+	
+						rule = this.query(selector);
 	
 						if (!rule) {
 							warning('There is no rule matching "' + selector + '"');
@@ -559,6 +603,15 @@ return /******/ (function(modules) { // webpackBootstrap
 					_api.graph = function () {
 						return _graph;
 					};
+					_api.define = function (prop, func) {
+						_customProperties[prop] = func;
+					};
+					_api.scope = function (scope) {
+						_scope = scope;
+					};
+					_api._getCustomProps = function () {
+						return _customProperties;
+					};
 	
 					return _api;
 				};
@@ -570,21 +623,42 @@ return /******/ (function(modules) { // webpackBootstrap
 				/***/
 			},
 			/* 6 */
-			/***/function (module, exports) {
+			/***/function (module, exports, __webpack_require__) {
+	
+				var isArray = __webpack_require__(7);
 	
 				var ids = 0;
 				var getId = function () {
 					return 'r' + ++ids;
+				},
+				    CSSRule;
+	
+				function resolveCustomProps(actual, custom) {
+					var result = actual,
+					    prop,
+					    newProp,
+					    value;
+	
+					for (prop in custom) {
+						if (typeof actual[prop] !== 'undefined') {
+							value = custom[prop](actual[prop]);
+							delete actual[prop];
+							for (newProp in value) {
+								actual[newProp] = value[newProp];
+							}
+						}
+					}
+					return result;
 				};
 	
-				var CSSRule = function (selector, props, stylesheet) {
+				CSSRule = function (selector, props, stylesheet) {
 					var _id = getId();
 					var _children = [];
 					var _nestedChildren = [];
 	
 					var record = {
 						selector: selector,
-						props: props,
+						props: resolveCustomProps(props, stylesheet._getCustomProps()),
 						parent: null,
 						addChild: function (c, isWrapper) {
 							(isWrapper ? _nestedChildren : _children).push(c);
@@ -603,9 +677,19 @@ return /******/ (function(modules) { // webpackBootstrap
 							_nestedChildren = c;
 						},
 						descendant: function (s, p) {
+							if (isArray(s)) {
+								return s.map(function (rule) {
+									return stylesheet.add(rule[0], rule[1], record, false);
+								});
+							}
 							return stylesheet.add(s, p, this, false);
 						},
 						nested: function (s, p) {
+							if (isArray(s)) {
+								return s.map(function (rule) {
+									return stylesheet.add(rule[0], rule[1], record, true);
+								});
+							}
 							return stylesheet.add(s, p, this, true);
 						},
 						d: function (s, p) {
@@ -625,6 +709,8 @@ return /******/ (function(modules) { // webpackBootstrap
 							if (s) this.selector = s;
 							if (p) {
 								if (typeof p === 'function') p = p();
+								if (!this.props) this.props = {};
+								p = resolveCustomProps(p, stylesheet._getCustomProps());
 								for (propName in p) {
 									this.props[propName] = p[propName];
 								}
@@ -636,7 +722,7 @@ return /******/ (function(modules) { // webpackBootstrap
 							return _id;
 						},
 						clone: function () {
-							var rule = CSSRule(this.selector, this.props);
+							var rule = CSSRule(this.selector, this.props, stylesheet);
 	
 							rule.parent = this.parent;
 							rule.setChildren(this.getChildren());
@@ -654,6 +740,15 @@ return /******/ (function(modules) { // webpackBootstrap
 				/***/
 			},
 			/* 7 */
+			/***/function (module, exports) {
+	
+				module.exports = function (v) {
+					return Object.prototype.toString.call(v) === '[object Array]';
+				};
+	
+				/***/
+			},
+			/* 8 */
 			/***/function (module, exports) {
 	
 				var cache = {};
@@ -703,13 +798,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 8 */
+			/* 9 */
 			/***/function (module, exports, __webpack_require__) {
 	
 				/* WEBPACK VAR INJECTION */(function (setImmediate) {
 					var cache = {};
 	
-					__webpack_require__(11);
+					__webpack_require__(12);
 	
 					module.exports = function (work, id) {
 						if (!cache[id]) {
@@ -722,15 +817,15 @@ return /******/ (function(modules) { // webpackBootstrap
 					};
 	
 					/* WEBPACK VAR INJECTION */
-				}).call(exports, __webpack_require__(9).setImmediate);
+				}).call(exports, __webpack_require__(10).setImmediate);
 	
 				/***/
 			},
-			/* 9 */
+			/* 10 */
 			/***/function (module, exports, __webpack_require__) {
 	
 				/* WEBPACK VAR INJECTION */(function (setImmediate, clearImmediate) {
-					var nextTick = __webpack_require__(10).nextTick;
+					var nextTick = __webpack_require__(11).nextTick;
 					var apply = Function.prototype.apply;
 					var slice = Array.prototype.slice;
 					var immediateIds = {};
@@ -807,11 +902,11 @@ return /******/ (function(modules) { // webpackBootstrap
 						delete immediateIds[id];
 					};
 					/* WEBPACK VAR INJECTION */
-				}).call(exports, __webpack_require__(9).setImmediate, __webpack_require__(9).clearImmediate);
+				}).call(exports, __webpack_require__(10).setImmediate, __webpack_require__(10).clearImmediate);
 	
 				/***/
 			},
-			/* 10 */
+			/* 11 */
 			/***/function (module, exports) {
 	
 				// shim for using process in browser
@@ -912,7 +1007,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 11 */
+			/* 12 */
 			/***/function (module, exports, __webpack_require__) {
 	
 				/* WEBPACK VAR INJECTION */(function (global, clearImmediate, process) {
@@ -1089,11 +1184,11 @@ return /******/ (function(modules) { // webpackBootstrap
 					/* WEBPACK VAR INJECTION */
 				}).call(exports, function () {
 					return this;
-				}(), __webpack_require__(9).clearImmediate, __webpack_require__(10));
+				}(), __webpack_require__(10).clearImmediate, __webpack_require__(11));
 	
 				/***/
 			},
-			/* 12 */
+			/* 13 */
 			/***/function (module, exports) {
 	
 				module.exports = function (selector) {
@@ -1102,20 +1197,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 13 */
+			/* 14 */
 			/***/function (module, exports, __webpack_require__) {
 	
-				var isEmpty = __webpack_require__(14);
-				var resolveSelector = __webpack_require__(12);
-				var prefix = __webpack_require__(15);
+				var isEmpty = __webpack_require__(15);
+				var resolveSelector = __webpack_require__(13);
+				var prefix = __webpack_require__(16);
+				var applyPlugins,
+				    areThereAnyPlugins = false,
+				    n;
 	
-				module.exports = function (rules, minify) {
+				module.exports = function (rules, minify, plugins, scope) {
+	
+					var scopeTheSelector = function (selector) {
+						if (scope === '') return selector;
+						if (selector.indexOf(scope) === 0 || selector.indexOf('@') === 0) return selector;
+						return scope + ' ' + selector;
+					};
 	
 					// duplicate those that need prefixing
 					rules = prefix.selector(rules);
 	
+					areThereAnyPlugins = plugins && plugins.length > 0;
+					applyPlugins = function (props) {
+						for (n = 0; n < plugins.length; n++) {
+							props = plugins[n](props);
+						}
+						return props;
+					};
+	
 					return function generate(rules, parent, minify, nesting, nested) {
-						var i, j, rule, props, prop, children, nestedChildren, selector, cssValue, tab;
+						var i, j, rule, props, propsFinal, prop, children, nestedChildren, selector, tab;
 						var css = '';
 						var newLine = minify ? '' : '\n';
 						var interval = minify ? '' : ' ';
@@ -1128,14 +1240,19 @@ return /******/ (function(modules) { // webpackBootstrap
 							nestedChildren = rule.getNestedChildren();
 							selector = parent ? parent + ' ' : '';
 							selector += resolveSelector(rule.selector);
+							selector = scopeTheSelector(selector);
 							props = typeof rule.props === 'function' ? rule.props() : rule.props;
 							if (!isEmpty(props) || nestedChildren.length > 0) {
 								css += nesting + selector + interval + '{' + newLine;
 								props = prefix.property(props);
 								if (props) {
+									propsFinal = {};
 									for (prop in props) {
-										cssValue = typeof props[prop] === 'function' ? props[prop]() : props[prop];
-										css += tab + prop + ':' + interval + cssValue + ';' + newLine;
+										propsFinal[prop] = typeof props[prop] === 'function' ? props[prop]() : props[prop];
+									}
+									propsFinal = areThereAnyPlugins ? applyPlugins(propsFinal) : propsFinal;
+									for (prop in propsFinal) {
+										css += tab + prop + ':' + interval + propsFinal[prop] + ';' + newLine;
 									}
 								}
 								for (j = 0; j < nestedChildren.length; j++) {
@@ -1153,7 +1270,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 14 */
+			/* 15 */
 			/***/function (module, exports) {
 	
 				module.exports = function (obj) {
@@ -1169,10 +1286,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 15 */
+			/* 16 */
 			/***/function (module, exports, __webpack_require__) {
 	
-				var resolveSelector = __webpack_require__(12);
+				var resolveSelector = __webpack_require__(13);
 				var SELECTORS = {
 					'@keyframes': ['@-webkit-keyframes', '@-moz-keyframes', '@-o-keyframes']
 				};
@@ -1201,11 +1318,13 @@ return /******/ (function(modules) { // webpackBootstrap
 					selector: function (rules) {
 						var result = [],
 						    keyword,
-						    newRule;
+						    newRule,
+						    sel;
 	
 						rules.forEach(function (rule) {
-							keyword = resolveSelector(rule.selector).split(' ')[0];
+							sel = resolveSelector(rule.selector);
 							result.push(rule);
+							if (sel) keyword = resolveSelector(rule.selector).split(' ')[0];
 							if (SELECTORS[keyword]) {
 								SELECTORS[keyword].forEach(function (prefixed) {
 									newRule = rule.clone();
@@ -1236,7 +1355,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 16 */
+			/* 17 */
 			/***/function (module, exports) {
 	
 				module.exports = function (message) {
@@ -1247,7 +1366,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 17 */
+			/* 18 */
 			/***/function (module, exports) {
 	
 				/* WEBPACK VAR INJECTION */(function (global) {
@@ -1267,7 +1386,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 18 */
+			/* 19 */
 			/***/function (module, exports) {
 	
 				var ids = 0;
@@ -1321,40 +1440,40 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var animationApply = 'ball-animation 1s ease infinite alternate';
 	var animation = (function () {
-	  var _29 = {};
-	  _29['background-color'] = 'rgb(200, 0, 0)';
-	  _29['(w)animation'] = animationApply;
-	  var _27 = {};
-	  _27['(w)transform'] = 'translateX(60px)';
-	  var _26 = {};
-	  _26['(w)transform'] = 'translateX(0)';
+	  var _7 = {};
+	  _7['background-color'] = 'rgb(200, 0, 0)';
+	  _7['(w)animation'] = animationApply;
+	  var _5 = {};
+	  _5['(w)transform'] = 'translateX(60px)';
+	  var _4 = {};
+	  _4['(w)transform'] = 'translateX(0)';
 	
-	  var _25 = cssx('_25');
+	  var _3 = cssx('_3');
 	
-	  var _28 = _25.add('@keyframes ball-animation');
+	  var _6 = _3.add('@keyframes ball-animation');
 	
-	  _28.n('0%', _26);
+	  _6.n('0%', _4);
 	
-	  _28.n('100%', _27);
+	  _6.n('100%', _5);
 	
-	  _25.add('.ball', _29);
+	  _3.add('.ball', _7);
 	
-	  return _25;
+	  return _3;
 	}).apply(this);;
 	
 	module.exports = {
 	  updateEndpoint: function (endPoint) {
 	    animation.update('@keyframes ball-animation 100%', function () {
-	      var _31 = {};
-	      _31['(w)transform'] = "translateX(" + endPoint + "px)";
-	      return _31;
+	      var _9 = {};
+	      _9['(w)transform'] = "translateX(" + endPoint + "px)";
+	      return _9;
 	    }.apply(this));
 	  },
 	  updateColor: function (color) {
 	    animation.update('.ball', function () {
-	      var _33 = {};
-	      _33['background-color'] = "rgb(" + color + ", 0, 0)";
-	      return _33;
+	      var _11 = {};
+	      _11['background-color'] = "rgb(" + color + ", 0, 0)";
+	      return _11;
 	    }.apply(this));
 	  }
 	};

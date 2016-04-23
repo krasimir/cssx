@@ -9,7 +9,7 @@ var expect = chai.expect;
 var d = describe;
 
 var tests = [];
-// var only = '10'.split(',');
+// var only = '1,2,3,4,5,6,7,8,9,10'.split(',');
 
 glob.sync(__dirname + '/fixtures/cssx-complete/**/actual.js').forEach(function (actual) {
   var testDir = path.dirname(actual), testDirParts = testDir.split('/');

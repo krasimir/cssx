@@ -5,12 +5,11 @@ var sheet = cssx();
   _3['color'] = '#F00';
   var _2 = {};
   _2['color'] = '#000';
+  var _1 = [];
 
-  var _1 = cssx('_1');
+  _1.push(['body', _2]);
 
-  _1.add('body', _2);
-
-  _1.add('body.error', _3);
+  _1.push(['body.error', _3]);
 
   return _1;
 }.apply(this))

@@ -4,13 +4,14 @@ var A = {
 var B = {
   size: 30
 };
+var stylesheet = cssx();
 
 var generateSize = function (selector) {
-  cssx(
+  stylesheet.add(<style>
     `selector` {
       font-size: `this.size`px;
     }
-  )
+  </style>);
 };
 
 generateSize.call(A, 'body');

@@ -2,7 +2,6 @@ var isArray = require('../helpers/isArray');
 var injectAt = require('../helpers/injectAt');
 var getID = require('../helpers/randomId');
 var t = require('babel-types');
-var settings = require('../settings');
 var isIgnored = require('../core/traverse').isIgnored;
 
 var updateStyleSheet = function (node, stylesheetId) {
@@ -66,7 +65,6 @@ module.exports = {
     var funcExpr;
     var funcCallExpr;
     var result;
-    var pure = context.inCallExpression || context.inReturnStatement; // no CSSX lib involved
 
     var applyResult = function (r) {
       if (isArray(parent)) {
@@ -89,25 +87,10 @@ module.exports = {
       return;
     }
 
-    if (!pure) {
-      newStylesheetExpr = t.variableDeclaration(
-        'var',
-        [
-          t.variableDeclarator(
-            t.identifier(stylesheetId),
-            t.callExpression(
-              t.identifier(settings.CSSXCalleeObj),
-              [t.stringLiteral(stylesheetId)]
-            )
-          )
-        ]
-      );
-    } else {
-      newStylesheetExpr = t.variableDeclaration(
-        'var',
-        [ t.variableDeclarator(t.identifier(stylesheetId), t.arrayExpression())]
-      );
-    }
+    newStylesheetExpr = t.variableDeclaration(
+      'var',
+      [ t.variableDeclarator(t.identifier(stylesheetId), t.arrayExpression())]
+    );
 
     rulesRegistration = node.body.map(function (line) {
       line = updateStyleSheet(line, stylesheetId);
@@ -125,21 +108,6 @@ module.exports = {
         objectLiterals[0].selector === '')
     ) {
       funcLines.push(t.returnStatement(t.identifier(objectLiterals[0].rulesObjVar)));
-
-    // styles passed to a method
-    } else if (pure) {
-      funcLines.push(newStylesheetExpr);
-      funcLines = funcLines.concat(rulesRegistration);
-      funcLines.push(t.returnStatement(t.identifier(stylesheetId)));
-      // funcLines.push(
-      //   t.returnStatement(
-      //     t.arrayExpression(objectLiterals.map(function (o) {
-      //       return t.arrayExpression([o.selector, t.identifier(o.rulesObjVar)]);
-      //     }))
-      //   )
-      // );
-
-    // autocreating a stylesheet
     } else {
       funcLines.push(newStylesheetExpr);
       funcLines = funcLines.concat(rulesRegistration);
@@ -155,11 +123,7 @@ module.exports = {
       [t.thisExpression()]
     );
 
-    if (context.inObjectProperty) {
-      result = funcExpr;
-    } else {
-      result = createSelfInvoke(funcCallExpr);
-    }
+    result = createSelfInvoke(funcCallExpr);
 
     applyResult(result);
   }

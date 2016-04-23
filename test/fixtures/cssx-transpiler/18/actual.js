@@ -1,10 +1,9 @@
 var obj = {
-  styles: cssx(
+  styles: <style>
     body {
-      color: `this.color`;
+      color: #FF0;
       margin: 0;
       padding: 0;
     }
-  ),
-  color: '#FF0'
+  </style>
 };

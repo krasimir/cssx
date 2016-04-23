@@ -1,19 +1,9 @@
 var t = require('babel-types');
-var settings = require('../settings');
 
 var formCSSXElement = function (args, pure) {
-  if (!pure) {
-    return t.callExpression(
-      t.MemberExpression(
-        t.identifier(settings.CSSXCalleeObj),
-        t.identifier(settings.CSSXCalleeProp)
-      ),
-      args
-    );
-  }
   return t.callExpression(
     t.memberExpression(
-      t.identifier(settings.CSSXCalleeObj),
+      t.identifier('cssx'),
       t.identifier('push')
     ),
     [t.arrayExpression(args)]
@@ -22,7 +12,7 @@ var formCSSXElement = function (args, pure) {
 
 var formCSSXSheetDefinition = function (selectorNode, pure) {
   return t.callExpression(
-    t.identifier(settings.CSSXCalleeObj),
+    t.identifier('cssx'),
     selectorNode ? [ t.identifier(selectorNode.value) ] : []
   );
 };
@@ -31,15 +21,14 @@ module.exports = {
   enter: function (node, parent, index, context) {},
   exit: function (node, parent, index, context) {
     var args = [], el;
-    var pure = context.inCallExpression || context.inReturnStatement; // no CSSX lib involved
 
     node.selector ? args.push(node.selector) : null;
 
     if (node.body) {
       args.push(node.body);
-      el = formCSSXElement(args, pure);
+      el = formCSSXElement(args);
     } else {
-      el = formCSSXSheetDefinition(node.selector, pure);
+      el = formCSSXSheetDefinition(node.selector);
     }
 
     if (typeof parent !== 'undefined' && index !== 'undefined') {

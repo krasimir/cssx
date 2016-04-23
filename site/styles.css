@@ -1,3 +1,9 @@
+@keyframes snow {
+  0% { background-position: 0px 0px, 0px 0px, 0px 0px; }
+  50% { background-position: 500px 500px, 100px 200px, -100px 150px; }
+  100% { background-position: 500px 1000px, 200px 400px, -100px 300px; }
+}
+
 html {
   box-sizing: border-box;
   width: 100%;
@@ -13,7 +19,7 @@ body {
   height: 100%;
   font-family: Arial, Verdana;
   color: #746309;
-  background: #FFF;
+  background: #F0CB13;
   font-size: 16px;
   transition: background 800ms ease, color 800ms ease;
   -webkit-transition: background 800ms ease, color 800ms ease;
@@ -47,11 +53,13 @@ h1 {
   -moz-transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 600ms ease, letter-spacing 2000ms ease;
   -o-transition: transform 1200ms cubic-bezier(1,.13,0,1.08), color 600ms ease, letter-spacing 2000ms ease;
   transform: translateX(-650px);
-  -webkit-transform: translateX(-650px);
-  -o-transform: translateX(-650px);
-  -moz-transform: translateX(-650px);
   letter-spacing: 40px;
   color: #000;
+  -webkit-transform: translateX(-35px);
+  -moz-transform: translateX(-35px);
+  -o-transform: translateX(-35px);
+  color: #FF044C;
+  letter-spacing: 0px;
 }
 h2 {
   font-size: 1.2em;

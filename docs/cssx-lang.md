@@ -3,41 +3,41 @@
 CSSX is not a new language. It's still the CSS that we know and use every day. The difference is that we write it inside a JavaScript context. That's possible because we now have an access to [CSSX transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler). It understand and successfully transforms expressions like this:
 
 ```js
-var sheet = <style>
+sheet.add(<style>
   body {
     margin: 0;
     padding: 0;
   }
-</style>;
+</style>);
 ```
 
-The `<style>` tag (in this format) returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object which we use to manage our styles. For example, to append a new CSS rule for all paragraphs on our page we can use the `add` method:
+The `<style>` tag returns a plain JavaScript array which we use together with [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) to manage our styles. For example, to append a new CSS rule for all paragraphs on our page we can use the following:
 
 ```js
-sheet.add(
-  'p', 
-  <style>{
+sheet.add(<style>
+  p {
     font-size: 1em;
     line-height: 1.2em;
-  }</style>
-);
+  }
+</style>);
 ```
 
 ## Language expressions
 
 #### `<style>selector { styles } ...</style>`
 
-It returns a [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) object.
+It returns an array.
 
 Example:
 
 ```js
-var sheet = <style>
+var sheet = cssx('id');
+sheet.add(<style>
   body {
     margin: 0;
     padding: 0;
   }
-</style>;
+</style>);
 ```
 
 Same as:
@@ -74,46 +74,20 @@ var styles = {
 };
 ```
 
-#### CSSX as a value of object literal's property
-
-Sometimes you don't want to create a new stylesheet but still define multiple styles. If we pass `<style>` expression to an object property we get a function that fires the creation of our stylesheet. For example:
-
-```js
-var obj = {
-  styles: <style>
-    body {
-      color: {{ this.color }};
-      margin: 0;
-      padding: 0;
-    }
-  </style>,
-  color: '#ff2244'
-};
-```
-
-As it is this code is doing nothing. However if we run `obj.styles()` we'll get a new stylesheet that results to the following css:
-
-```css
-body {
-  padding: 0;
-  margin: 0;
-  color: #ff2244;
-}
-```
-
 ## Using JavaScript
 
-The biggest benefit of CSSX is the fact that it's written in JavaScript context. So it has an access to all the data in the current scope.
+We are writing CSSX in JavaScript context. So it has an access to all the data in the current scope.
 
 ```js
 var property = 'size';
 var value = 18;
+var sheet = cssx();
 
-<style>
+sheet.add(<style>
   body {
     font-{{ property }}: {{ value + 2 }}px;
   }
-</style>
+</style>);
 ```
 
 There are three ways to define dynamic expressions:
@@ -127,17 +101,17 @@ The transpiler converts the string inside the expression to a valid JavaScript. 
 ```js
 var property = 'size';
 var value = 18;
+var sheet = cssx();
 
-(function () {
-  var _2 = {};
-  _2["font-" + property] = value + 2 + "px";
+sheet.add((function () {
+  var _3 = {};
+  _3["font-" + property] = value + 2 + "px";
+  var _2 = [];
 
-  var _1 = cssx('_1');
+  _2.push(['body', _3]);
 
-  _1.add('body', _2);
-
-  return _1;
-}.apply(this));
+  return _2;
+}.apply(this)));
 ```
 
 And the produced CSS:
@@ -188,6 +162,8 @@ Where
 * `c` - `-tc-` Tall Components
 
 *There is only one case where CSSX library generates prefixes automatically and that's when we use `@keyframes`.*
+
+*Check out the [plugin](./plugins.md) docs to see how to youse CSSX together with PostCSS*.
 
 ## Where to go from here
 

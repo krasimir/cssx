@@ -62,17 +62,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var visitors = {
 	  CSSXDefinition: __webpack_require__(422),
-	  CSSXElement: __webpack_require__(425),
-	  CSSXProperty: __webpack_require__(426),
-	  CSSXRule: __webpack_require__(428),
-	  CSSXRules: __webpack_require__(429),
-	  CSSXSelector: __webpack_require__(430),
-	  CSSXValue: __webpack_require__(431),
-	  CSSXMediaQueryElement: __webpack_require__(432),
-	  CSSXKeyframesElement: __webpack_require__(434),
-	  CallExpression: __webpack_require__(435),
-	  ReturnStatement: __webpack_require__(436),
-	  ObjectProperty: __webpack_require__(437)
+	  CSSXElement: __webpack_require__(424),
+	  CSSXProperty: __webpack_require__(425),
+	  CSSXRule: __webpack_require__(427),
+	  CSSXRules: __webpack_require__(428),
+	  CSSXSelector: __webpack_require__(429),
+	  CSSXValue: __webpack_require__(430),
+	  CSSXMediaQueryElement: __webpack_require__(431),
+	  CSSXKeyframesElement: __webpack_require__(433),
+	  CallExpression: __webpack_require__(434),
+	  ReturnStatement: __webpack_require__(435),
+	  ObjectProperty: __webpack_require__(436)
 	};
 	
 	module.exports = function (code, options) {
@@ -48936,7 +48936,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var injectAt = __webpack_require__(423);
 	var getID = __webpack_require__(421);
 	var t = __webpack_require__(42);
-	var settings = __webpack_require__(424);
 	var isIgnored = __webpack_require__(4).isIgnored;
 	
 	var updateStyleSheet = function (node, stylesheetId) {
@@ -49000,7 +48999,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var funcExpr;
 	    var funcCallExpr;
 	    var result;
-	    var pure = context.inCallExpression || context.inReturnStatement; // no CSSX lib involved
 	
 	    var applyResult = function (r) {
 	      if (isArray(parent)) {
@@ -49023,25 +49021,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 	
-	    if (!pure) {
-	      newStylesheetExpr = t.variableDeclaration(
-	        'var',
-	        [
-	          t.variableDeclarator(
-	            t.identifier(stylesheetId),
-	            t.callExpression(
-	              t.identifier(settings.CSSXCalleeObj),
-	              [t.stringLiteral(stylesheetId)]
-	            )
-	          )
-	        ]
-	      );
-	    } else {
-	      newStylesheetExpr = t.variableDeclaration(
-	        'var',
-	        [ t.variableDeclarator(t.identifier(stylesheetId), t.arrayExpression())]
-	      );
-	    }
+	    newStylesheetExpr = t.variableDeclaration(
+	      'var',
+	      [ t.variableDeclarator(t.identifier(stylesheetId), t.arrayExpression())]
+	    );
 	
 	    rulesRegistration = node.body.map(function (line) {
 	      line = updateStyleSheet(line, stylesheetId);
@@ -49059,21 +49042,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	        objectLiterals[0].selector === '')
 	    ) {
 	      funcLines.push(t.returnStatement(t.identifier(objectLiterals[0].rulesObjVar)));
-	
-	    // styles passed to a method
-	    } else if (pure) {
-	      funcLines.push(newStylesheetExpr);
-	      funcLines = funcLines.concat(rulesRegistration);
-	      funcLines.push(t.returnStatement(t.identifier(stylesheetId)));
-	      // funcLines.push(
-	      //   t.returnStatement(
-	      //     t.arrayExpression(objectLiterals.map(function (o) {
-	      //       return t.arrayExpression([o.selector, t.identifier(o.rulesObjVar)]);
-	      //     }))
-	      //   )
-	      // );
-	
-	    // autocreating a stylesheet
 	    } else {
 	      funcLines.push(newStylesheetExpr);
 	      funcLines = funcLines.concat(rulesRegistration);
@@ -49089,11 +49057,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      [t.thisExpression()]
 	    );
 	
-	    if (context.inObjectProperty) {
-	      result = funcExpr;
-	    } else {
-	      result = createSelfInvoke(funcCallExpr);
-	    }
+	    result = createSelfInvoke(funcCallExpr);
 	
 	    applyResult(result);
 	  }
@@ -49111,35 +49075,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 424 */
-/***/ function(module, exports) {
-
-	module.exports = {
-	  CSSXCalleeObj: 'cssx',
-	  CSSXCalleeProp: 'add',
-	  CSSXClientNestedMethodName: 'n'
-	};
-
-
-/***/ },
-/* 425 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(42);
-	var settings = __webpack_require__(424);
 	
 	var formCSSXElement = function (args, pure) {
-	  if (!pure) {
-	    return t.callExpression(
-	      t.MemberExpression(
-	        t.identifier(settings.CSSXCalleeObj),
-	        t.identifier(settings.CSSXCalleeProp)
-	      ),
-	      args
-	    );
-	  }
 	  return t.callExpression(
 	    t.memberExpression(
-	      t.identifier(settings.CSSXCalleeObj),
+	      t.identifier('cssx'),
 	      t.identifier('push')
 	    ),
 	    [t.arrayExpression(args)]
@@ -49148,7 +49091,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var formCSSXSheetDefinition = function (selectorNode, pure) {
 	  return t.callExpression(
-	    t.identifier(settings.CSSXCalleeObj),
+	    t.identifier('cssx'),
 	    selectorNode ? [ t.identifier(selectorNode.value) ] : []
 	  );
 	};
@@ -49157,15 +49100,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  enter: function (node, parent, index, context) {},
 	  exit: function (node, parent, index, context) {
 	    var args = [], el;
-	    var pure = context.inCallExpression || context.inReturnStatement; // no CSSX lib involved
 	
 	    node.selector ? args.push(node.selector) : null;
 	
 	    if (node.body) {
 	      args.push(node.body);
-	      el = formCSSXElement(args, pure);
+	      el = formCSSXElement(args);
 	    } else {
-	      el = formCSSXSheetDefinition(node.selector, pure);
+	      el = formCSSXSheetDefinition(node.selector);
 	    }
 	
 	    if (typeof parent !== 'undefined' && index !== 'undefined') {
@@ -49178,11 +49120,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 426 */
+/* 425 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(42);
-	var parseExpressions = __webpack_require__(427);
+	var parseExpressions = __webpack_require__(426);
 	
 	module.exports = {
 	  enter: function (node, parent, index) {},
@@ -49197,7 +49139,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 427 */
+/* 426 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(42);
@@ -49261,7 +49203,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 428 */
+/* 427 */
 /***/ function(module, exports) {
 
 	module.exports = {
@@ -49273,7 +49215,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 429 */
+/* 428 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(42);
@@ -49323,11 +49265,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 430 */
+/* 429 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(42);
-	var parseExpressions = __webpack_require__(427);
+	var parseExpressions = __webpack_require__(426);
 	
 	module.exports = {
 	  enter: function (node, parent, index) {},
@@ -49342,11 +49284,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 431 */
+/* 430 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var t = __webpack_require__(42);
-	var parseExpressions = __webpack_require__(427);
+	var parseExpressions = __webpack_require__(426);
 	
 	module.exports = {
 	  enter: function (node, parent, index) {},
@@ -49361,91 +49303,63 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 432 */
+/* 431 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(433);
+	module.exports = __webpack_require__(432);
 
 
 /***/ },
-/* 433 */
+/* 432 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var CSSXElement = __webpack_require__(425);
-	var formCSSXElement = CSSXElement.formCSSXElement;
 	var t = __webpack_require__(42);
 	var injectAt = __webpack_require__(423);
 	var isArray = __webpack_require__(5);
-	var settings = __webpack_require__(424);
 	var getID = __webpack_require__(421);
 	
 	module.exports = {
 	  enter: function (node, parent, index, context) {},
 	  exit: function (node, parent, index, context) {
 	    var id = getID(), tempArrId = getID(), lines = [];
-	    var pure = context.inCallExpression || context.inReturnStatement; // no CSSX lib involved
 	
-	    if (!pure) {
-	      lines.push(t.variableDeclaration(
-	        'var',
-	        [
-	          t.variableDeclarator(
-	            t.identifier(id),
-	            formCSSXElement([ t.stringLiteral(node.query) ])
-	          )
-	        ]
-	      ));
-	      lines = lines.concat(node.body.map(function (cssxElementNode) {
-	        cssxElementNode.callee.object.name = id;
-	        cssxElementNode.callee.property.name = settings.CSSXClientNestedMethodName;
-	        return t.expressionStatement(cssxElementNode);
-	      }));
-	    } else {
-	      lines.push(t.variableDeclaration(
-	        'var', [
-	          t.variableDeclarator(
-	            t.identifier(id),
-	            t.objectExpression([])
-	          ),
-	          t.variableDeclarator(
-	            t.identifier(tempArrId),
-	            t.arrayExpression()
-	          )
-	
-	        ]
-	      ));
-	      lines.push(t.expressionStatement(
-	        t.assignmentExpression(
-	          '=',
-	          t.memberExpression(
-	            t.identifier(id),
-	            t.stringLiteral(node.query),
-	            true
-	          ),
-	          t.identifier(tempArrId)
-	        )
-	      ));
-	      lines = lines.concat(node.body.map(function (cssxElementNode) {
-	        if (!pure) {
-	          cssxElementNode.callee.object.name = id;
-	          cssxElementNode.callee.property.name = settings.CSSXClientNestedMethodName;
-	          return t.expressionStatement(cssxElementNode);
-	        }
-	        cssxElementNode.callee = t.memberExpression(
+	    lines.push(t.variableDeclaration(
+	      'var', [
+	        t.variableDeclarator(
+	          t.identifier(id),
+	          t.objectExpression([])
+	        ),
+	        t.variableDeclarator(
 	          t.identifier(tempArrId),
-	          t.identifier('push')
-	        );
-	        cssxElementNode.callee.property.name = 'push';
-	        return t.expressionStatement(cssxElementNode);
-	      }));
-	    }
+	          t.arrayExpression()
+	        )
 	
-	    if (pure) {
-	      lines.push(t.callExpression(
-	        t.memberExpression(t.identifier(settings.CSSXCalleeObj), t.identifier('push')),
-	        [t.identifier(id)]
-	      ));
-	    }
+	      ]
+	    ));
+	    lines.push(t.expressionStatement(
+	      t.assignmentExpression(
+	        '=',
+	        t.memberExpression(
+	          t.identifier(id),
+	          t.stringLiteral(node.query),
+	          true
+	        ),
+	        t.identifier(tempArrId)
+	      )
+	    ));
+	    lines = lines.concat(node.body.map(function (cssxElementNode) {
+	      cssxElementNode.callee = t.memberExpression(
+	        t.identifier(tempArrId),
+	        t.identifier('push')
+	      );
+	      cssxElementNode.callee.property.name = 'push';
+	      return t.expressionStatement(cssxElementNode);
+	    }));
+	
+	    lines.push(t.callExpression(
+	      t.memberExpression(t.identifier('cssx'), t.identifier('push')),
+	      [t.identifier(id)]
+	    ));
 	
 	    if (isArray(parent)) {
 	      injectAt(parent, index, lines);
@@ -49457,14 +49371,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 434 */
+/* 433 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__(433);
+	module.exports = __webpack_require__(432);
 
 
 /***/ },
-/* 435 */
+/* 434 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var randomId = __webpack_require__(421);
@@ -49487,7 +49401,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 436 */
+/* 435 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var randomId = __webpack_require__(421);
@@ -49510,7 +49424,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 437 */
+/* 436 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var randomId = __webpack_require__(421);

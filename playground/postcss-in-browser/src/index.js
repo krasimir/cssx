@@ -10,8 +10,9 @@ var plugin = function (styles) {
 cssx.minify(false);
 cssx.plugins([ plugin ]);
 
-var sheet = <style>
+var sheet = cssx();
+sheet.add(<style>
   body {
     color: gray(85);
   }
-</style>;
+</style>);

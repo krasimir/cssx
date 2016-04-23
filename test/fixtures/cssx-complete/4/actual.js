@@ -1,5 +1,6 @@
+var stylesheet = cssx();
 var animationApply = 'ball-animation 1s ease infinite alternate';
-var animation = cssx(
+var animation = stylesheet.add(<style>
   @keyframes ball-animation {
     0%   { 
       transform: translateX(0);
@@ -11,4 +12,4 @@ var animation = cssx(
   .ball {
     animation: `animationApply`;
   }
-);
+</style>);

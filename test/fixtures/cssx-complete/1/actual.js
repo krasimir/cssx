@@ -1,1 +1,2 @@
-cssx(a { b: 1 });
+var stylesheet = cssx();
+stylesheet.add(<style>a { b: 1 }</style>);

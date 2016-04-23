@@ -1,5 +1,5 @@
 var obj = {
-  styles: cssx(
+  styles: <style>
     body {
       color: {{ this.color }};
       margin: 0;
@@ -11,6 +11,6 @@ var obj = {
     })}} {
       b-{{ bar }}: something {{ foo }} px; 
     }
-  ),
+  </style>,
   color: '#FF0'
 };

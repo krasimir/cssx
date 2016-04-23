@@ -1,6 +1,6 @@
 # CSSX plugins
 
-[CSSX client-side library](https://github.com/krasimir/cssx/tree/master/packages/cssx) accepts plugins in the form of JavaScript functions. Every function accepts a raw JavaScript literal and should return such one. For example:
+[CSSX client-side library](https://github.com/krasimir/cssx/tree/master/packages/cssx) accepts plugins in the form of JavaScript functions. Every function accepts a raw JavaScript literal and should return the same. For example:
 
 ```js
 // defining the plugin
@@ -13,10 +13,10 @@ var plugin = function (styles) {
 }
 
 // registering the plugin in CSSX library
-cssx.plugins([plugin]);
+cssx.plugins([ plugin ]);
 
 // creating a new stylesheet
-var sheet = <style></style>;
+var sheet = cssx();
 
 // adding a rule
 sheet.add(<style>
@@ -35,7 +35,7 @@ body {
 }
 ```
 
-*If you want to try it go to the [CSSX repl](http://krasimir.github.io/cssx/playground/try-it-out/) and paste the example code in the right side of the screen.*
+*Try it out by visiting [CSSX repl](http://krasimir.github.io/cssx/playground/try-it-out/). Paste the example code above onto the left side of the screen.*
 
 ## Available plugins
 
@@ -62,13 +62,14 @@ var plugin = function (styles) {
 // registering the CSSX plugin
 cssx.plugins([ plugin ]);
 
-// creating a simple stylesheet
-var sheet = <style>
+// creating a simple stylesheet and adding a rule
+var sheet = cssx();
+sheet.add(<style>
   body {
     color: gray(85);
     display: flex;
   }
-</style>;
+</style>);
 ```
 
 The result is a `<style>` tag injected into the page:
