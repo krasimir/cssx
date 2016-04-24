@@ -9,10 +9,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cssx-loader": "4.0.0",
-    "webpack": "1.12.9"
+    "browserify": "13.0.0"
   },
   "scripts": {
-    "test": "webpack"
+    "test": "node index.js"
   }
 }

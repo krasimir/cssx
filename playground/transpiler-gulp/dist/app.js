@@ -1,18 +1,24 @@
-var a = (function () {
+var css = (function () {
   var _3 = {};
   _3['margin'] = '6px';
   var _2 = {};
   _2['font-size'] = '20px';
   _2['padding'] = '0';
   _2['margin'] = '0';
+  var _1 = [];
 
-  var _1 = cssx('_1');
+  _1.push(['body', _2]);
 
-  _1.add('body', _2);
+  var _4 = {},
+      _5 = [];
+  _4['@media screen and (max-width: 200px)'] = _5;
 
-  var _4 = _1.add('@media screen and (max-width: 200px)');
+  _5.push(['body', _3]);
 
-  _4.n('body', _3);
+  _1.push(_4);
 
   return _1;
-}).apply(this);;
+}.apply(this));
+
+var sheet = cssx();
+sheet.add(css);

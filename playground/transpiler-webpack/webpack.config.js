@@ -11,6 +11,9 @@ module.exports = {
     libraryTarget: 'umd',
     umdNamedDefine: true
   },
+  cssx: {
+    format: 'array'
+  },
   module: {
     loaders: [
       {

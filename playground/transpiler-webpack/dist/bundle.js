@@ -1203,12 +1203,12 @@ return /******/ (function(modules) { // webpackBootstrap
 				var isEmpty = __webpack_require__(15);
 				var resolveSelector = __webpack_require__(13);
 				var prefix = __webpack_require__(16);
+				var isArray = __webpack_require__(7);
 				var applyPlugins,
 				    areThereAnyPlugins = false,
 				    n;
 	
 				module.exports = function (rules, minify, plugins, scope) {
-	
 					var scopeTheSelector = function (selector) {
 						if (scope === '') return selector;
 						if (selector.indexOf(scope) === 0 || selector.indexOf('@') === 0) return selector;
@@ -1252,7 +1252,13 @@ return /******/ (function(modules) { // webpackBootstrap
 									}
 									propsFinal = areThereAnyPlugins ? applyPlugins(propsFinal) : propsFinal;
 									for (prop in propsFinal) {
-										css += tab + prop + ':' + interval + propsFinal[prop] + ';' + newLine;
+										if (isArray(propsFinal[prop])) {
+											propsFinal[prop].forEach(function (v) {
+												css += tab + prop + ':' + interval + v + ';' + newLine;
+											});
+										} else {
+											css += tab + prop + ':' + interval + propsFinal[prop] + ';' + newLine;
+										}
 									}
 								}
 								for (j = 0; j < nestedChildren.length; j++) {
@@ -1421,14 +1427,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  button.innerText = enabled ? 'disable input' : 'enable input';
 	
 	  sheet.add((function () {
-	    var _14 = {};
-	    _14['color'] = enabled ? '#000' : '#ccc';
-	    _14['border'] = "solid " + (enabled ? '2px #999' : '1px #B0B0B0');
-	    var _13 = [];
+	    var _3 = {};
+	    _3['color'] = enabled ? '#000' : '#ccc';
+	    _3['border'] = "solid " + (enabled ? '2px #999' : '1px #B0B0B0');
+	    var _2 = [];
 	
-	    _13.push(['input', _14]);
+	    _2.push(['input', _3]);
 	
-	    return _13;
+	    return _2;
 	  }.apply(this)));
 	  input.disabled = !enabled;
 	};
@@ -1440,42 +1446,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	var animationApply = 'ball-animation 1s ease infinite alternate';
 	var animation = cssx();
 	animation.add((function () {
+	  var _10 = {};
+	  _10['background-color'] = 'rgb(200, 0, 0)';
+	  _10['(w)animation'] = animationApply;
 	  var _7 = {};
-	  _7['background-color'] = 'rgb(200, 0, 0)';
-	  _7['(w)animation'] = animationApply;
-	  var _4 = {};
-	  _4['(w)transform'] = 'translateX(60px)';
-	  var _3 = {};
-	  _3['(w)transform'] = 'translateX(0)';
-	  var _2 = [];
-	  var _5 = {},
-	      _6 = [];
-	  _5['@keyframes ball-animation'] = _6;
+	  _7['(w)transform'] = 'translateX(60px)';
+	  var _6 = {};
+	  _6['(w)transform'] = 'translateX(0)';
+	  var _5 = [];
+	  var _8 = {},
+	      _9 = [];
+	  _8['@keyframes ball-animation'] = _9;
 	
-	  _6.push(['0%', _3]);
+	  _9.push(['0%', _6]);
 	
-	  _6.push(['100%', _4]);
+	  _9.push(['100%', _7]);
 	
-	  _2.push(_5);
+	  _5.push(_8);
 	
-	  _2.push(['.ball', _7]);
+	  _5.push(['.ball', _10]);
 	
-	  return _2;
+	  return _5;
 	}.apply(this)));
 	
 	module.exports = {
 	  updateEndpoint: function (endPoint) {
 	    animation.update('@keyframes ball-animation 100%', (function () {
-	      var _9 = {};
-	      _9['(w)transform'] = "translateX(" + endPoint + "px)";
-	      return _9;
+	      var _12 = {};
+	      _12['(w)transform'] = "translateX(" + endPoint + "px)";
+	      return _12;
 	    }.apply(this)));
 	  },
 	  updateColor: function (color) {
 	    animation.update('.ball', (function () {
-	      var _11 = {};
-	      _11['background-color'] = "rgb(" + color + ", 0, 0)";
-	      return _11;
+	      var _14 = {};
+	      _14['background-color'] = "rgb(" + color + ", 0, 0)";
+	      return _14;
 	    }.apply(this)));
 	  }
 	};

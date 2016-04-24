@@ -1,4 +1,4 @@
-var a = cssx(
+var css = <style>
   body {
     margin: 0;
     padding: 0;
@@ -9,4 +9,7 @@ var a = cssx(
       margin: 6px;
     }
   }
-);
+</style>;
+
+var sheet = cssx();
+sheet.add(css);

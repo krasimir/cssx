@@ -23,7 +23,8 @@ module.exports = function(options) {
       if (ops.execute) {        
         var b = browserify(intoStream(file.contents), {
           transform: [ cssxTransform ],
-          basedir: path.dirname(file.path)
+          basedir: path.dirname(file.path),
+          cssx: options
         });        
         b.bundle(function (err, buff) {          
           var codeToRun = buff.toString('utf8'), func, generatedCSS, css;
@@ -44,7 +45,7 @@ module.exports = function(options) {
       // transpile
       } else {
          try {
-            transpiled = cssxTranspiler(file.contents.toString('utf8'))
+            transpiled = cssxTranspiler(file.contents.toString('utf8'), options);
          } catch (err) {
             cb(err);
             return;

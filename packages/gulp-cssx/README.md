@@ -14,7 +14,9 @@ var cssx = require('gulp-cssx');
 
 gulp.task('cssx', function() {
   gulp.src('src/*.js')
-    .pipe(cssx())
+    .pipe(cssx({
+      format: 'array'
+    }))
     .pipe(gulp.dest('./dist/'));
 });
 
@@ -26,7 +28,7 @@ or if you want to produce a CSS file:
 ```js
 var rename = require('gulp-rename');
 
-gulp.src(dir('src/index.js'))
+gulp.src('src/index.js')
   .pipe(cssx({ execute: true }))
   .pipe(rename('styles.css'))
   .pipe(gulp.dest('./dist'));
