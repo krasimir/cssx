@@ -10,7 +10,8 @@
   "keywords": [
     "css",
     "cssx",
-    "transpiler"
+    "transpiler",
+    "json"
   ],
   "author": {
     "name": "Krasimir Tsonev",

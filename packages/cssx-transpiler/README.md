@@ -4,6 +4,12 @@
 
 ---
 
+## Installation
+
+`npm install cssx-transpiler -D`
+
+---
+
 ## Simple usage
 
 ```js
@@ -69,7 +75,7 @@ While transpiling the module is creating bunch of unique ids in the format of `_
 
 ## Transformations
 
-CSSX transpiler uses array of arrays to represent CSS styles. For example:
+CSSX transpiler uses array of arrays (by default) to represent CSS styles. For example:
 
 ```css
 .container {
