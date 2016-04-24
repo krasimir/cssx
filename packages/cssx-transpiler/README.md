@@ -51,7 +51,7 @@ console.log(transpiled);
 #### `cssxTranspiler(<code>, <options>)`
 
 * `code` - string
-* `options` - key-value pairs. The available options are: `minified`, `compact`, `concise`, `quotes`
+* `options` - key-value pairs. The available options are: `minified`, `compact`, `concise`, `quotes`, `format`. All the options are booleans except `format` which could be `array` (by default) or `object`.
 
 Returns a transpiled version of the code;
 
@@ -92,6 +92,17 @@ is transformed to
 ]
 ```
 
+If you use `format: 'object'` you'll get:
+
+```json
+{
+  ".container": {
+    "padding": "20px",
+    "margin": "10px"
+  }
+}
+```
+
 Nested styles like media queries are treated a little bit different. They are wrapped in objects:
 
 ```css
@@ -115,6 +126,18 @@ Nested styles like media queries are treated a little bit different. They are wr
     ]
   }
 ]
+```
+
+If you use `format: 'object'` you'll get:
+
+```js
+{
+  "@media (max-width: 450px)": {
+    ".container": {
+      "width": "100%"
+    }
+  }
+}
 ```
 
 ---

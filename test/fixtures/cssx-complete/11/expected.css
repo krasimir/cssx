@@ -1,0 +1,4 @@
+.container {
+  background: red;
+  background: url('../../img/asset.jpg') no-repeat;
+}

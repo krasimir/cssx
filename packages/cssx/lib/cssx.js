@@ -1108,10 +1108,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	var isEmpty = __webpack_require__(15);
 	var resolveSelector = __webpack_require__(13);
 	var prefix = __webpack_require__(16);
+	var isArray = __webpack_require__(7);
 	var applyPlugins, areThereAnyPlugins = false, n;
 	
 	module.exports = function (rules, minify, plugins, scope) {
-	
 	  var scopeTheSelector = function (selector) {
 	    if (scope === '') return selector;
 	    if (selector.indexOf(scope) === 0 || selector.indexOf('@') === 0) return selector;
@@ -1155,7 +1155,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	          propsFinal = areThereAnyPlugins ? applyPlugins(propsFinal) : propsFinal;
 	          for (prop in propsFinal) {
-	            css += tab + prop + ':' + interval + propsFinal[prop] + ';' + newLine;
+	            if (isArray(propsFinal[prop])) {
+	              propsFinal[prop].forEach(function (v) {
+	                css += tab + prop + ':' + interval + v + ';' + newLine;
+	              });
+	            } else {
+	              css += tab + prop + ':' + interval + propsFinal[prop] + ';' + newLine;
+	            }
 	          }
 	        }
 	        for (j = 0; j < nestedChildren.length; j++) {

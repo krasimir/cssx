@@ -1,6 +1,19 @@
 var t = require('babel-types');
 
-var formCSSXElement = function (args, pure) {
+var formCSSXElement = function (args, options) {
+  if (options.format === 'object') {
+    return t.expressionStatement(
+      t.assignmentExpression(
+        '=',
+        t.memberExpression(
+          t.identifier('cssx'),
+          t.stringLiteral(args[0].value),
+          true
+        ),
+        args[1]
+      )
+    );
+  }
   return t.callExpression(
     t.memberExpression(
       t.identifier('cssx'),
@@ -10,7 +23,7 @@ var formCSSXElement = function (args, pure) {
   );
 };
 
-var formCSSXSheetDefinition = function (selectorNode, pure) {
+var formCSSXSheetDefinition = function (selectorNode, options) {
   return t.callExpression(
     t.identifier('cssx'),
     selectorNode ? [ t.identifier(selectorNode.value) ] : []
@@ -26,9 +39,9 @@ module.exports = {
 
     if (node.body) {
       args.push(node.body);
-      el = formCSSXElement(args);
+      el = formCSSXElement(args, this.options);
     } else {
-      el = formCSSXSheetDefinition(node.selector);
+      el = formCSSXSheetDefinition(node.selector, this.options);
     }
 
     if (typeof parent !== 'undefined' && index !== 'undefined') {

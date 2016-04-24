@@ -2,8 +2,8 @@ var t = require('babel-types');
 var AST = require('./AST');
 
 module.exports = function (node) {
-  var value = node.value || node.name;
-  var expressions = node.expressions;
+  var value = node.value || node.name || node.query;
+  var expressions = node.expressions || [];
   var bit, replaceWith, ast, mutations, i = -1, starts, ends, index, inExpr = false, ch;
   var length = value.length;
   var code = '';

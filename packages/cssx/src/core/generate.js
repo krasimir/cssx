@@ -1,10 +1,10 @@
 var isEmpty = require('../helpers/isEmpty');
 var resolveSelector = require('../helpers/resolveSelector');
 var prefix = require('../helpers/prefix');
+var isArray = require('../helpers/isArray');
 var applyPlugins, areThereAnyPlugins = false, n;
 
 module.exports = function (rules, minify, plugins, scope) {
-
   var scopeTheSelector = function (selector) {
     if (scope === '') return selector;
     if (selector.indexOf(scope) === 0 || selector.indexOf('@') === 0) return selector;
@@ -48,7 +48,13 @@ module.exports = function (rules, minify, plugins, scope) {
           }
           propsFinal = areThereAnyPlugins ? applyPlugins(propsFinal) : propsFinal;
           for (prop in propsFinal) {
-            css += tab + prop + ':' + interval + propsFinal[prop] + ';' + newLine;
+            if (isArray(propsFinal[prop])) {
+              propsFinal[prop].forEach(function (v) {
+                css += tab + prop + ':' + interval + v + ';' + newLine;
+              });
+            } else {
+              css += tab + prop + ':' + interval + propsFinal[prop] + ';' + newLine;
+            }
           }
         }
         for (j = 0; j < nestedChildren.length; j++) {

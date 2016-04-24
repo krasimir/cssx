@@ -4,7 +4,7 @@ var getID = require('../helpers/randomId');
 var t = require('babel-types');
 var isIgnored = require('../core/traverse').isIgnored;
 
-var updateStyleSheet = function (node, stylesheetId) {
+var updateStyleSheet = function (node, stylesheetId, options) {
   var key, i;
 
   if (
@@ -13,16 +13,22 @@ var updateStyleSheet = function (node, stylesheetId) {
     node.callee.object && node.callee.object.name === 'cssx'
   ) {
     node.callee.object.name = stylesheetId;
+  } else if (
+    options.format === 'object' && node && node.type === 'AssignmentExpression' &&
+    node.left && node.left.type === 'MemberExpression' &&
+    node.left.object && node.left.object.name === 'cssx'
+  ) {
+    node.left.object.name = stylesheetId;
   } else {
     if (isArray(node)) {
       for (i = 0; i < node.length; i++) {
-        updateStyleSheet(node[i], stylesheetId);
+        updateStyleSheet(node[i], stylesheetId, options);
       }
     } else {
       for (key in node) {
         if (!isIgnored(key)) {
           if (typeof node[key] === 'object') {
-            updateStyleSheet(node[key], stylesheetId);
+            updateStyleSheet(node[key], stylesheetId, options);
           }
         }
       }
@@ -49,7 +55,6 @@ module.exports = {
     stylesheetId = getID();
     context.addToCSSXSelfInvoke = function (item, parent) {
       funcLines = [item].concat(funcLines);
-      // console.log('\n\n', item);
       if (item.type === 'VariableDeclaration') {
         objectLiterals.push({
           selector: parent.selector.value ? t.stringLiteral(parent.selector.value) : parent.selector,
@@ -65,6 +70,7 @@ module.exports = {
     var funcExpr;
     var funcCallExpr;
     var result;
+    var options = this.options;
 
     var applyResult = function (r) {
       if (isArray(parent)) {
@@ -89,13 +95,18 @@ module.exports = {
 
     newStylesheetExpr = t.variableDeclaration(
       'var',
-      [ t.variableDeclarator(t.identifier(stylesheetId), t.arrayExpression())]
+      [
+        t.variableDeclarator(
+          t.identifier(stylesheetId),
+          this.options.format === 'object' ? t.objectExpression([]) : t.arrayExpression()
+        )
+      ]
     );
 
     rulesRegistration = node.body.map(function (line) {
-      line = updateStyleSheet(line, stylesheetId);
+      line = updateStyleSheet(line, stylesheetId, options);
       if (line.type === 'CallExpression') {
-        line = t.expressionStatement(updateStyleSheet(line, stylesheetId));
+        line = t.expressionStatement(updateStyleSheet(line, stylesheetId, options));
       }
       return line;
     });

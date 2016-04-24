@@ -27,7 +27,8 @@ module.exports = function (code, options) {
       compact: false,
       concise: false,
       quotes: 'single',
-      sourceMaps: false
+      sourceMaps: false,
+      format: 'array'
     },
     options || {}
   );

@@ -2037,6 +2037,7 @@ input[type=text],input[type=tel],input[type=url],input[type=email],input[type=pa
   box-shadow: 0 3px 6px -4px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23);
   border: 1px solid rgba(0,0,0,.3);
   background: hsla(0,0%,100%,.9);
+  background: linear-gradient(to bottom right,#fff,hsla(0,0%,100%,.8));
   margin: 0;
   border-radius: .3em;
   padding: 0;
@@ -2246,6 +2247,7 @@ input[type=text],input[type=tel],input[type=url],input[type=email],input[type=pa
 }
 .ie9 .ieImage {
   height: 112px!important;
+  height: 7rem!important;
 }
 .ie9 .ieHeroImage {
   width: 140%!important;
@@ -2264,6 +2266,7 @@ input[type=text],input[type=tel],input[type=url],input[type=email],input[type=pa
 }
 .ie9 .ieButton {
   width: 192px;
+  width: 12rem;
 }
 .ie9 img[src*='.svg'] {
   width: 100%;

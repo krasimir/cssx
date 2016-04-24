@@ -10,15 +10,19 @@ var getType = function (node) {
   return node && node.type ? node.type : UNKNOWN_NODE;
 };
 
-module.exports = function (tree, visitors) {
+module.exports = function (tree, visitors, options) {
   var context = {};
 
   var traverse = function (node, parent, index) {
     var key, i;
     var type = getType(node);
     var visitor = visitors[type];
+    var isVisitorExists = !!visitor;
 
-    visitor && visitor.enter ? visitor.enter(node, parent, index, context) : null;
+    if (isVisitorExists) {
+      visitor.options = options;
+      visitor.enter ? visitor.enter(node, parent, index, context) : null;
+    }
     if (isArray(node)) {
       for (i = 0; i < node.length; i++) {
         traverse(node[i], node, i);
@@ -32,7 +36,7 @@ module.exports = function (tree, visitors) {
         }
       }
     }
-    visitor && visitor.exit ? visitor.exit(node, parent, index, context) : null;
+    isVisitorExists && visitor.exit ? visitor.exit(node, parent, index, context) : null;
   };
 
   traverse(tree, null, null);

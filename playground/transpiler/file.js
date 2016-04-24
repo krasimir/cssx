@@ -1,8 +1,7 @@
-var styles = function (margin) {
-  cssx(
-    body {
-      margin: `margin`px;
-      padding: 0;
+var styles = <style>
+  @media (max-width: 450px) {
+    .container {
+      width: 100%;
     }
-  )
-};
+  }
+</style>;

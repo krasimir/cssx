@@ -83,7 +83,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      compact: false,
 	      concise: false,
 	      quotes: 'single',
-	      sourceMaps: false
+	      sourceMaps: false,
+	      format: 'array'
 	    },
 	    options || {}
 	  );
@@ -10646,15 +10647,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return node && node.type ? node.type : UNKNOWN_NODE;
 	};
 	
-	module.exports = function (tree, visitors) {
+	module.exports = function (tree, visitors, options) {
 	  var context = {};
 	
 	  var traverse = function (node, parent, index) {
 	    var key, i;
 	    var type = getType(node);
 	    var visitor = visitors[type];
+	    var isVisitorExists = !!visitor;
 	
-	    visitor && visitor.enter ? visitor.enter(node, parent, index, context) : null;
+	    if (isVisitorExists) {
+	      visitor.options = options;
+	      visitor.enter ? visitor.enter(node, parent, index, context) : null;
+	    }
 	    if (isArray(node)) {
 	      for (i = 0; i < node.length; i++) {
 	        traverse(node[i], node, i);
@@ -10668,7 +10673,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        }
 	      }
 	    }
-	    visitor && visitor.exit ? visitor.exit(node, parent, index, context) : null;
+	    isVisitorExists && visitor.exit ? visitor.exit(node, parent, index, context) : null;
 	  };
 	
 	  traverse(tree, null, null);
@@ -48938,7 +48943,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	var t = __webpack_require__(42);
 	var isIgnored = __webpack_require__(4).isIgnored;
 	
-	var updateStyleSheet = function (node, stylesheetId) {
+	var updateStyleSheet = function (node, stylesheetId, options) {
 	  var key, i;
 	
 	  if (
@@ -48947,16 +48952,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	    node.callee.object && node.callee.object.name === 'cssx'
 	  ) {
 	    node.callee.object.name = stylesheetId;
+	  } else if (
+	    options.format === 'object' && node && node.type === 'AssignmentExpression' &&
+	    node.left && node.left.type === 'MemberExpression' &&
+	    node.left.object && node.left.object.name === 'cssx'
+	  ) {
+	    node.left.object.name = stylesheetId;
 	  } else {
 	    if (isArray(node)) {
 	      for (i = 0; i < node.length; i++) {
-	        updateStyleSheet(node[i], stylesheetId);
+	        updateStyleSheet(node[i], stylesheetId, options);
 	      }
 	    } else {
 	      for (key in node) {
 	        if (!isIgnored(key)) {
 	          if (typeof node[key] === 'object') {
-	            updateStyleSheet(node[key], stylesheetId);
+	            updateStyleSheet(node[key], stylesheetId, options);
 	          }
 	        }
 	      }
@@ -48983,7 +48994,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    stylesheetId = getID();
 	    context.addToCSSXSelfInvoke = function (item, parent) {
 	      funcLines = [item].concat(funcLines);
-	      // console.log('\n\n', item);
 	      if (item.type === 'VariableDeclaration') {
 	        objectLiterals.push({
 	          selector: parent.selector.value ? t.stringLiteral(parent.selector.value) : parent.selector,
@@ -48999,6 +49009,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var funcExpr;
 	    var funcCallExpr;
 	    var result;
+	    var options = this.options;
 	
 	    var applyResult = function (r) {
 	      if (isArray(parent)) {
@@ -49023,13 +49034,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    newStylesheetExpr = t.variableDeclaration(
 	      'var',
-	      [ t.variableDeclarator(t.identifier(stylesheetId), t.arrayExpression())]
+	      [
+	        t.variableDeclarator(
+	          t.identifier(stylesheetId),
+	          this.options.format === 'object' ? t.objectExpression([]) : t.arrayExpression()
+	        )
+	      ]
 	    );
 	
 	    rulesRegistration = node.body.map(function (line) {
-	      line = updateStyleSheet(line, stylesheetId);
+	      line = updateStyleSheet(line, stylesheetId, options);
 	      if (line.type === 'CallExpression') {
-	        line = t.expressionStatement(updateStyleSheet(line, stylesheetId));
+	        line = t.expressionStatement(updateStyleSheet(line, stylesheetId, options));
 	      }
 	      return line;
 	    });
@@ -49079,7 +49095,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var t = __webpack_require__(42);
 	
-	var formCSSXElement = function (args, pure) {
+	var formCSSXElement = function (args, options) {
+	  if (options.format === 'object') {
+	    return t.expressionStatement(
+	      t.assignmentExpression(
+	        '=',
+	        t.memberExpression(
+	          t.identifier('cssx'),
+	          t.stringLiteral(args[0].value),
+	          true
+	        ),
+	        args[1]
+	      )
+	    );
+	  }
 	  return t.callExpression(
 	    t.memberExpression(
 	      t.identifier('cssx'),
@@ -49089,7 +49118,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  );
 	};
 	
-	var formCSSXSheetDefinition = function (selectorNode, pure) {
+	var formCSSXSheetDefinition = function (selectorNode, options) {
 	  return t.callExpression(
 	    t.identifier('cssx'),
 	    selectorNode ? [ t.identifier(selectorNode.value) ] : []
@@ -49105,9 +49134,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	    if (node.body) {
 	      args.push(node.body);
-	      el = formCSSXElement(args);
+	      el = formCSSXElement(args, this.options);
 	    } else {
-	      el = formCSSXSheetDefinition(node.selector);
+	      el = formCSSXSheetDefinition(node.selector, this.options);
 	    }
 	
 	    if (typeof parent !== 'undefined' && index !== 'undefined') {
@@ -49146,8 +49175,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	var AST = __webpack_require__(1);
 	
 	module.exports = function (node) {
-	  var value = node.value || node.name;
-	  var expressions = node.expressions;
+	  var value = node.value || node.name || node.query;
+	  var expressions = node.expressions || [];
 	  var bit, replaceWith, ast, mutations, i = -1, starts, ends, index, inExpr = false, ch;
 	  var length = value.length;
 	  var code = '';
@@ -49220,18 +49249,38 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var t = __webpack_require__(42);
 	var randomId = __webpack_require__(421);
+	var isArray = __webpack_require__(5);
 	
 	module.exports = {
 	  enter: function (node, parent, index, context) {},
 	  exit: function (node, parent, index, context) {
-	    var propAssignment, propsObject, addToContext;
-	    var rules = node.body;
+	    var propAssignment, propsObject, addToContext, processRule, key;
+	    var rules = node.body, normalizedRules = {};
 	    var id = randomId();
 	
 	    addToContext = function (item) {
 	      if (context && context.addToCSSXSelfInvoke) {
 	        context.addToCSSXSelfInvoke(item, parent);
 	      }
+	    };
+	
+	    processRule = function (rule) {
+	      propAssignment = t.expressionStatement(
+	        t.assignmentExpression(
+	          '=',
+	          t.memberExpression(
+	            t.identifier(id),
+	            rule.key,
+	            true
+	          ),
+	          isArray(rule.value.value) ?
+	            t.arrayExpression(rule.value.value.map(function (v) {
+	              return t.stringLiteral(v);
+	            })) :
+	            rule.value
+	        )
+	      );
+	      addToContext(propAssignment);
 	    };
 	
 	    propsObject = t.variableDeclaration(
@@ -49243,20 +49292,27 @@ return /******/ (function(modules) { // webpackBootstrap
 	        )
 	      ]
 	    );
-	    rules.forEach(function (rule) {
-	      propAssignment = t.expressionStatement(
-	        t.assignmentExpression(
-	          '=',
-	          t.memberExpression(
-	            t.identifier(id),
-	            rule.key,
-	            true
-	          ),
-	          rule.value
-	        )
-	      );
-	      addToContext(propAssignment);
-	    });
+	
+	    // normalize the rules so we don't have multiple rules for same CSS property
+	    normalizedRules = rules.reduce(function (result, rule) {
+	      var r = result[rule.key.value];
+	
+	      if (!r) {
+	        result[rule.key.value] = rule;
+	      } else {
+	        if (isArray(r.value.value)) {
+	          r.value.value.push(rule.value.value);
+	        } else {
+	          r.value.value = [r.value.value, rule.value.value];
+	        }
+	      }
+	      return result;
+	    }, {});
+	
+	    for (key in normalizedRules) {
+	      processRule(normalizedRules[key]);
+	    }
+	
 	    addToContext(propsObject);
 	
 	    parent[index] = t.identifier(id);
@@ -49317,37 +49373,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	var injectAt = __webpack_require__(423);
 	var isArray = __webpack_require__(5);
 	var getID = __webpack_require__(421);
+	var parseExpressions = __webpack_require__(426);
 	
 	module.exports = {
 	  enter: function (node, parent, index, context) {},
 	  exit: function (node, parent, index, context) {
 	    var id = getID(), tempArrId = getID(), lines = [];
+	    var options = this.options;
+	    var variables = [];
 	
-	    lines.push(t.variableDeclaration(
-	      'var', [
-	        t.variableDeclarator(
-	          t.identifier(id),
-	          t.objectExpression([])
-	        ),
-	        t.variableDeclarator(
-	          t.identifier(tempArrId),
-	          t.arrayExpression()
-	        )
+	    if (options.format !== 'object') {
+	      variables.push(t.variableDeclarator(
+	        t.identifier(id),
+	        t.objectExpression([])
+	      ));
+	    }
 	
-	      ]
+	    variables.push(t.variableDeclarator(
+	      t.identifier(tempArrId),
+	      options.format === 'object' ? t.objectExpression([]) : t.arrayExpression()
 	    ));
+	
+	    lines.push(t.variableDeclaration('var', variables));
 	    lines.push(t.expressionStatement(
 	      t.assignmentExpression(
 	        '=',
 	        t.memberExpression(
-	          t.identifier(id),
-	          t.stringLiteral(node.query),
+	          t.identifier(options.format === 'object' ? 'cssx' : id),
+	          parseExpressions(node),
 	          true
 	        ),
 	        t.identifier(tempArrId)
 	      )
 	    ));
 	    lines = lines.concat(node.body.map(function (cssxElementNode) {
+	      if (options.format === 'object') {
+	        cssxElementNode.expression.left.object.name = tempArrId;
+	        return cssxElementNode;
+	      }
 	      cssxElementNode.callee = t.memberExpression(
 	        t.identifier(tempArrId),
 	        t.identifier('push')
@@ -49356,10 +49419,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return t.expressionStatement(cssxElementNode);
 	    }));
 	
-	    lines.push(t.callExpression(
-	      t.memberExpression(t.identifier('cssx'), t.identifier('push')),
-	      [t.identifier(id)]
-	    ));
+	    if (options.format !== 'object') {
+	      lines.push(t.callExpression(
+	        t.memberExpression(t.identifier('cssx'), t.identifier('push')),
+	        [t.identifier(id)]
+	      ));
+	    }
 	
 	    if (isArray(parent)) {
 	      injectAt(parent, index, lines);
