@@ -70,6 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  CSSXValue: __webpack_require__(430),
 	  CSSXMediaQueryElement: __webpack_require__(431),
 	  CSSXKeyframesElement: __webpack_require__(433),
+	  CSSXNestedElement: __webpack_require__(432),
 	  CallExpression: __webpack_require__(434),
 	  ReturnStatement: __webpack_require__(435),
 	  ObjectProperty: __webpack_require__(436)
@@ -1568,7 +1569,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        for (var _iterator = (0, _getIterator3.default)(plugins), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	          var name = _step.value;
 	
-	          if (typeof name === 'function') {
+	          if (typeof name === "function") {
 	            var _name = name(Parser);
 	
 	            var pluginName = _name.pluginName;
@@ -7759,6 +7760,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  tc.cssxValue = new TokContext("cssxValue");
 	  tc.cssxMediaQuery = new TokContext("CSSXMediaQuery");
 	  tc.cssxKeyframes = new TokContext("CSSXKeyframes");
+	  tc.cssxNested = new TokContext("CSSXNested");
 	
 	  var registerInOut = function registerInOut(name, context) {
 	    pp["cssx" + name + "In"] = function () {
@@ -7782,6 +7784,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  registerInOut("MediaQuery", tc.cssxMediaQuery);
 	  registerInOut("Keyframes", tc.cssxKeyframes);
 	  registerInOut("Definition", tc.cssxDefinition);
+	  registerInOut("Nested", tc.cssxNested);
 	};
 	
 	var _utilities = require("./utilities");
@@ -7845,6 +7848,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = function (Babylon) {
 	  var Token = Babylon.Token;
 	  var pp = Babylon.pp;
+	  var tt = Babylon.tt;
 	
 	
 	  var MediaQueryEntryPoint = "@media ";
@@ -7863,6 +7867,29 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return true;
 	    }
 	    return false;
+	  };
+	
+	  pp.cssxIsNestedElement = function () {
+	    var old = this.state,
+	        result = false,
+	        future = void 0;
+	
+	    this.state = old.clone(true);
+	
+	    this.isLookahead = true;
+	    try {
+	      this.next();
+	      this.skipSpace();
+	      this.cssxReadSelector();
+	      future = this.cssxLookahead();
+	      if (_utilities.eq.type(future.first.type, tt.braceL)) {
+	        result = true;
+	      }
+	    } catch (e) {}
+	    this.isLookahead = false;
+	    this.state = old;
+	
+	    return result;
 	  };
 	
 	  pp.cssxGetPreviousToken = function () {
@@ -8087,6 +8114,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	              return this.cssxParseMediaQueryElement();
 	            } else if (this.cssxIsKeyFramesEntryPoint()) {
 	              return this.cssxParseKeyframesElement();
+	            } else if (this.cssxIsNestedElement()) {
+	              return this.cssxParseNestedElement();
 	            }
 	            return this.cssxParseElement();
 	          }
@@ -8168,10 +8197,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	              } else if (this.match(_types.types.cssxValue) && this.cssxMatchNextToken(_types.types.braceR)) {
 	                // ending without semicolon
 	                return this.cssxStoreNextCharAsToken(_types.types.cssxRulesEnd);
-	              } else if (this.match(_types.types.cssxRulesEnd) && _utilities.eq.context(context, _context.types.cssxMediaQuery) || this.match(_types.types.cssxRulesEnd) && _utilities.eq.context(context, _context.types.cssxKeyframes)) {
-	                // end of media query
+	              } else if (this.match(_types.types.cssxRulesEnd) && _utilities.eq.context(context, _context.types.cssxMediaQuery) || this.match(_types.types.cssxRulesEnd) && _utilities.eq.context(context, _context.types.cssxKeyframes) || this.match(_types.types.cssxRulesEnd) && _utilities.eq.context(context, _context.types.cssxNested)) {
+	                // end of nested element
 	                return;
-	              } else if (this.match(_types.types.cssxRulesEnd) && this.cssxMatchNextToken(_types.types.parenR) || this.match(_types.types.cssxMediaQueryEnd) && this.cssxMatchNextToken(_types.types.parenR) || this.match(_types.types.cssxKeyframesEnd) && this.cssxMatchNextToken(_types.types.parenR)) {
+	              } else if (this.match(_types.types.cssxRulesEnd) && this.cssxMatchNextToken(_types.types.parenR) || this.match(_types.types.cssxMediaQueryEnd) && this.cssxMatchNextToken(_types.types.parenR) || this.match(_types.types.cssxKeyframesEnd) && this.cssxMatchNextToken(_types.types.parenR) || this.match(_types.types.cssxNestedEnd) && this.cssxMatchNextToken(_types.types.parenR)) {
 	                ++this.state.pos;
 	                this.finishToken(_types.types.cssxEnd);
 	                return;
@@ -8183,7 +8212,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	
 	          // looping through the cssx elements
-	          if (_utilities.eq.context(context, _context.types.cssxDefinition) || _utilities.eq.context(context, _context.types.cssxMediaQuery) || _utilities.eq.context(context, _context.types.cssxKeyframes)) {
+	          if (_utilities.eq.context(context, _context.types.cssxDefinition) || _utilities.eq.context(context, _context.types.cssxMediaQuery) || _utilities.eq.context(context, _context.types.cssxKeyframes) || _utilities.eq.context(context, _context.types.cssxNested)) {
 	            this.skipSpace();
 	            return this.cssxReadSelector();
 	          }
@@ -8399,6 +8428,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  };
 	
+	  pp.cssxParseNestedElement = function () {
+	    var _this3 = this;
+	
+	    return this.cssxParseNestedSelectors({
+	      name: "CSSXNestedElement",
+	      context: {
+	        in: function _in() {
+	          return _this3.cssxNestedIn();
+	        }
+	      },
+	      tokens: {
+	        el: tt.cssxNested,
+	        start: tt.cssxNestedStart,
+	        end: tt.cssxNestedEnd
+	      },
+	      errors: {
+	        unclosed: "CSSX: unclosed nested block",
+	        expectSelector: "CSSX: expected selector as a start of the nested block"
+	      }
+	    });
+	  };
+	
 	  pp.cssxParseNestedSelectors = function (options) {
 	    var nestedElement = void 0,
 	        result = void 0;
@@ -8411,14 +8462,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.cssxStoreCurrentToken();
 	
 	    if (!this.cssxMatchNextToken(tt.braceL)) {
-	      this.raise(this.state.pos, "CSSX: expected { after query definition");
+	      this.raise(this.state.pos, "CSSX: expected { after nested selector definition");
 	    }
 	
 	    ++this.state.pos;
 	    this.finishToken(options.tokens.start);
 	
 	    if (this.cssxMatchNextToken(tt.braceR)) {
-	      // empty media query
+	      // empty nested element
 	      this.cssxStoreCurrentToken();
 	      this.skipSpace();
 	      this.cssxSyncLocPropsToCurPos();
@@ -8643,7 +8694,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        pos = void 0,
 	        property = void 0,
 	        node = void 0,
-	        word = void 0;
+	        word = void 0,
+	        next = void 0;
 	
 	    if (this.match(tt.cssxRulesStart)) this.next();
 	
@@ -8662,8 +8714,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.state.start = pos;
 	
 	    this.finishToken(tt.cssxProperty, property);
+	    next = this.lookahead();
 	
-	    if (!_utilities.eq.type(this.lookahead().type, tt.colon)) {
+	    if (!_utilities.eq.type(next.type, tt.colon)) {
 	      this.raise(this.state.pos, "CSSX: expecting a colon after CSS property");
 	    }
 	    this.next();
@@ -8761,6 +8814,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  tt.cssxKeyframes = new TokenType("CSSXKeyframes");
 	  tt.cssxKeyframesStart = new TokenType("CSSXKeyframesStart");
 	  tt.cssxKeyframesEnd = new TokenType("CSSXKeyframesEnd");
+	  tt.cssxNested = new TokenType("CSSXNested");
+	  tt.cssxNestedStart = new TokenType("CSSXNestedStart");
+	  tt.cssxNestedEnd = new TokenType("CSSXNestedEnd");
 	
 	  tt.cssxRulesStart.updateContext = function (prevType) {
 	    if (_utilities.eq.type(prevType, tt.cssxSelector)) this.state.context.push(tc.cssxRules);
@@ -8784,6 +8840,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  tt.cssxKeyframesEnd.updateContext = function () {
 	    this.cssxKeyframesOut();
+	  };
+	
+	  tt.cssxNestedEnd.updateContext = function () {
+	    this.cssxNestedOut();
 	  };
 	};
 	

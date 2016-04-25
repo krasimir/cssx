@@ -1428,7 +1428,7 @@ var Parser = function (_Tokenizer) {
         for (var _iterator = (0, _getIterator3.default)(plugins), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var name = _step.value;
 
-          if (typeof name === 'function') {
+          if (typeof name === "function") {
             var _name = name(Parser);
 
             var pluginName = _name.pluginName;

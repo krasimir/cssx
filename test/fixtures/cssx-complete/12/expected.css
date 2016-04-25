@@ -1,0 +1,9 @@
+.container {
+  .nav {
+    margin: 0;
+  }
+  &:hover {
+    letter-height: 10px;
+    font-size: 20px;
+  }
+}
