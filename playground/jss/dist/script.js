@@ -81,14 +81,13 @@
 	});
 	
 	exports.default = function () {
-	  var _13 = {};
-	  _13['background'] = 'blue';
-	  var _12 = {};
-	  _12['font-size'] = '12px';
-	  var _11 = {};
-	  _11['button'] = _12;
-	  _11['button:hover'] = _13;
-	  return _11;
+	  var _2 = {};
+	  _2['background'] = 'blue';
+	  var _1 = {};
+	  var _4 = {};
+	  _1['button'] = _4;
+	  _4['&:hover'] = _2;
+	  return _1;
 	}.apply(undefined);
 	
 	/*

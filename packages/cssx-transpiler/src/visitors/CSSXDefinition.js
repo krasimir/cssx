@@ -14,7 +14,7 @@ var updateStyleSheet = function (node, stylesheetId, options) {
   ) {
     node.callee.object.name = stylesheetId;
   } else if (
-    options.format === 'object' && node && node.type === 'AssignmentExpression' &&
+    node && node.type === 'AssignmentExpression' &&
     node.left && node.left.type === 'MemberExpression' &&
     node.left.object && node.left.object.name === 'cssx'
   ) {
@@ -46,31 +46,38 @@ var checkForStyleDefinition = function (node) {
     node.body[0].arguments[0].type === 'Identifier';
 };
 
-var funcLines, objectLiterals, stylesheetId;
+var funcLines, variables, objectLiterals, stylesheetId;
 
 module.exports = {
   enter: function (node, parent, index, context) {
     funcLines = [];
     objectLiterals = [];
+    variables = [];
     stylesheetId = getID();
     context.addToCSSXSelfInvoke = function (item, parent) {
-      funcLines = [item].concat(funcLines);
       if (item.type === 'VariableDeclaration') {
         objectLiterals.push({
           selector: parent.selector.value ? t.stringLiteral(parent.selector.value) : parent.selector,
           rulesObjVar: item.declarations[0].id.name
         });
+        variables.push(item);
+      } else {
+        funcLines.push(item);
       }
     };
   },
   exit: function (node, parent, index, context) {
     var rulesRegistration;
-    var newStylesheetExpr;
     var createSelfInvoke;
     var funcExpr;
     var funcCallExpr;
     var result;
     var options = this.options;
+
+    var isASingleObject = objectLiterals.length >= 1 &&
+      (typeof objectLiterals[0].selector === 'object' ?
+        objectLiterals[0].selector.value === '' :
+        objectLiterals[0].selector === '');
 
     var applyResult = function (r) {
       if (isArray(parent)) {
@@ -93,15 +100,17 @@ module.exports = {
       return;
     }
 
-    newStylesheetExpr = t.variableDeclaration(
-      'var',
-      [
-        t.variableDeclarator(
-          t.identifier(stylesheetId),
-          this.options.format === 'object' ? t.objectExpression([]) : t.arrayExpression()
-        )
-      ]
-    );
+    if (!isASingleObject) {
+      variables = [t.variableDeclaration(
+        'var',
+        [
+          t.variableDeclarator(
+            t.identifier(stylesheetId),
+            t.objectExpression([])
+          )
+        ]
+      )].concat(variables);
+    }
 
     rulesRegistration = node.body.map(function (line) {
       line = updateStyleSheet(line, stylesheetId, options);
@@ -111,16 +120,17 @@ module.exports = {
       return line;
     });
 
+    // putting the variables in one line
+    variables = t.variableDeclaration('var', variables.map(function (v) {
+      return v.declarations[0];
+    }));
+
+    funcLines = [variables].concat(funcLines);
+
     // styles for only one rule
-    if (
-      objectLiterals.length >= 1 &&
-      (typeof objectLiterals[0].selector === 'object' ?
-        objectLiterals[0].selector.value === '' :
-        objectLiterals[0].selector === '')
-    ) {
+    if (isASingleObject) {
       funcLines.push(t.returnStatement(t.identifier(objectLiterals[0].rulesObjVar)));
     } else {
-      funcLines.push(newStylesheetExpr);
       funcLines = funcLines.concat(rulesRegistration);
       funcLines.push(t.returnStatement(t.identifier(stylesheetId)));
     }

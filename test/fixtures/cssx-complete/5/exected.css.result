@@ -1,0 +1,3 @@
+.ball {
+  animation: ball-animation 1s ease infinite alternate;
+}

@@ -1,9 +1,8 @@
 export default <style>
   button {
-    font-size: 12px;
-  }
-  button:hover {
-    background: blue;
+    &:hover {
+      background: blue;
+    }
   }
 </style>
 

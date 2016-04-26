@@ -1,9 +1,7 @@
 var a = (function () {
-  var _2 = {};
+  var _1 = {},
+      _2 = {};
   _2['margin'] = '10px';
-  var _1 = [];
-
-  _1.push(['body', _2]);
-
+  _1['body'] = _2;
   return _1;
 }.apply(this));

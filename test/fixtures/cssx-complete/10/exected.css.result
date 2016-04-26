@@ -1,0 +1,16 @@
+#component p {
+  font-size: 10px;
+}
+#component b {
+  margin-top: 10px;
+}
+#component header a {
+  display: block;
+}
+@media (max-width: 600px) {
+  0: header a;
+  0: [object Object];
+}
+#component footer p {
+  float: left;
+}

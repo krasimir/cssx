@@ -392,32 +392,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _id;
 	  };
 	  _api.add = function (selector, props, parent, isWrapper) {
-	    var rule, r, s, scope;
+	    var rule, r, s, prop, scope;
 	
 	    if (arguments.length === 1 && typeof selector === 'object') {
-	      if (isArray(selector)) {
-	        selector.forEach(function (sel) {
-	          if (isArray(sel)) {
-	            _api.add(sel[0], sel[1]);
-	          } else {
-	            // nested
-	            for (s in sel) {
-	              scope = _api.add(s);
-	              sel[s].forEach(function (nestedStyles) {
-	                scope.n(nestedStyles[0], nestedStyles[1]);
-	              });
-	            }
-	          }
-	        });
-	      } else {
-	        for (s in selector) {
-	          _api.add(s, selector[s]);
-	        }
+	      for (s in selector) {
+	        _api.add(s, selector[s]);
 	      }
 	      return _api;
 	    }
 	
 	    r = ruleExists(selector, parent);
+	
+	    for (prop in props) {
+	
+	    }
 	
 	    if (r) {
 	      rule = r.update(false, props);

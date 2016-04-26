@@ -1,13 +1,11 @@
 (function () {
-  var _2 = {};
-  _2['(wmo)animation'] = 'snow 10s linear infinite';
+  var _1 = {},
+      _2 = {};
+  _2['margin'] = value + "px";
   _2['background-image'] = showImages.reduce(function (value, image) {
     value.push('site/imgs/' + value);return value;
   }, []).join(',');
-  _2['margin'] = value + "px";
-  var _1 = [];
-
-  _1.push(['.left', _2]);
-
+  _2['(wmo)animation'] = 'snow 10s linear infinite';
+  _1['.left'] = _2;
   return _1;
 }.apply(this))

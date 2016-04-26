@@ -1,25 +1,12 @@
 var t = require('babel-types');
 
 var formCSSXElement = function (args, options) {
-  if (options.format === 'object') {
-    return t.expressionStatement(
-      t.assignmentExpression(
-        '=',
-        t.memberExpression(
-          t.identifier('cssx'),
-          t.stringLiteral(args[0].value),
-          true
-        ),
-        args[1]
-      )
-    );
-  }
-  return t.callExpression(
-    t.memberExpression(
-      t.identifier('cssx'),
-      t.identifier('push')
-    ),
-    [t.arrayExpression(args)]
+  return t.expressionStatement(
+    t.assignmentExpression(
+      '=',
+      t.memberExpression(t.identifier('cssx'), args[0], true),
+      args[1]
+    )
   );
 };
 

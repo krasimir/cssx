@@ -12,9 +12,6 @@ var visitors = {
   CSSXRules: require('./visitors/CSSXRules'),
   CSSXSelector: require('./visitors/CSSXSelector'),
   CSSXValue: require('./visitors/CSSXValue'),
-  CSSXMediaQueryElement: require('./visitors/CSSXMediaQueryElement'),
-  CSSXKeyframesElement: require('./visitors/CSSXKeyframesElement'),
-  CSSXNestedElement: require('./visitors/CSSXNestedElement'),
   CallExpression: require('./visitors/CallExpression'),
   ReturnStatement: require('./visitors/ReturnStatement'),
   ObjectProperty: require('./visitors/ObjectProperty')
@@ -28,8 +25,7 @@ module.exports = function (code, options) {
       compact: false,
       concise: false,
       quotes: 'single',
-      sourceMaps: false,
-      format: 'array'
+      sourceMaps: false
     },
     options || {}
   );

@@ -5,8 +5,8 @@ var isArray = require('../helpers/isArray');
 module.exports = {
   enter: function (node, parent, index, context) {},
   exit: function (node, parent, index, context) {
-    var propAssignment, propsObject, addToContext, processRule, key;
-    var rules = node.body, normalizedRules = {};
+    var propAssignment, addToContext, processRule, key;
+    var rules = node.body, nested = node.nested || [], normalizedRules = {};
     var id = randomId();
 
     addToContext = function (item) {
@@ -34,15 +34,16 @@ module.exports = {
       addToContext(propAssignment);
     };
 
-    propsObject = t.variableDeclaration(
+    addToContext(t.variableDeclaration(
       'var',
       [
         t.variableDeclarator(
           t.identifier(id),
+          // nested.length === 0 || options.format === 'object' ? t.objectExpression([]) : t.arrayExpression()
           t.objectExpression([])
         )
       ]
-    );
+    ));
 
     // normalize the rules so we don't have multiple rules for same CSS property
     normalizedRules = rules.reduce(function (result, rule) {
@@ -60,11 +61,24 @@ module.exports = {
       return result;
     }, {});
 
+    // processing nested rules (if any)
+    nested.forEach(function (cssxElementNode, index) {
+      addToContext(t.expressionStatement(
+        t.assignmentExpression(
+          '=',
+          t.memberExpression(
+            t.identifier(id),
+            t.stringLiteral(cssxElementNode.expression.left.property.value),
+            true
+          ),
+          t.identifier(cssxElementNode.expression.right.name)
+        )
+      ));
+    });
+
     for (key in normalizedRules) {
       processRule(normalizedRules[key]);
     }
-
-    addToContext(propsObject);
 
     parent[index] = t.identifier(id);
   }

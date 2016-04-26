@@ -35,13 +35,11 @@ console.log(transpiled);
 
   var styles = function (margin) {
     return (function () {
+      var _2 = {};
       var _3 = {};
       _3['padding'] = '0';
       _3['margin'] = margin + "px";
-      var _2 = [];
-
-      _2.push(['body', _3]);
-
+      _2['body'] = _3;
       return _2;
     }.apply(this));
   };
@@ -57,7 +55,7 @@ console.log(transpiled);
 #### `cssxTranspiler(<code>, <options>)`
 
 * `code` - string
-* `options` - key-value pairs. The available options are: `minified`, `compact`, `concise`, `quotes`, `format`. All the options are booleans except `format` which could be `array` (by default) or `object`.
+* `options` - key-value pairs. The available options are: `minified`, `compact`, `concise`, `quotes`. All the options are booleans.
 
 Returns a transpiled version of the code;
 
@@ -75,7 +73,7 @@ While transpiling the module is creating bunch of unique ids in the format of `_
 
 ## Transformations
 
-CSSX transpiler uses array of arrays (by default) to represent CSS styles. For example:
+CSSX transpiler is basically CSS to JSON process:
 
 ```css
 .container {
@@ -87,20 +85,6 @@ CSSX transpiler uses array of arrays (by default) to represent CSS styles. For e
 is transformed to
 
 ```json
-[
-  [
-    ".container",
-    {
-      "padding": "20px",
-      "margin": "10px"
-    }
-  ]
-]
-```
-
-If you use `format: 'object'` you'll get:
-
-```json
 {
   ".container": {
     "padding": "20px",
@@ -109,7 +93,7 @@ If you use `format: 'object'` you'll get:
 }
 ```
 
-Nested styles like media queries are treated a little bit different. They are wrapped in objects:
+Nested styles like media queries:
 
 ```css
 @media (max-width: 450px) {
@@ -119,22 +103,7 @@ Nested styles like media queries are treated a little bit different. They are wr
 }
 ```
 
-```json
-[
-  {
-    "@media (max-width: 450px)": [
-      [
-        ".container",
-        {
-          "width": "100%"
-        }
-      ]
-    ]
-  }
-]
-```
-
-If you use `format: 'object'` you'll get:
+results to:
 
 ```js
 {
