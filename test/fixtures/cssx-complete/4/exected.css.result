@@ -1,18 +1,11 @@
 @keyframes ball-animation {
-  0%  : [object Object];
-  100%: [object Object];
+0%   {
+  transform: translateX(0);
 }
-@-webkit-keyframes ball-animation {
-  0%  : [object Object];
-  100%: [object Object];
+100% {
+  transform: translateX(200px);
 }
-@-moz-keyframes ball-animation {
-  0%  : [object Object];
-  100%: [object Object];
-}
-@-o-keyframes ball-animation {
-  0%  : [object Object];
-  100%: [object Object];
+
 }
 .ball {
   animation: ball-animation 1s ease infinite alternate;

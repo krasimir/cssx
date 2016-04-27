@@ -1,105 +1,52 @@
 var isArray = require('./helpers/isArray');
 
-var ids = 0;
-var getId = function () { return 'r' + (++ids); }, CSSRule;
-
-function resolveCustomProps(actual, custom) {
-  var result = actual, prop, newProp, value;
-
-  for (prop in custom) {
-    if (typeof actual[prop] !== 'undefined') {
-      value = custom[prop](actual[prop]);
-      delete actual[prop];
-      for (newProp in value) {
-        actual[newProp] = value[newProp];
-      }
-    }
-  }
-  return result;
-};
-
-CSSRule = function (selector, props, stylesheet) {
-  var _id = getId();
-  var _children = [];
-  var _nestedChildren = [];
-
-  var record = {
+module.exports = function CSSRule(selector, props) {
+  var _api = {
+    index: null,
+    stylesheet: null,
     selector: selector,
-    props: resolveCustomProps(props, stylesheet._getCustomProps()),
-    parent: null,
-    addChild: function (c, isWrapper) {
-      (isWrapper ? _nestedChildren : _children).push(c);
-      return this;
-    },
-    getChildren: function () {
-      return _children;
-    },
-    setChildren: function (c) {
-      _children = c;
-    },
-    getNestedChildren: function () {
-      return _nestedChildren;
-    },
-    setNestedChildren: function (c) {
-      _nestedChildren = c;
-    },
-    descendant: function (s, p) {
-      if (isArray(s)) {
-        return s.map(function (rule) {
-          return stylesheet.add(rule[0], rule[1], record, false);
-        });
-      }
-      return stylesheet.add(s, p, this, false);
-    },
-    nested: function (s, p) {
-      if (isArray(s)) {
-        return s.map(function (rule) {
-          return stylesheet.add(rule[0], rule[1], record, true);
-        });
-      }
-      return stylesheet.add(s, p, this, true);
-    },
-    d: function (s, p) {
-      return this.descendant(s, p);
-    },
-    n: function (s, p) {
-      return this.nested(s, p);
-    },
-    update: function (s, p) {
-      var propName;
-
-      if (arguments.length === 1) {
-        p = s;
-        s = false;
-      }
-
-      if (s) this.selector = s;
-      if (p) {
-        if (typeof p === 'function') p = p();
-        if (!this.props) this.props = {};
-        p = resolveCustomProps(p, stylesheet._getCustomProps());
-        for (propName in p) {
-          this.props[propName] = p[propName];
-        }
-      }
-      stylesheet.compile();
-      return this;
-    },
-    id: function () {
-      return _id;
-    },
-    clone: function () {
-      var rule = CSSRule(this.selector, this.props, stylesheet);
-
-      rule.parent = this.parent;
-      rule.setChildren(this.getChildren());
-      rule.setNestedChildren(this.getNestedChildren());
-
-      return rule;
-    }
+    props: props,
+    nestedRules: null,
+    parent: null
   };
 
-  return record;
-};
+  _api.descendant = _api.d = function (rawRules) {
+    var selector, tmp, newRule;
 
-module.exports = CSSRule;
+    if (typeof rawRules === 'function') rawRules = rawRules();
+
+    for (selector in rawRules) {
+      rawRules[_api.selector + ' ' + selector] = rawRules[selector];
+      delete rawRules[selector];
+    }
+    return _api.stylesheet.add(rawRules, this.parent, this.index);
+  }
+  _api.nested = _api.n = function (rawRules) {
+    return _api.stylesheet.add(rawRules, this.parent);
+  };
+  _api.update = function (props) {
+    var prop, selector, areThereNestedRules = this.nestedRules !== null;
+
+    if (typeof props === 'function') {
+      props = props();
+    }
+
+    for (prop in props) {
+      if (typeof props[prop] !== 'object') {
+        this.props[prop] = props[prop];
+      } else if (areThereNestedRules) {
+        if (this.nestedRules[prop]) {
+          this.nestedRules[prop].update(props[prop]);
+        }
+      }
+    }
+    return this;
+  }
+  _api.registerNested = function (rule) {
+    if (this.nestedRules === null) this.nestedRules = {};
+    this.nestedRules[rule.selector] = rule;
+    return this;
+  }
+
+  return _api;
+};

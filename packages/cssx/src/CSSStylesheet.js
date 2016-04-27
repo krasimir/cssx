@@ -21,73 +21,82 @@ module.exports = function (id, plugins) {
   var _queries = {};
   var _scope = '';
 
-  var ruleExists = function (selector, parent) {
-    var i, rule, areParentsMatching, areThereNoParents;
-
-    for (i = 0; i < _rules.length; i++) {
-      rule = _rules[i];
-      areParentsMatching = (rule.parent && typeof parent !== 'undefined' && parent.selector === rule.parent.selector);
-      areThereNoParents = !rule.parent && !parent;
-      if (resolveSelector(rule.selector) === resolveSelector(selector) && (areParentsMatching || areThereNoParents)) {
-        return rule;
+  var ruleExists = function (rules, selector, parent) {
+    return rules.reduce(function (result, rule) {
+      if (result !== false) return result;
+      if (rule.selector === selector) {
+        if (parent) {
+          return parent.id === rule.parent.id ? rule : false;
+        } else {
+          return rule;
+        }
       }
-    }
-    return false;
+      return false;
+    }, false);
   };
-  var getOnlyTopRules = function () {
-    return _rules.filter(function (rule) {
-      return rule.parent === null;
-    });
-  };
-  var buildGraph = function () {
-    _graph = {};
-    (function loop(rules, parent, obj) {
-      if (!rules) return;
-      rules.forEach(function (rule) {
-        var selector = parent ? parent + ' ' : '';
+  var registerRule = function (rule, addAt) {
+    var tmp;
 
-        selector += resolveSelector(rule.selector);
-        obj[selector] = {};
-        obj[selector][graphRulePropName] = rule;
-        loop(rule.getChildren(), selector, obj[selector]);
-        loop(rule.getNestedChildren(), selector, obj[selector]);
-      });
-    })(getOnlyTopRules(), false, _graph);
-    return _graph;
+    if (typeof addAt !== 'undefined') {
+      _rules.splice(addAt, 0, rule);
+    } else {
+      _rules.push(rule);
+    }
+    rule.index = _rules.length - 1;
   };
 
   _api.id = function () {
     return _id;
   };
-  _api.add = function (selector, props, parent, isWrapper) {
-    var rule, r, s, prop, scope;
+  _api.add = _api.update = function (rawRules, parent, addAt) {
+    var rule, prop, tmpRawRules, cssProps, props, nestedRules;
+    var created = [];
 
-    if (arguments.length === 1 && typeof selector === 'object') {
-      for (s in selector) {
-        _api.add(s, selector[s]);
+    if (typeof rawRules === 'function') {
+      rawRules = rawRules();
+    }
+
+    for (selector in rawRules) {
+      rule = ruleExists(_rules, selector, parent);
+      cssProps = {};
+      props = {};
+      nestedRules = [];
+
+      // new rule
+      if (!rule) {
+        rule = CSSRule(selector, cssProps);
+
+        props = rawRules[selector];
+        for (prop in props) {
+          if (typeof props[prop] !== 'object') {
+            cssProps[prop] = props[prop];
+          } else {
+            tmpRawRules = {};
+            tmpRawRules[prop] = props[prop];
+            nestedRules.push(tmpRawRules);
+          }
+        }  
+
+        rule.stylesheet = _api;
+        if (!parent) {
+          registerRule(rule, addAt);
+        } else {
+          parent.registerNested(rule);
+        }
+        nestedRules.forEach(function (rawRulesNested) {
+          _api.add(rawRulesNested, rule);
+        });
+
+      // existing rule
+      } else {
+        rule.update(rawRules[selector]);
       }
-      return _api;
+
+      this.compile();
+      created.push(rule);
     }
 
-    r = ruleExists(selector, parent);
-
-    for (prop in props) {
-
-    }
-
-    if (r) {
-      rule = r.update(false, props);
-    } else {
-      rule = CSSRule(selector, props, _api);
-      _rules.push(rule);
-      if (parent) {
-        rule.parent = parent;
-        parent.addChild(rule, isWrapper);
-      }
-      buildGraph();
-    }
-    this.compile();
-    return rule;
+    return created.length === 1 ? created[0] : created;
   };
   _api.rules = function () {
     return _rules;
@@ -102,7 +111,7 @@ module.exports = function (id, plugins) {
     return _api.compileImmediate();
   };
   _api.compileImmediate = function () {
-    _css = generate(getOnlyTopRules(), module.exports.minify, plugins, _scope);
+    _css = generate(_rules, module.exports.minify, plugins, _scope);
     if (!module.exports.disableDOMChanges) {
       _remove = applyToDOM(_css, _id);
     }
@@ -123,25 +132,6 @@ module.exports = function (id, plugins) {
   _api.getCSS = function () {
     this.compileImmediate();
     return _css;
-  };
-  _api.update = function (selector, props) {
-    var rule, s;
-
-    if (arguments.length === 1 && typeof selector === 'object') {
-      for (s in selector) {
-        _api.update(s, selector[s]);
-      }
-      return _api;
-    }
-
-    rule = this.query(selector);
-
-    if (!rule) {
-      warning('There is no rule matching "' + selector + '"');
-    } else {
-      rule.update(null, props);
-    }
-    return rule;
   };
   _api.query = function (selector) {
     var rule;

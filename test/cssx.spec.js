@@ -43,7 +43,7 @@ d('Given the cssx library', function () {
     cssx.clear();
     removeChild.reset();
   });
-
+  
   describe('when we use disableDOMChanges and enableDOMChanges', function () {
     it('should create multiple <style> element', function () {
       cssx.domChanges(false);
@@ -93,9 +93,9 @@ d('Given the cssx library', function () {
         var EXPECTED = 'a{b:10;c:10;d:10;}';
         var A = cssx('something');
         var B = cssx('something');
-        A.add('a', { b: 1, c: 2 });
-        A.add('a', { c: 10 });
-        B.add('a', { b: 10, d: 10 });
+        A.add({ a: { b: 1, c: 2 } });
+        A.add({ a: { c: 10 } });
+        B.add({ a: { b: 10, d: 10 } });
         expect(cssx.getStylesheets().length).to.be.equal(1);
         expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
       });
@@ -103,8 +103,8 @@ d('Given the cssx library', function () {
         var EXPECTED = 'a{b:1;c:2;}a{b:10;d:10;}';
         var A = cssx('A');
         var B = cssx('B');
-        A.add('a', { b: 1, c: 2 });
-        B.add('a', { b: 10, d: 10 });
+        A.add({ a: { b: 1, c: 2 }});
+        B.add({ a: { b: 10, d: 10 }});
         expect(cssx.getStylesheets().length).to.be.equal(2);
         expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
       });
@@ -113,78 +113,122 @@ d('Given the cssx library', function () {
         var A = cssx('A');
         var B = cssx('A');
         var C = cssx('B');
-        A.add('a', { b: 1, c: 2 });
-        B.add('a', { b: 10, c: 10, e: 10 });
-        C.add('a', { b: 1, c: 2 });
+        A.add({ a: { b: 1, c: 2 }});
+        B.add({ a: { b: 10, c: 10, e: 10 }});
+        C.add({ a: { b: 1, c: 2 }});
         expect(cssx.getStylesheets().length).to.be.equal(2);
         expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
       });
       it('should update the values 4', function () {
         var EXPECTED = 'body p{a:2;}p{a:1;}';
         var A = cssx('A');
-        var body = A.add('body');
-        A.add('p', { a: 1 });
-        body.d('p', { a: 2 });
+        var body = A.add({ body: {} });
+        A.add({ p: { a: 1 } });
+        body.d({ p: { a: 2 } });
         expect(cssx.getStylesheets().length).to.be.equal(1);
         expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
       });
       it('should update the values 5', function () {
         var EXPECTED = 'a{b:1;}';
-        var selector = function () { return 'a'; };
+        var selector = function () { return { a: { b: 1 } }; };
         var A = cssx('A');
         var B = cssx('A');
-        A.add(selector, { b: 1 });
-        B.add(selector, { b: 1 });
+        A.add(selector);
+        B.add(selector);
+        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+      });
+      it('should update the values 6', function () {
+        var EXPECTED = 'a{question:What is the answer?;b{answer:100;}}';
+        var sheet = cssx('A');
+        sheet.add({
+          a: {
+            question: 'What is the answer?',
+            b: { answer: 42 }
+          }
+        });
+        sheet.add({
+          a: { b: { answer: 100 } }
+        });
+
+        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+      });
+      it('should update the values 7', function () {
+        var EXPECTED = 'a{margin:1;padding:2;a_inner{a_inner2{margin:1;padding:2;}}}b{b_inner{margin:100;padding:100;b_inner2{padding:3;}}}';
+        var sheet = cssx('A');
+        sheet.add({
+          a: {
+            margin: 1,
+            padding: 2,
+            a_inner: {
+              a_inner2: {
+                margin: 1,
+                padding: 2
+              }
+            }
+          },
+          b: {
+            b_inner: {
+              margin: 3,
+              b_inner2: {
+                padding: 3
+              }
+            }
+          }
+        });
+        sheet.add({
+          b: { b_inner: { margin: 100, padding: 100 } }
+        });
+
         expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
       });
     });
   });
 
   describe('when we use the update API', function () {
-    describe('and when we pass an object as a last parameter', function () {
+    describe('and when we pass an object', function () {
       it('should result in the right css', function () {
         var S = cssx();
-        S.add('a > b', { c: 1 });
-        S.update('a > b', { c: 2, d: 3 });
+        S.add({ 'a > b': { c: 1 } });
+        S.update({ 'a > b': { c: 2, d: 3 } });
         expect(minifyCSS(cssx.getCSS())).to.be.equal('a > b{c:2;d:3;}');
       });
     });
-    describe('and when we pass a function as a last parameter', function () {
+    describe('and when we pass a function', function () {
       it('should result in the right css', function () {
         var S = cssx();
-        S.add('a > b', { c: 1 });
-        S.update('a > b', function () { return { c: 2, d: 3 } });
+        S.add({ 'a > b': { c: 1 } });
+        S.update({ 'a > b': function () { return { c: 2, d: 3 } } });
         expect(minifyCSS(cssx.getCSS())).to.be.equal('a > b{c:2;d:3;}');
       });
     });
     describe('and when we have descendant selectors added by the api', function () {
       it('should result in the right css', function () {
         var S = cssx();
-        S.add('a > b').d('d').d('f', { g: 4 });
-        S.update('a > b d f', function () { return { c: 2, d: 3 } });
+        S.add({ 'a > b': {}}).d({ d: {} }).d({ f: { g: 4 } });
+        S.update({ 'a > b d f': function () { return { c: 2, d: 3 } }});
         expect(minifyCSS(cssx.getCSS())).to.be.equal('a > b d f{g:4;c:2;d:3;}');
       });
     });
     describe('and when having descendant selectors but we type wrong path', function () {
       it('should result in the right css', function () {
         var S = cssx();
-        S.add('a > b').d('d').d('f', { g: 4 });
-        S.update('a > b e f', { c: 2 });
-        expect(minifyCSS(cssx.getCSS())).to.be.equal('a > b d f{g:4;}');
+        S.add({'a > b': {}}).d({ d: {} }).d({ f: { g: 4 }});
+        S.update({ 'a > b e f': { c: 2 }});
+        expect(minifyCSS(cssx.getCSS())).to.be.equal('a > b d f{g:4;}a > b e f{c:2;}');
       });
     });
     describe('and when we have styles defined at the top level', function () {
       it('should result in the right css', function () {
         var S = cssx();
-        S.add('body', { a: 1 });
-        S.add('body p', { b: 1 });
-        S.update('body', { c: 1 });
+        S.add({ 'body': { a: 1 }});
+        S.add({ 'body p': { b: 1 }});
+        S.update({ 'body': { c: 1 }});
         expect(minifyCSS(cssx.getCSS())).to.be.equal('body{a:1;c:1;}body p{b:1;}');
       });
     });
   });
 
-  describe('when we add rules', function () {
+  describe.only('when we add rules', function () {
     var tests = [], testDir, testDirParts, testCaseDirName, testName;
 
     glob.sync(__dirname + '/fixtures/cssx/**/actual.js').forEach(function (actual) {

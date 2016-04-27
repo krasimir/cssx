@@ -1,6 +1,6 @@
-.something .else {
-  p: 1;
-}
 .something .else .something .else {
   p: 2;
+}
+.something .else {
+  p: 1;
 }

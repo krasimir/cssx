@@ -1,14 +1,14 @@
-body p {
-  font-size: 20px;
-}
-body p small {
-  font-size: .8em;
+body section {
+  margin: 1em;
 }
 body p span {
   font-size: .9em;
 }
-body section {
-  margin: 1em;
+body p small {
+  font-size: .8em;
+}
+body p {
+  font-size: 20px;
 }
 p {
   line-height: 20px;
