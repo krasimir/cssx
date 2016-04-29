@@ -81,13 +81,25 @@
 	});
 	
 	exports.default = function () {
-	  var _2 = {};
-	  _2['background'] = 'blue';
-	  var _1 = {};
-	  var _4 = {};
-	  _1['button'] = _4;
-	  _4['&:hover'] = _2;
-	  return _1;
+	  var _22 = {},
+	      _23 = {},
+	      _24 = {},
+	      _25 = {},
+	      _26 = {},
+	      _27 = {},
+	      _28 = {};
+	  _23['background'] = 'blue';
+	  _24['&:hover'] = _23;
+	  _24['font-size'] = '12';
+	  _25['background'] = 'red';
+	  _26['&:hover'] = _25;
+	  _26['extend'] = 'button';
+	  _27['minWidth'] = '200';
+	  _28['button'] = _27;
+	  _22['button'] = _24;
+	  _22['ctaButton'] = _26;
+	  _22['@media (min-width: 1024px)'] = _28;
+	  return _22;
 	}.apply(undefined);
 	
 	/*
