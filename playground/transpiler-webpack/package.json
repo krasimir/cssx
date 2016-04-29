@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "webpack -w"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cssx-loader": "4.0.0",
+    "cssx-loader": "5.0.0",
     "webpack": "1.12.9"
   },
   "scripts": {

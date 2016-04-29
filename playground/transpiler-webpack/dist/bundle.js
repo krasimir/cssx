@@ -135,8 +135,8 @@ return /******/ (function(modules) { // webpackBootstrap
 				__webpack_require__(1);
 	
 				factory = __webpack_require__(5);
-				goGlobal = __webpack_require__(18);
-				randomId = __webpack_require__(19);
+				goGlobal = __webpack_require__(15);
+				randomId = __webpack_require__(16);
 	
 				stylesheets = [];
 	
@@ -413,14 +413,11 @@ return /******/ (function(modules) { // webpackBootstrap
 			/***/function (module, exports, __webpack_require__) {
 	
 				var CSSRule = __webpack_require__(6);
-				var applyToDOM = __webpack_require__(8);
-				var nextTick = __webpack_require__(9);
-				var resolveSelector = __webpack_require__(13);
-				var generate = __webpack_require__(14);
-				var warning = __webpack_require__(17);
-				var isArray = __webpack_require__(7);
+				var applyToDOM = __webpack_require__(7);
+				var nextTick = __webpack_require__(8);
+				var generate = __webpack_require__(12);
+				var isArray = __webpack_require__(14);
 	
-				var graphRulePropName = '__$__cssx_rule';
 				var ids = 0;
 				var getId = function () {
 					return 'x' + ++ids;
@@ -433,89 +430,87 @@ return /******/ (function(modules) { // webpackBootstrap
 					var _customProperties = {};
 					var _remove = null;
 					var _css = '';
-					var _graph = {};
-					var _queries = {};
 					var _scope = '';
 	
-					var ruleExists = function (selector, parent) {
-						var i, rule, areParentsMatching, areThereNoParents;
-	
-						for (i = 0; i < _rules.length; i++) {
-							rule = _rules[i];
-							areParentsMatching = rule.parent && typeof parent !== 'undefined' && parent.selector === rule.parent.selector;
-							areThereNoParents = !rule.parent && !parent;
-							if (resolveSelector(rule.selector) === resolveSelector(selector) && (areParentsMatching || areThereNoParents)) {
+					var ruleExists = function (rules, selector, parent) {
+						return rules.reduce(function (result, rule) {
+							if (result !== false) return result;
+							if (rule.selector === selector) {
+								if (parent) {
+									return rule.parent && parent.selector === rule.parent.selector ? rule : false;
+								}
 								return rule;
 							}
+							return false;
+						}, false);
+					};
+					var registerRule = function (rule, addAt) {
+						if (typeof addAt !== 'undefined') {
+							_rules.splice(addAt, 0, rule);
+						} else {
+							_rules.push(rule);
 						}
-						return false;
-					};
-					var getOnlyTopRules = function () {
-						return _rules.filter(function (rule) {
-							return rule.parent === null;
-						});
-					};
-					var buildGraph = function () {
-						_graph = {};
-						(function loop(rules, parent, obj) {
-							if (!rules) return;
-							rules.forEach(function (rule) {
-								var selector = parent ? parent + ' ' : '';
-	
-								selector += resolveSelector(rule.selector);
-								obj[selector] = {};
-								obj[selector][graphRulePropName] = rule;
-								loop(rule.getChildren(), selector, obj[selector]);
-								loop(rule.getNestedChildren(), selector, obj[selector]);
-							});
-						})(getOnlyTopRules(), false, _graph);
-						return _graph;
+						rule.index = _rules.length - 1;
 					};
 	
 					_api.id = function () {
 						return _id;
 					};
-					_api.add = function (selector, props, parent, isWrapper) {
-						var rule, r, s, scope;
+					_api.add = _api.update = function (rawRules, parent, addAt) {
+						var rule, prop, tmpRawRules, cssProps, props, nestedRules, selector, tmp;
+						var created = [];
 	
-						if (arguments.length === 1 && typeof selector === 'object') {
-							if (isArray(selector)) {
-								selector.forEach(function (sel) {
-									if (isArray(sel)) {
-										_api.add(sel[0], sel[1]);
+						if (typeof rawRules === 'string') {
+							tmp = {};
+							tmp[rawRules] = {};
+							rawRules = tmp;
+						}
+	
+						if (typeof rawRules === 'function') {
+							rawRules = rawRules();
+						}
+	
+						for (selector in rawRules) {
+							rule = ruleExists(_rules, selector, parent);
+							cssProps = {};
+							props = {};
+							nestedRules = [];
+	
+							// new rule
+							if (!rule) {
+								props = rawRules[selector];
+								for (prop in props) {
+									if (typeof props[prop] !== 'object' || isArray(props[prop])) {
+										cssProps[prop] = props[prop];
 									} else {
-										// nested
-										for (s in sel) {
-											scope = _api.add(s);
-											sel[s].forEach(function (nestedStyles) {
-												scope.n(nestedStyles[0], nestedStyles[1]);
-											});
-										}
+										tmpRawRules = {};
+										tmpRawRules[prop] = props[prop];
+										nestedRules.push(tmpRawRules);
 									}
-								});
-							} else {
-								for (s in selector) {
-									_api.add(s, selector[s]);
 								}
-							}
-							return _api;
+	
+								rule = CSSRule(selector, this.resolveCustomProps(cssProps), _api);
+	
+								if (!parent) {
+									registerRule(rule, addAt);
+								} else {
+									rule.parent = parent;
+									parent.registerNested(rule);
+								}
+								nestedRules.forEach(function (rawRulesNested) {
+									_api.add(rawRulesNested, rule);
+								});
+	
+								// existing rule
+							} else {
+									rule.update(rawRules[selector]);
+								}
+	
+							this.compile();
+							created.push(rule);
 						}
 	
-						r = ruleExists(selector, parent);
-	
-						if (r) {
-							rule = r.update(false, props);
-						} else {
-							rule = CSSRule(selector, props, _api);
-							_rules.push(rule);
-							if (parent) {
-								rule.parent = parent;
-								parent.addChild(rule, isWrapper);
-							}
-							buildGraph();
-						}
-						this.compile();
-						return rule;
+						return created.length === 1 ? created[0] : created;
 					};
 					_api.rules = function () {
 						return _rules;
@@ -530,7 +525,7 @@ return /******/ (function(modules) { // webpackBootstrap
 						return _api.compileImmediate();
 					};
 					_api.compileImmediate = function () {
-						_css = generate(getOnlyTopRules(), module.exports.minify, plugins, _scope);
+						_css = generate(_rules, module.exports.minify, plugins, _scope);
 						if (!module.exports.disableDOMChanges) {
 							_remove = applyToDOM(_css, _id);
 						}
@@ -552,57 +547,6 @@ return /******/ (function(modules) { // webpackBootstrap
 						this.compileImmediate();
 						return _css;
 					};
-					_api.update = function (selector, props) {
-						var rule, s;
-	
-						if (arguments.length === 1 && typeof selector === 'object') {
-							for (s in selector) {
-								_api.update(s, selector[s]);
-							}
-							return _api;
-						}
-	
-						rule = this.query(selector);
-	
-						if (!rule) {
-							warning('There is no rule matching "' + selector + '"');
-						} else {
-							rule.update(null, props);
-						}
-						return rule;
-					};
-					_api.query = function (selector) {
-						var rule;
-	
-						selector = resolveSelector(selector);
-	
-						if (_queries[selector]) return _queries[selector];
-						(function find(node) {
-							var sel;
-	
-							if (!rule) {
-								for (sel in node) {
-									if (sel === selector && sel !== graphRulePropName) {
-										rule = node[selector][graphRulePropName];
-										break;
-									} else {
-										if (typeof node[sel][graphRulePropName] !== 'undefined') {
-											find(node[sel]);
-										}
-									}
-								}
-							}
-						})(_graph);
-	
-						if (rule) {
-							_queries[selector] = rule;
-						}
-	
-						return rule;
-					};
-					_api.graph = function () {
-						return _graph;
-					};
 					_api.define = function (prop, func) {
 						_customProperties[prop] = func;
 					};
@@ -611,6 +555,24 @@ return /******/ (function(modules) { // webpackBootstrap
 					};
 					_api._getCustomProps = function () {
 						return _customProperties;
+					};
+					_api.resolveCustomProps = function (actual) {
+						var result = actual,
+						    prop,
+						    newProp,
+						    value;
+						var custom = _customProperties;
+	
+						for (prop in custom) {
+							if (typeof actual[prop] !== 'undefined') {
+								value = custom[prop](actual[prop]);
+								delete actual[prop];
+								for (newProp in value) {
+									actual[newProp] = value[newProp];
+								}
+							}
+						}
+						return result;
 					};
 	
 					return _api;
@@ -623,132 +585,75 @@ return /******/ (function(modules) { // webpackBootstrap
 				/***/
 			},
 			/* 6 */
-			/***/function (module, exports, __webpack_require__) {
+			/***/function (module, exports) {
 	
-				var isArray = __webpack_require__(7);
-	
-				var ids = 0;
-				var getId = function () {
-					return 'r' + ++ids;
-				},
-				    CSSRule;
-	
-				function resolveCustomProps(actual, custom) {
-					var result = actual,
-					    prop,
-					    newProp,
-					    value;
-	
-					for (prop in custom) {
-						if (typeof actual[prop] !== 'undefined') {
-							value = custom[prop](actual[prop]);
-							delete actual[prop];
-							for (newProp in value) {
-								actual[newProp] = value[newProp];
-							}
-						}
-					}
-					return result;
-				};
-	
-				CSSRule = function (selector, props, stylesheet) {
-					var _id = getId();
-					var _children = [];
-					var _nestedChildren = [];
-	
-					var record = {
+				module.exports = function CSSRule(selector, props, stylesheet) {
+					var _api = {
 						selector: selector,
-						props: resolveCustomProps(props, stylesheet._getCustomProps()),
-						parent: null,
-						addChild: function (c, isWrapper) {
-							(isWrapper ? _nestedChildren : _children).push(c);
-							return this;
-						},
-						getChildren: function () {
-							return _children;
-						},
-						setChildren: function (c) {
-							_children = c;
-						},
-						getNestedChildren: function () {
-							return _nestedChildren;
-						},
-						setNestedChildren: function (c) {
-							_nestedChildren = c;
-						},
-						descendant: function (s, p) {
-							if (isArray(s)) {
-								return s.map(function (rule) {
-									return stylesheet.add(rule[0], rule[1], record, false);
-								});
-							}
-							return stylesheet.add(s, p, this, false);
-						},
-						nested: function (s, p) {
-							if (isArray(s)) {
-								return s.map(function (rule) {
-									return stylesheet.add(rule[0], rule[1], record, true);
-								});
-							}
-							return stylesheet.add(s, p, this, true);
-						},
-						d: function (s, p) {
-							return this.descendant(s, p);
-						},
-						n: function (s, p) {
-							return this.nested(s, p);
-						},
-						update: function (s, p) {
-							var propName;
-	
-							if (arguments.length === 1) {
-								p = s;
-								s = false;
-							}
-	
-							if (s) this.selector = s;
-							if (p) {
-								if (typeof p === 'function') p = p();
-								if (!this.props) this.props = {};
-								p = resolveCustomProps(p, stylesheet._getCustomProps());
-								for (propName in p) {
-									this.props[propName] = p[propName];
-								}
-							}
-							stylesheet.compile();
-							return this;
-						},
-						id: function () {
-							return _id;
-						},
-						clone: function () {
-							var rule = CSSRule(this.selector, this.props, stylesheet);
-	
-							rule.parent = this.parent;
-							rule.setChildren(this.getChildren());
-							rule.setNestedChildren(this.getNestedChildren());
-	
-							return rule;
-						}
+						props: props,
+						stylesheet: stylesheet,
+						index: null,
+						nestedRules: null,
+						parent: null
 					};
 	
-					return record;
-				};
+					_api.clone = function () {
+						var rule = CSSRule(this.selector, this.props, this.stylesheet);
 	
-				module.exports = CSSRule;
+						rule.index = this.index;
+						rule.nestedRules = this.nestedRules;
+						rule.parent = this.parent;
+	
+						return rule;
+					};
+	
+					_api.descendant = _api.d = function (rawRules) {
+						var selector;
+	
+						if (typeof rawRules === 'function') rawRules = rawRules();
+	
+						for (selector in rawRules) {
+							rawRules[_api.selector + ' ' + selector] = rawRules[selector];
+							delete rawRules[selector];
+						}
+						return _api.stylesheet.add(rawRules, this.parent, this.index);
+					};
+					_api.nested = _api.n = function (rawRules) {
+						return _api.stylesheet.add(rawRules, this);
+					};
+					_api.update = function (props) {
+						var prop,
+						    areThereNestedRules = this.nestedRules !== null;
+	
+						if (typeof props === 'function') {
+							props = props();
+						}
+	
+						props = this.stylesheet.resolveCustomProps(props);
+	
+						for (prop in props) {
+							if (typeof props[prop] !== 'object') {
+								this.props[prop] = props[prop];
+							} else if (areThereNestedRules) {
+								if (this.nestedRules[prop]) {
+									this.nestedRules[prop].update(props[prop]);
+								}
+							}
+						}
+						return this;
+					};
+					_api.registerNested = function (rule) {
+						if (this.nestedRules === null) this.nestedRules = {};
+						this.nestedRules[rule.selector] = rule;
+						return this;
+					};
+	
+					return _api;
+				};
 	
 				/***/
 			},
 			/* 7 */
-			/***/function (module, exports) {
-	
-				module.exports = function (v) {
-					return Object.prototype.toString.call(v) === '[object Array]';
-				};
-	
-				/***/
-			},
-			/* 8 */
 			/***/function (module, exports) {
 	
 				var cache = {};
@@ -798,13 +703,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 9 */
+			/* 8 */
 			/***/function (module, exports, __webpack_require__) {
 	
 				/* WEBPACK VAR INJECTION */(function (setImmediate) {
 					var cache = {};
 	
-					__webpack_require__(12);
+					__webpack_require__(11);
 	
 					module.exports = function (work, id) {
 						if (!cache[id]) {
@@ -817,15 +722,15 @@ return /******/ (function(modules) { // webpackBootstrap
 					};
 	
 					/* WEBPACK VAR INJECTION */
-				}).call(exports, __webpack_require__(10).setImmediate);
+				}).call(exports, __webpack_require__(9).setImmediate);
 	
 				/***/
 			},
-			/* 10 */
+			/* 9 */
 			/***/function (module, exports, __webpack_require__) {
 	
 				/* WEBPACK VAR INJECTION */(function (setImmediate, clearImmediate) {
-					var nextTick = __webpack_require__(11).nextTick;
+					var nextTick = __webpack_require__(10).nextTick;
 					var apply = Function.prototype.apply;
 					var slice = Array.prototype.slice;
 					var immediateIds = {};
@@ -902,11 +807,11 @@ return /******/ (function(modules) { // webpackBootstrap
 						delete immediateIds[id];
 					};
 					/* WEBPACK VAR INJECTION */
-				}).call(exports, __webpack_require__(10).setImmediate, __webpack_require__(10).clearImmediate);
+				}).call(exports, __webpack_require__(9).setImmediate, __webpack_require__(9).clearImmediate);
 	
 				/***/
 			},
-			/* 11 */
+			/* 10 */
 			/***/function (module, exports) {
 	
 				// shim for using process in browser
@@ -1007,7 +912,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 12 */
+			/* 11 */
 			/***/function (module, exports, __webpack_require__) {
 	
 				/* WEBPACK VAR INJECTION */(function (global, clearImmediate, process) {
@@ -1184,99 +1089,84 @@ return /******/ (function(modules) { // webpackBootstrap
 					/* WEBPACK VAR INJECTION */
 				}).call(exports, function () {
 					return this;
-				}(), __webpack_require__(10).clearImmediate, __webpack_require__(11));
+				}(), __webpack_require__(9).clearImmediate, __webpack_require__(10));
 	
 				/***/
 			},
-			/* 13 */
-			/***/function (module, exports) {
-	
-				module.exports = function (selector) {
-					return typeof selector === 'function' ? selector() : selector;
-				};
-	
-				/***/
-			},
-			/* 14 */
+			/* 12 */
 			/***/function (module, exports, __webpack_require__) {
 	
-				var isEmpty = __webpack_require__(15);
-				var resolveSelector = __webpack_require__(13);
-				var prefix = __webpack_require__(16);
-				var isArray = __webpack_require__(7);
-				var applyPlugins,
-				    areThereAnyPlugins = false,
-				    n;
+				var isEmpty = __webpack_require__(13);
+				var isArray = __webpack_require__(14);
 	
-				module.exports = function (rules, minify, plugins, scope) {
+				module.exports = function (topRules, minify, plugins, scope) {
 					var scopeTheSelector = function (selector) {
 						if (scope === '') return selector;
 						if (selector.indexOf(scope) === 0 || selector.indexOf('@') === 0) return selector;
 						return scope + ' ' + selector;
 					};
+					var applyPlugins = function (props) {
+						var n;
 	
-					// duplicate those that need prefixing
-					rules = prefix.selector(rules);
-	
-					areThereAnyPlugins = plugins && plugins.length > 0;
-					applyPlugins = function (props) {
 						for (n = 0; n < plugins.length; n++) {
 							props = plugins[n](props);
 						}
 						return props;
 					};
 	
-					return function generate(rules, parent, minify, nesting, nested) {
-						var i, j, rule, props, propsFinal, prop, children, nestedChildren, selector, tab;
-						var css = '';
-						var newLine = minify ? '' : '\n';
-						var interval = minify ? '' : ' ';
+					var newLine = minify ? '' : '\n';
+					var interval = minify ? '' : ' ';
+					var tab = minify ? '' : '  ';
 	
-						nesting = typeof nesting !== 'undefined' ? nesting : '';
-						tab = minify ? '' : nesting + '  ';
-						for (i = 0; i < rules.length; i++) {
-							rule = rules[i];
-							children = rule.getChildren();
-							nestedChildren = rule.getNestedChildren();
-							selector = parent ? parent + ' ' : '';
-							selector += resolveSelector(rule.selector);
-							selector = scopeTheSelector(selector);
-							props = typeof rule.props === 'function' ? rule.props() : rule.props;
-							if (!isEmpty(props) || nestedChildren.length > 0) {
-								css += nesting + selector + interval + '{' + newLine;
-								props = prefix.property(props);
-								if (props) {
-									propsFinal = {};
-									for (prop in props) {
-										propsFinal[prop] = typeof props[prop] === 'function' ? props[prop]() : props[prop];
-									}
-									propsFinal = areThereAnyPlugins ? applyPlugins(propsFinal) : propsFinal;
-									for (prop in propsFinal) {
-										if (isArray(propsFinal[prop])) {
-											propsFinal[prop].forEach(function (v) {
-												css += tab + prop + ':' + interval + v + ';' + newLine;
-											});
-										} else {
-											css += tab + prop + ':' + interval + propsFinal[prop] + ';' + newLine;
-										}
+					var process = function (rules, indent) {
+						var css = '',
+						    r,
+						    prop,
+						    props,
+						    value;
+						var addLine = function (line, noNewLine) {
+							css += line + (noNewLine ? '' : newLine);
+						};
+						var processRule = function (rule) {
+							if (!isEmpty(rule.props) || rule.nestedRules !== null) {
+								addLine(indent + scopeTheSelector(rule.selector) + interval + '{');
+								props = applyPlugins(rule.props);
+								for (prop in props) {
+									value = typeof props[prop] === 'function' ? props[prop]() : props[prop];
+									if (isArray(value)) {
+										value.forEach(function (v) {
+											addLine(indent + tab + prop + ':' + interval + v + ';');
+										});
+									} else {
+										addLine(indent + tab + prop + ':' + interval + value + ';');
 									}
 								}
-								for (j = 0; j < nestedChildren.length; j++) {
-									css += generate([nestedChildren[j]], null, minify, tab, true);
+								if (rule.nestedRules !== null) {
+									addLine(process(rule.nestedRules, indent + tab), true);
 								}
-								css += nesting + '}' + newLine;
-							}
-							if (children.length > 0) {
-								css += generate(children, selector, minify);
+								addLine(indent + '}');
 							}
 						};
+	
+						indent = minify ? '' : indent;
+	
+						if (isArray(rules)) {
+							rules.forEach(processRule);
+						} else {
+							for (r in rules) {
+								processRule(rules[r]);
+							}
+						};
+	
 						return css;
-					}(rules, null, minify);
+					};
+	
+					return process(topRules, '');
 				};
 	
 				/***/
 			},
-			/* 15 */
+			/* 13 */
 			/***/function (module, exports) {
 	
 				module.exports = function (obj) {
@@ -1292,87 +1182,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 16 */
-			/***/function (module, exports, __webpack_require__) {
-	
-				var resolveSelector = __webpack_require__(13);
-				var SELECTORS = {
-					'@keyframes': ['@-webkit-keyframes', '@-moz-keyframes', '@-o-keyframes']
-				};
-				var prefixProperty = function (list) {
-					return list.split('').map(function (ch) {
-						if (ch === 's') return '-ms-'; // Microsoft
-						if (ch === 'z') return 'mso- '; // icrosoft Office
-						if (ch === 'm') return '-moz-'; // Mozilla Foundation (Gecko-based browsers)
-						if (ch === 'o') return '-o-'; //  -xv- Opera Software
-						if (ch === 't') return '-atsc-'; // Advanced Television Standards Committee
-						if (ch === 'p') return '-wap-'; // The WAP Forum
-						if (ch === 'w') return '-webkit-'; // Safari, Chrome (and other WebKit-based browsers)
-						if (ch === 'k') return '-khtml-'; // Konqueror browser
-						if (ch === 'a') return '-apple-'; // Webkit supports properties using the -apple- prefixes as well
-						if (ch === 'e') return 'prince- '; // esLogic
-						if (ch === 'n') return '-ah-'; // Antenna House
-						if (ch === 'h') return '-hp-'; // Hewlett Packard
-						if (ch === 'r') return '-ro-'; // Real Objects
-						if (ch === 'i') return '-rim-'; // Research In Motion
-						if (ch === 'c') return '-tc-'; // Tall Components
-						return [];
-					});
-				};
-	
-				module.exports = {
-					selector: function (rules) {
-						var result = [],
-						    keyword,
-						    newRule,
-						    sel;
-	
-						rules.forEach(function (rule) {
-							sel = resolveSelector(rule.selector);
-							result.push(rule);
-							if (sel) keyword = resolveSelector(rule.selector).split(' ')[0];
-							if (SELECTORS[keyword]) {
-								SELECTORS[keyword].forEach(function (prefixed) {
-									newRule = rule.clone();
-									newRule.selector = rule.selector.replace(keyword, prefixed);
-									result.push(newRule);
-								});
-							}
-						});
-						return result;
-					},
-					property: function (props) {
-						var prop, match, cleanProp;
-	
-						for (prop in props) {
-							match = prop.match(/^\(([szmotpwkaenhric]+)\)/);
-							if (match) {
-								cleanProp = prop.replace(match[0], '');
-								props[cleanProp] = props[prop];
-								prefixProperty(match[1]).forEach(function (prefix) {
-									props[prefix + cleanProp] = props[prop];
-								});
-								delete props[prop];
-							}
-						}
-						return props;
-					}
-				};
-	
-				/***/
-			},
-			/* 17 */
+			/* 14 */
 			/***/function (module, exports) {
 	
-				module.exports = function (message) {
-					if (typeof console !== 'undefined' && console.warn) {
-						console.warn(message);
-					}
+				module.exports = function (v) {
+					return Object.prototype.toString.call(v) === '[object Array]';
 				};
 	
 				/***/
 			},
-			/* 18 */
+			/* 15 */
 			/***/function (module, exports) {
 	
 				/* WEBPACK VAR INJECTION */(function (global) {
@@ -1392,7 +1211,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 				/***/
 			},
-			/* 19 */
+			/* 16 */
 			/***/function (module, exports) {
 	
 				var ids = 0;
@@ -1427,13 +1246,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  button.innerText = enabled ? 'disable input' : 'enable input';
 	
 	  sheet.add((function () {
-	    var _3 = {};
-	    _3['color'] = enabled ? '#000' : '#ccc';
+	    var _2 = {},
+	        _3 = {};
 	    _3['border'] = "solid " + (enabled ? '2px #999' : '1px #B0B0B0');
-	    var _2 = [];
-	
-	    _2.push(['input', _3]);
-	
+	    _3['color'] = enabled ? '#000' : '#ccc';
+	    _2['input'] = _3;
 	    return _2;
 	  }.apply(this)));
 	  input.disabled = !enabled;
@@ -1446,43 +1263,42 @@ return /******/ (function(modules) { // webpackBootstrap
 	var animationApply = 'ball-animation 1s ease infinite alternate';
 	var animation = cssx();
 	animation.add((function () {
-	  var _10 = {};
-	  _10['background-color'] = 'rgb(200, 0, 0)';
-	  _10['(w)animation'] = animationApply;
-	  var _7 = {};
-	  _7['(w)transform'] = 'translateX(60px)';
-	  var _6 = {};
-	  _6['(w)transform'] = 'translateX(0)';
-	  var _5 = [];
-	  var _8 = {},
-	      _9 = [];
-	  _8['@keyframes ball-animation'] = _9;
-	
-	  _9.push(['0%', _6]);
-	
-	  _9.push(['100%', _7]);
-	
-	  _5.push(_8);
-	
-	  _5.push(['.ball', _10]);
-	
+	  var _5 = {},
+	      _6 = {},
+	      _7 = {},
+	      _8 = {},
+	      _9 = {};
+	  _6['transform'] = 'translateX(0)';
+	  _7['transform'] = 'translateX(60px)';
+	  _8['0%'] = _6;
+	  _8['100%'] = _7;
+	  _9['animation'] = animationApply;
+	  _9['background-color'] = 'rgb(200, 0, 0)';
+	  _5['@keyframes ball-animation'] = _8;
+	  _5['.ball'] = _9;
 	  return _5;
 	}.apply(this)));
 	
 	module.exports = {
 	  updateEndpoint: function (endPoint) {
-	    animation.update('@keyframes ball-animation 100%', (function () {
-	      var _12 = {};
-	      _12['(w)transform'] = "translateX(" + endPoint + "px)";
-	      return _12;
+	    animation.update((function () {
+	      var _11 = {},
+	          _12 = {},
+	          _13 = {};
+	      _12['transform'] = "translateX(" + endPoint + "px)";
+	      _13['100%'] = _12;
+	      _11['@keyframes ball-animation'] = _13;
+	      return _11;
 	    }.apply(this)));
 	  },
 	  updateColor: function (color) {
-	    animation.update('.ball', (function () {
-	      var _14 = {};
-	      _14['background-color'] = "rgb(" + color + ", 0, 0)";
-	      return _14;
-	    }.apply(this)));
+	    animation.update({
+	      '.ball': (function () {
+	        var _16 = {};
+	        _16['background-color'] = "rgb(" + color + ", 0, 0)";
+	        return _16;
+	      }.apply(this))
+	    });
 	  }
 	};
 
