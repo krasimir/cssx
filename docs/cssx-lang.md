@@ -124,6 +124,6 @@ body {
 
 ## Where to go from here
 
-Check out the [plugin](./plugins.md) docs to see how to youse CSSX together with PostCSS.
+Check out the [plugin](./plugins.md) docs to see how to use CSSX together with PostCSS.
 
 Check out [CSSX client-side](https://github.com/krasimir/cssx/tree/master/packages/cssx) library or learn how to use the [transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler).
