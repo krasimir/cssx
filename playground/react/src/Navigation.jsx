@@ -14,7 +14,7 @@ class Navigation extends React.Component {
     this.sheet.add(<style>
       li {
         padding-left: 0;
-        (w)transition: padding-left 300ms ease;
+        transition: padding-left 300ms ease;
       }
       .btn {
         display: block;
@@ -23,7 +23,7 @@ class Navigation extends React.Component {
         border-bottom: solid 2px `color`;
         border-radius: 6px;        
         background-color: `shadeColor(color, 0.5)`;
-        (w)transition: background-color 400ms ease;
+        transition: background-color 400ms ease;
       }
       .btn:hover {
         background-color: `shadeColor(color, 0.2)`;

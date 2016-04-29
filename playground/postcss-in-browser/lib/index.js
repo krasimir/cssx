@@ -12,7 +12,9 @@ cssx.plugins([plugin]);
 
 var sheet = cssx();
 sheet.add((function () {
-  var _3 = {};
+  var _2 = {},
+      _3 = {};
   _3['color'] = 'gray(85)';
-  return [['body', _3]];
+  _2['body'] = _3;
+  return _2;
 }.apply(this)));

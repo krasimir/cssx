@@ -1,7 +1,10 @@
+p small {
+  font-size: 10px;
+}
 p {
+  background: #F00;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  background: #F00;
 }

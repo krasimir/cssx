@@ -4,12 +4,13 @@
   "description": "CSSX + PostCSS plugin in a browser",
   "main": "index.js",
   "scripts": {
-    "build": "./node_modules/.bin/cssx -i ./src/index.js -o ./lib && browserify ./lib/index.js -o ./dist/app.js"
+    "test": "./node_modules/.bin/cssx -i ./src/index.js -o ./lib && browserify ./lib/index.js -o ./dist/app.js"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cssx": "4.0.0",
+    "cssx": "5.0.0",
+    "cssx-cli": "5.0.0",
     "postcss-color-gray": "3.0.0",
     "postcss-js": "0.1.2"
   }
