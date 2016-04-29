@@ -5,6 +5,3 @@ p {
   display: flex;
   background: #F00;
 }
-p small {
-  font-size: 10px;
-}
