@@ -12,6 +12,6 @@ sheet.add(<style>\n\
   p {\n\
     font-size: {{ size }}px;\n\
     line-height: {{ size*ratio }}px;\n\
-    (wmo)transform: transitionX(10px);\n\
+    transform: transitionX(10px);\n\
   }\n\
 </style>);";

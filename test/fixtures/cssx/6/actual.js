@@ -3,5 +3,5 @@ module.exports = function (cssx) {
     return '20px';
   }
 
-  cssx.add('a', { b: value });
+  cssx.add({ a: { b: value }});
 };

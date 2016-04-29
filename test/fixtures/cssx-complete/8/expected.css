@@ -1,3 +1,9 @@
+#something p.small {
+  font-size: 0.6em;
+}
+#something p {
+  font-size: 20px;
+}
 #something {
   section {
     font-size: 20px;
@@ -5,10 +11,4 @@
   section.small {
     font-size: 0.6em;
   }
-}
-#something p {
-  font-size: 20px;
-}
-#something p.small {
-  font-size: 0.6em;
 }

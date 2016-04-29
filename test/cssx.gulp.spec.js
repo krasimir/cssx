@@ -12,7 +12,7 @@ var writeFile = function (path, data) {
   fs.writeFileSync(path, data);
 }
 var deleteFile = function (path) {
-  fs.unlink(path);
+  fs.unlinkSync(path);
 }
 
 describe('Given the gulp module', function () {

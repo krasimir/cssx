@@ -6,7 +6,7 @@ module.exports = function (cssx) {
     }
     return { 'font-size': '1em', 'line-height': '1em' };
   });
-  var paragraph = cssx.add('body', { typography: 'big' }).d('p', { typography: '' });
+  var paragraph = cssx.add({ body: { typography: 'big' }}).d({ p: { typography: '' }});
   paragraph.update({ typography: 'big' });
 
 }

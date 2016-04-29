@@ -27,7 +27,7 @@ sheet.add(<style>\n\
     display: inline-block;\n\
     color: {{ color }};\n\
     font-weight: bold;\n\
-    (w)transform: translateY({{ y }}px) rotateZ({{ rotation }}deg);\n\
+    transform: translateY({{ y }}px) rotateZ({{ rotation }}deg);\n\
   }\n\
 </style>);";
   var DEFAULT_HTML = '<p>\n  Hello world.<br />\n  That\'s a <span>CSSX</span> demonstration.\n</p>';

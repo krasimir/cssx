@@ -15,7 +15,7 @@ var cssx = require('gulp-cssx');
 gulp.task('cssx', function() {
   gulp.src('src/*.js')
     .pipe(cssx({
-      format: 'array'
+      minify: false
     }))
     .pipe(gulp.dest('./dist/'));
 });

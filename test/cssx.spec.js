@@ -81,106 +81,115 @@ d('Given the cssx library', function () {
       expect(removeChild).to.be.calledOnce;
     });
   });
-  describe('when we pass an id to the factory', function () {
-    it('should create only one stylesheet', function () {
-      cssx('something');
-      cssx('something');
-      cssx('something');
-      expect(cssx.getStylesheets().length).to.be.equal(1);
-    });
+  describe('when we register rules', function () {
     describe('and when we pass same id multiple times', function () {
-      it('should update the values 1', function () {
-        var EXPECTED = 'a{b:10;c:10;d:10;}';
-        var A = cssx('something');
-        var B = cssx('something');
-        A.add({ a: { b: 1, c: 2 } });
-        A.add({ a: { c: 10 } });
-        B.add({ a: { b: 10, d: 10 } });
+      it('should create only one stylesheet', function () {
+        cssx('something');
+        cssx('something');
+        cssx('something');
         expect(cssx.getStylesheets().length).to.be.equal(1);
-        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
       });
-      it('should update the values 2', function () {
-        var EXPECTED = 'a{b:1;c:2;}a{b:10;d:10;}';
-        var A = cssx('A');
-        var B = cssx('B');
-        A.add({ a: { b: 1, c: 2 }});
-        B.add({ a: { b: 10, d: 10 }});
-        expect(cssx.getStylesheets().length).to.be.equal(2);
-        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+    });
+    describe('when we use nesting', function () {
+      it('should set a proper parent to the CSSRule object', function () {
+        var sheet = cssx();
+        var A = sheet.add({ a: {} });
+        var B = A.nested({ b: { c: 1 }});
+        expect(B.parent).to.not.be.equal(null);
+        expect(B.parent.selector).to.be.equal('a');
       });
-      it('should update the values 3', function () {
-        var EXPECTED = 'a{b:10;c:10;e:10;}a{b:1;c:2;}';
-        var A = cssx('A');
-        var B = cssx('A');
-        var C = cssx('B');
-        A.add({ a: { b: 1, c: 2 }});
-        B.add({ a: { b: 10, c: 10, e: 10 }});
-        C.add({ a: { b: 1, c: 2 }});
-        expect(cssx.getStylesheets().length).to.be.equal(2);
-        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+    });
+    it('should update the values 1', function () {
+      var EXPECTED = 'a{b:10;c:10;d:10;}';
+      var A = cssx('something');
+      var B = cssx('something');
+      A.add({ a: { b: 1, c: 2 } });
+      A.add({ a: { c: 10 } });
+      B.add({ a: { b: 10, d: 10 } });
+      expect(cssx.getStylesheets().length).to.be.equal(1);
+      expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+    });
+    it('should update the values 2', function () {
+      var EXPECTED = 'a{b:1;c:2;}a{b:10;d:10;}';
+      var A = cssx('A');
+      var B = cssx('B');
+      A.add({ a: { b: 1, c: 2 }});
+      B.add({ a: { b: 10, d: 10 }});
+      expect(cssx.getStylesheets().length).to.be.equal(2);
+      expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+    });
+    it('should update the values 3', function () {
+      var EXPECTED = 'a{b:10;c:10;e:10;}a{b:1;c:2;}';
+      var A = cssx('A');
+      var B = cssx('A');
+      var C = cssx('B');
+      A.add({ a: { b: 1, c: 2 }});
+      B.add({ a: { b: 10, c: 10, e: 10 }});
+      C.add({ a: { b: 1, c: 2 }});
+      expect(cssx.getStylesheets().length).to.be.equal(2);
+      expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+    });
+    it('should update the values 4', function () {
+      var EXPECTED = 'body p{a:2;}p{a:1;}';
+      var A = cssx('A');
+      var body = A.add({ body: {} });
+      A.add({ p: { a: 1 } });
+      body.d({ p: { a: 2 } });
+      expect(cssx.getStylesheets().length).to.be.equal(1);
+      expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+    });
+    it('should update the values 5', function () {
+      var EXPECTED = 'a{b:1;}';
+      var selector = function () { return { a: { b: 1 } }; };
+      var A = cssx('A');
+      var B = cssx('A');
+      A.add(selector);
+      B.add(selector);
+      expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+    });
+    it('should update the values 6', function () {
+      var EXPECTED = 'a{question:What is the answer?;b{answer:100;}}';
+      var sheet = cssx('A');
+      sheet.add({
+        a: {
+          question: 'What is the answer?',
+          b: { answer: 42 }
+        }
       });
-      it('should update the values 4', function () {
-        var EXPECTED = 'body p{a:2;}p{a:1;}';
-        var A = cssx('A');
-        var body = A.add({ body: {} });
-        A.add({ p: { a: 1 } });
-        body.d({ p: { a: 2 } });
-        expect(cssx.getStylesheets().length).to.be.equal(1);
-        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+      sheet.add({
+        a: { b: { answer: 100 } }
       });
-      it('should update the values 5', function () {
-        var EXPECTED = 'a{b:1;}';
-        var selector = function () { return { a: { b: 1 } }; };
-        var A = cssx('A');
-        var B = cssx('A');
-        A.add(selector);
-        B.add(selector);
-        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
-      });
-      it('should update the values 6', function () {
-        var EXPECTED = 'a{question:What is the answer?;b{answer:100;}}';
-        var sheet = cssx('A');
-        sheet.add({
-          a: {
-            question: 'What is the answer?',
-            b: { answer: 42 }
-          }
-        });
-        sheet.add({
-          a: { b: { answer: 100 } }
-        });
 
-        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
-      });
-      it('should update the values 7', function () {
-        var EXPECTED = 'a{margin:1;padding:2;a_inner{a_inner2{margin:1;padding:2;}}}b{b_inner{margin:100;padding:100;b_inner2{padding:3;}}}';
-        var sheet = cssx('A');
-        sheet.add({
-          a: {
-            margin: 1,
-            padding: 2,
-            a_inner: {
-              a_inner2: {
-                margin: 1,
-                padding: 2
-              }
-            }
-          },
-          b: {
-            b_inner: {
-              margin: 3,
-              b_inner2: {
-                padding: 3
-              }
+      expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+    });
+    it('should update the values 7', function () {
+      var EXPECTED = 'a{margin:1;padding:2;a_inner{a_inner2{margin:1;padding:2;}}}b{b_inner{margin:100;padding:100;b_inner2{padding:3;}}}';
+      var sheet = cssx('A');
+      sheet.add({
+        a: {
+          margin: 1,
+          padding: 2,
+          a_inner: {
+            a_inner2: {
+              margin: 1,
+              padding: 2
             }
           }
-        });
-        sheet.add({
-          b: { b_inner: { margin: 100, padding: 100 } }
-        });
-
-        expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
+        },
+        b: {
+          b_inner: {
+            margin: 3,
+            b_inner2: {
+              padding: 3
+            }
+          }
+        }
       });
+      sheet.add({
+        b: { b_inner: { margin: 100, padding: 100 } }
+      });
+
+      expect(minifyCSS(cssx.getCSS())).to.be.equal(EXPECTED);
     });
   });
 
@@ -228,7 +237,7 @@ d('Given the cssx library', function () {
     });
   });
 
-  describe.only('when we add rules', function () {
+  describe('when we add rules from fixtures', function () {
     var tests = [], testDir, testDirParts, testCaseDirName, testName;
 
     glob.sync(__dirname + '/fixtures/cssx/**/actual.js').forEach(function (actual) {
@@ -259,199 +268,30 @@ d('Given the cssx library', function () {
       });
     });
   });
-  
-  describe('when we update the graph', function () {
-    var prop = '__$__cssx_rule';
-    var cleanGraph = function (stylesheet) {
-      var graph = stylesheet.graph();
-      (function clean(g) {
-        if (g[prop]) delete g[prop];
-        for (var i in g) {
-          clean(g[i]);
-        }
-      })(graph);
-      return graph;
-    };
-
-    it('should have a proper graph 1', function () {
-      var s = cssx();
-      s.add('a', { b: 1 })
-      expect(cleanGraph(s)).to.be.deep.equal({a:{}});
-    });
-    it('should have a proper graph 2', function () {
-      var s = cssx();
-      var a2 = s.add('a', { b: 1 }).d('a2');
-      a2.d('a3');
-      a2.d('a4');
-      expect(cleanGraph(s)).to.be.deep.equal({
-        a: {
-          'a a2': {
-            'a a2 a3': {},
-            'a a2 a4': {}
-          }
-        }
-      });
-    });
-    it('should have a proper graph 3', function () {
-      var s = cssx();
-      var a2 = s.add('a', { b: 1 }).d('a2 > p.something');
-      a2.d('a3');
-      a2.d('a4');
-      expect(cleanGraph(s)).to.be.deep.equal({
-        a: {
-          'a a2 > p.something': {
-            'a a2 > p.something a3': {},
-            'a a2 > p.something a4': {}
-          }
-        }
-      });
-    });
-    it('should have a proper graph 4', function () {
-      var s = cssx();
-      var a2 = s.add('a', { b: 1 }).n('a2 > p.something');
-      a2.d('a3');
-      a2.d('a4');
-      expect(cleanGraph(s)).to.be.deep.equal({
-        a: {
-          'a a2 > p.something': {
-            'a a2 > p.something a3': {},
-            'a a2 > p.something a4': {}
-          }
-        }
-      });
-    });
-    it('should have a proper graph 5', function () {
-      var s = cssx();
-      var a2 = s.add('a::foo bar > f', { b: 1 }).n('a2 > p.something');
-      a2.d('a3');
-      a2.d('a4');
-      expect(cleanGraph(s)).to.be.deep.equal({
-        'a::foo bar > f': {
-          'a::foo bar > f a2 > p.something': {
-            'a::foo bar > f a2 > p.something a3': {},
-            'a::foo bar > f a2 > p.something a4': {}
-          }
-        }
-      });
-    });
-    it('should have a proper graph 6', function () {
-      var s = cssx();
-      var a = s.add('a');
-      a.n('a3');
-      a.d('a4');
-      expect(cleanGraph(s)).to.be.deep.equal({
-        a: {
-          'a a3': {},
-          'a a4': {}
-        }
-      });
-    });
-    it('should have a proper graph 7', function () {
-      var s = cssx();
-      s.add('body');
-      s.add('body p');
-      expect(cleanGraph(s)).to.be.deep.equal({
-        'body': {}, 'body p': {}
-      });
-    });
-  });
 
   describe('when we update a rule that has no styles so far', function () {
     it('should set the rules and compile successfully', function () {
       var sheet = cssx();
-      var rule = sheet.add('body');
+      var rule = sheet.add({ body: {} });
       rule.update({ a: 1 });
       rule.update({ b: 2 });
       expect(sheet.getCSS()).to.be.equal('body {\n  a: 1;\n  b: 2;\n}\n');
     });
   });
 
-  describe('when use an array as a first argument of stylesheet.add method', function () {
-    var STYLES = {
-      '.span foo::after': {
-        a: 1,
-        b: 2
-      },
-      'h1 > span': {
-        c: 3,
-        d: 4
-      }
-    };
-    it('should compile the rules properly', function () {
-      var sheet = cssx();
-      sheet.add(STYLES);
-      expect(sheet.getCSS()).to.be.equal('.span foo::after {\n  a: 1;\n  b: 2;\n}\nh1 > span {\n  c: 3;\n  d: 4;\n}\n');
-    });
-    it('should create only one stylesheet', function () {
-      var sheet = cssx();
-      sheet.add(STYLES);
-      expect(cssx.getStylesheets().length).to.be.equal(1);
-    });
-  });
-
-  describe('when use an array as a first argument of stylesheet.update method', function () {
-    var STYLES = {
-      '.span foo::after': {
-        a: 1,
-        b: 2
-      },
-      'h1 > span': {
-        c: 3,
-        d: 4
-      }
-    };
-    var UPDATES = {
-      '.span foo::after': {
-        a: 10
-      },
-      'h1 > span': {
-        e: 20
-      }
-    };
-    it('should compile the rules properly', function () {
-      var sheet = cssx();
-      sheet.add(STYLES);
-      sheet.update(UPDATES);
-      expect(sheet.getCSS()).to.be.equal('.span foo::after {\n  a: 10;\n  b: 2;\n}\nh1 > span {\n  c: 3;\n  d: 4;\n  e: 20;\n}\n');
-    });
-    it('should create only one stylesheet', function () {
-      var sheet = cssx();
-      sheet.add(STYLES);
-      sheet.update(UPDATES);
-      expect(cssx.getStylesheets().length).to.be.equal(1);
-    });
-  });
-
   describe('when using a plugin', function () {
     it('should run the plugin against the produced CSS', function () {
-      var sheet, p;
-      var pluginA = function (styles) {
-        if (styles.a) styles.a += 100;
-        if (styles.c) styles.c += 200;
+      var sheet;
+      var plugin = function (styles) {
+        styles['margin'] = '10px';
         return styles;
-      };
-      var pluginB = function (styles) {
-        if (styles['line-height']) styles['font-size'] = '1px';
-        return styles;
-      }
-      var STYLES = {
-        '.span foo::after': {
-          a: 1,
-          b: 2
-        },
-        'h1 > span': {
-          c: 3,
-          d: 4
-        }
       };
 
-      cssx.plugins([ pluginA, pluginB ]);
+      cssx.plugins([ plugin ]);
       sheet = cssx();
-      sheet.add(STYLES);
-      p = sheet.add('p', { 'line-height': '60px' });
-      p.d('small', { 'line-height': '45px' });
-
-      expect(cssx.getCSS()).to.be.equal('.span foo::after {\n  a: 101;\n  b: 2;\n}\nh1 > span {\n  c: 203;\n  d: 4;\n}\np {\n  line-height: 60px;\n  font-size: 1px;\n}\np small {\n  line-height: 45px;\n  font-size: 1px;\n}\n');
+      p = sheet.add({ 'p': { 'line-height': '60px' }});
+      p.d({ 'small': { 'line-height': '45px' }});
+      expect(cssx.getCSS()).to.be.equal('p small {\n  line-height: 45px;\n  margin: 10px;\n}\np {\n  line-height: 60px;\n  margin: 10px;\n}\n');
     });
   });
 

@@ -11,7 +11,7 @@ sheet.add(<style>
 </style>);
 ```
 
-The `<style>` tag returns a plain JavaScript array which we use together with [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) to manage our styles. For example, to append a new CSS rule for all paragraphs on our page we can use the following:
+The `<style>` tag returns a plain JavaScript object which we use together with [CSSX stylesheet](https://github.com/krasimir/cssx/tree/master/packages/cssx#stylesheet-api) to manage our styles. For example, to append a new CSS rule for all paragraphs on our page we can use the following:
 
 ```js
 sheet.add(<style>
@@ -26,7 +26,7 @@ sheet.add(<style>
 
 #### `<style>selector { styles } ...</style>`
 
-It returns an array.
+It returns an object.
 
 Example:
 
@@ -44,9 +44,11 @@ Same as:
 
 ```js
 var sheet = cssx('id');
-sheet.add('body', {
-  margin: 0,
-  padding: 0
+sheet.add({
+  body: {
+    margin: 0,
+    padding: 0
+  }
 });
 ```
 
@@ -69,8 +71,8 @@ Same as :
 
 ```js
 var styles = {
-  'line-height': '1.2em',
-  'font-size': '1em'
+  "font-size": "1em",
+  "line-height": "1.2em"
 };
 ```
 
@@ -104,12 +106,10 @@ var value = 18;
 var sheet = cssx();
 
 sheet.add((function () {
-  var _3 = {};
+  var _2 = {},
+      _3 = {};
   _3["font-" + property] = value + 2 + "px";
-  var _2 = [];
-
-  _2.push(['body', _3]);
-
+  _2['body'] = _3;
   return _2;
 }.apply(this)));
 ```
@@ -122,49 +122,8 @@ body {
 }
 ```
 
-## Prefixing
-
-[CSSX transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler) and [CSSX client-side library](https://github.com/krasimir/cssx/tree/master/packages/cssx) do not auto prefix your CSS. However, there is a mechanism to produce prefixed version of the CSS properties.
-
-```js
-// input
-<style>
-  .icon {
-    (wmo)transform: translateX(20px);
-  }
-</style>
-
-// output
-.icon {
-  transform: translateX(20px);
-  -webkit-transform: translateX(20px);
-  -moz-transform: translateX(20px);
-  -o-transform: translateX(20px);
-}
-```
-
-Where 
-
-* `s` - `-ms-` Microsoft
-* `z` - `mso- ` icrosoft Office
-* `m` - `-moz-` Mozilla Foundation (Gecko-based browsers)
-* `o` - `-o-`  -xv- Opera Software
-* `t` - `-atsc-` Advanced Television Standards Committee
-* `p` - `-wap-` The WAP Forum
-* `w` - `-webkit-` Safari, Chrome (and other WebKit-based browsers)
-* `k` - `-khtml-` Konqueror browser
-* `a` - `-apple-` Webkit supports properties using the -apple- prefixes as well
-* `e` - `prince- ` esLogic
-* `n` - `-ah-` Antenna House
-* `h` - `-hp-` Hewlett Packard
-* `r` - `-ro-` Real Objects
-* `i` - `-rim-` Research In Motion
-* `c` - `-tc-` Tall Components
-
-*There is only one case where CSSX library generates prefixes automatically and that's when we use `@keyframes`.*
-
-*Check out the [plugin](./plugins.md) docs to see how to youse CSSX together with PostCSS*.
-
 ## Where to go from here
+
+Check out the [plugin](./plugins.md) docs to see how to youse CSSX together with PostCSS.
 
 Check out [CSSX client-side](https://github.com/krasimir/cssx/tree/master/packages/cssx) library or learn how to use the [transpiler](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler).

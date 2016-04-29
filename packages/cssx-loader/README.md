@@ -17,7 +17,7 @@ module.exports = {
     filename: 'bundle.js'
   },
   cssx: {
-    format: 'array'
+    minify: false
   },
   module: {
     loaders: [

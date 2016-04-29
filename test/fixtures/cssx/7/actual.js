@@ -3,8 +3,8 @@ module.exports = function (cssx) {
     return 'omg';
   };
   (function () {
-    cssx.add(getSelector, {
-      'margin': '10px'
-    });
+    var s = {};
+    s[getSelector()] = { margin: '10px'};
+    cssx.add(s);
   }).apply(this);
 };

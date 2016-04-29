@@ -10,7 +10,7 @@ function letItSnow(bgColor) {
         url("./site/imgs/s1.png"),
         url("./site/imgs/s2.png"),
         url("./site/imgs/s3.png");
-      (wmo)animation: snow 10s linear infinite;
+      animation: snow 10s linear infinite;
     }
   </style>);
 };

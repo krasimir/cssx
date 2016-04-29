@@ -1,17 +1,25 @@
-var isArray = require('./helpers/isArray');
-
-module.exports = function CSSRule(selector, props) {
+module.exports = function CSSRule(selector, props, stylesheet) {
   var _api = {
-    index: null,
-    stylesheet: null,
     selector: selector,
     props: props,
+    stylesheet: stylesheet,
+    index: null,
     nestedRules: null,
     parent: null
   };
 
+  _api.clone = function () {
+    var rule = CSSRule(this.selector, this.props, this.stylesheet);
+
+    rule.index = this.index;
+    rule.nestedRules = this.nestedRules;
+    rule.parent = this.parent;
+
+    return rule;
+  };
+
   _api.descendant = _api.d = function (rawRules) {
-    var selector, tmp, newRule;
+    var selector;
 
     if (typeof rawRules === 'function') rawRules = rawRules();
 
@@ -20,16 +28,18 @@ module.exports = function CSSRule(selector, props) {
       delete rawRules[selector];
     }
     return _api.stylesheet.add(rawRules, this.parent, this.index);
-  }
+  };
   _api.nested = _api.n = function (rawRules) {
-    return _api.stylesheet.add(rawRules, this.parent);
+    return _api.stylesheet.add(rawRules, this);
   };
   _api.update = function (props) {
-    var prop, selector, areThereNestedRules = this.nestedRules !== null;
+    var prop, areThereNestedRules = this.nestedRules !== null;
 
     if (typeof props === 'function') {
       props = props();
     }
+
+    props = this.stylesheet.resolveCustomProps(props);
 
     for (prop in props) {
       if (typeof props[prop] !== 'object') {
@@ -41,12 +51,12 @@ module.exports = function CSSRule(selector, props) {
       }
     }
     return this;
-  }
+  };
   _api.registerNested = function (rule) {
     if (this.nestedRules === null) this.nestedRules = {};
     this.nestedRules[rule.selector] = rule;
     return this;
-  }
+  };
 
   return _api;
 };

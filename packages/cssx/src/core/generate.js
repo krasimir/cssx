@@ -1,18 +1,5 @@
 var isEmpty = require('../helpers/isEmpty');
-var resolveSelector = require('../helpers/resolveSelector');
-var prefix = require('../helpers/prefix');
 var isArray = require('../helpers/isArray');
-
-var hasRules = function (rule) {
-  var prop;
-
-  for (prop in rule.props) {
-    if (rule.props.hasOwnProperty(prop)) {
-      return true;
-    }
-  }
-  return false;
-};
 
 module.exports = function (topRules, minify, plugins, scope) {
   var scopeTheSelector = function (selector) {
@@ -28,32 +15,38 @@ module.exports = function (topRules, minify, plugins, scope) {
     }
     return props;
   };
-  
-  var areThereAnyPlugins = plugins && plugins.length > 0, sel, nestedRules;
+
   var newLine = minify ? '' : '\n';
   var interval = minify ? '' : ' ';
   var tab = minify ? '' : '  ';
 
   var process = function (rules, indent) {
-    var css = '', r, prop, props;
-    var addLine = function (line) {
-      css += line + newLine;
-    }
+    var css = '', r, prop, props, value;
+    var addLine = function (line, noNewLine) {
+      css += line + (noNewLine ? '' : newLine);
+    };
     var processRule = function (rule) {
-      if (hasRules(rule) || rule.nestedRules !== null) {
+      if (!isEmpty(rule.props) || rule.nestedRules !== null) {
         addLine(indent + scopeTheSelector(rule.selector) + interval + '{');
         props = applyPlugins(rule.props);
         for (prop in props) {
-          addLine(indent + tab + prop + ':' + interval + props[prop] + ';');
+          value = typeof props[prop] === 'function' ? props[prop]() : props[prop];
+          if (isArray(value)) {
+            value.forEach(function (v) {
+              addLine(indent + tab + prop + ':' + interval + v + ';');
+            });
+          } else {
+            addLine(indent + tab + prop + ':' + interval + value + ';');
+          }
         }
         if (rule.nestedRules !== null) {
-          addLine(indent + process(rule.nestedRules, indent + tab));
+          addLine(process(rule.nestedRules, indent + tab), true);
         }
         addLine(indent + '}');
       }
-    }
+    };
 
-    indent = minify ? indent : '';
+    indent = minify ? '' : indent;
 
     if (isArray(rules)) {
       rules.forEach(processRule);
@@ -64,6 +57,7 @@ module.exports = function (topRules, minify, plugins, scope) {
     };
 
     return css;
-  }
+  };
+
   return process(topRules, '');
 };

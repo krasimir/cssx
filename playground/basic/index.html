@@ -23,10 +23,10 @@
     var updateStyles = function () {
       var stylesheet = cssx('my-styles');
       var body = stylesheet.add('body');
-      var h1 = body.descendant('h1', { 'color': h1Color });
+      var h1 = body.descendant({'h1': { 'color': h1Color }});
 
-      h1.descendant('small', { 'font-size': '0.3em' });
-      stylesheet.add('#colorize', { color: randomColor });
+      h1.descendant({ 'small': { 'font-size': '0.3em' }});
+      stylesheet.add({ '#colorize': { color: randomColor }});
 
       showGeneratedCSS();
     };

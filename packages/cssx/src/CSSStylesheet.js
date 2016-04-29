@@ -1,12 +1,9 @@
 var CSSRule = require('./CSSRule');
 var applyToDOM = require('./helpers/applyToDOM');
 var nextTick = require('./helpers/nextTick');
-var resolveSelector = require('./helpers/resolveSelector');
 var generate = require('./core/generate');
-var warning = require('./helpers/warning');
 var isArray = require('./helpers/isArray');
 
-var graphRulePropName = '__$__cssx_rule';
 var ids = 0;
 var getId = function () { return 'x' + (++ids); };
 
@@ -17,8 +14,6 @@ module.exports = function (id, plugins) {
   var _customProperties = {};
   var _remove = null;
   var _css = '';
-  var _graph = {};
-  var _queries = {};
   var _scope = '';
 
   var ruleExists = function (rules, selector, parent) {
@@ -26,17 +21,14 @@ module.exports = function (id, plugins) {
       if (result !== false) return result;
       if (rule.selector === selector) {
         if (parent) {
-          return parent.id === rule.parent.id ? rule : false;
-        } else {
-          return rule;
+          return rule.parent && parent.selector === rule.parent.selector ? rule : false;
         }
+        return rule;
       }
       return false;
     }, false);
   };
   var registerRule = function (rule, addAt) {
-    var tmp;
-
     if (typeof addAt !== 'undefined') {
       _rules.splice(addAt, 0, rule);
     } else {
@@ -49,8 +41,14 @@ module.exports = function (id, plugins) {
     return _id;
   };
   _api.add = _api.update = function (rawRules, parent, addAt) {
-    var rule, prop, tmpRawRules, cssProps, props, nestedRules;
+    var rule, prop, tmpRawRules, cssProps, props, nestedRules, selector, tmp;
     var created = [];
+
+    if (typeof rawRules === 'string') {
+      tmp = {};
+      tmp[rawRules] = {};
+      rawRules = tmp;
+    }
 
     if (typeof rawRules === 'function') {
       rawRules = rawRules();
@@ -64,23 +62,23 @@ module.exports = function (id, plugins) {
 
       // new rule
       if (!rule) {
-        rule = CSSRule(selector, cssProps);
-
         props = rawRules[selector];
         for (prop in props) {
-          if (typeof props[prop] !== 'object') {
+          if (typeof props[prop] !== 'object' || isArray(props[prop])) {
             cssProps[prop] = props[prop];
           } else {
             tmpRawRules = {};
             tmpRawRules[prop] = props[prop];
             nestedRules.push(tmpRawRules);
           }
-        }  
+        }
 
-        rule.stylesheet = _api;
+        rule = CSSRule(selector, this.resolveCustomProps(cssProps), _api);
+
         if (!parent) {
           registerRule(rule, addAt);
         } else {
+          rule.parent = parent;
           parent.registerNested(rule);
         }
         nestedRules.forEach(function (rawRulesNested) {
@@ -133,38 +131,6 @@ module.exports = function (id, plugins) {
     this.compileImmediate();
     return _css;
   };
-  _api.query = function (selector) {
-    var rule;
-
-    selector = resolveSelector(selector);
-
-    if (_queries[selector]) return _queries[selector];
-    (function find(node) {
-      var sel;
-
-      if (!rule) {
-        for (sel in node) {
-          if (sel === selector && sel !== graphRulePropName) {
-            rule = node[selector][graphRulePropName];
-            break;
-          } else {
-            if (typeof node[sel][graphRulePropName] !== 'undefined') {
-              find(node[sel]);
-            }
-          }
-        }
-      }
-    })(_graph);
-
-    if (rule) {
-      _queries[selector] = rule;
-    }
-
-    return rule;
-  };
-  _api.graph = function () {
-    return _graph;
-  };
   _api.define = function (prop, func) {
     _customProperties[prop] = func;
   };
@@ -173,6 +139,21 @@ module.exports = function (id, plugins) {
   };
   _api._getCustomProps = function () {
     return _customProperties;
+  };
+  _api.resolveCustomProps = function (actual) {
+    var result = actual, prop, newProp, value;
+    var custom = _customProperties;
+
+    for (prop in custom) {
+      if (typeof actual[prop] !== 'undefined') {
+        value = custom[prop](actual[prop]);
+        delete actual[prop];
+        for (newProp in value) {
+          actual[newProp] = value[newProp];
+        }
+      }
+    }
+    return result;
   };
 
   return _api;

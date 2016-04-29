@@ -59,8 +59,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	__webpack_require__(1);
 	
 	factory = __webpack_require__(5);
-	goGlobal = __webpack_require__(18);
-	randomId = __webpack_require__(19);
+	goGlobal = __webpack_require__(15);
+	randomId = __webpack_require__(16);
 	
 	stylesheets = [];
 	
@@ -331,14 +331,11 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var CSSRule = __webpack_require__(6);
-	var applyToDOM = __webpack_require__(8);
-	var nextTick = __webpack_require__(9);
-	var resolveSelector = __webpack_require__(13);
-	var generate = __webpack_require__(14);
-	var warning = __webpack_require__(17);
-	var isArray = __webpack_require__(7);
+	var applyToDOM = __webpack_require__(7);
+	var nextTick = __webpack_require__(8);
+	var generate = __webpack_require__(12);
+	var isArray = __webpack_require__(14);
 	
-	var graphRulePropName = '__$__cssx_rule';
 	var ids = 0;
 	var getId = function () { return 'x' + (++ids); };
 	
@@ -349,8 +346,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  var _customProperties = {};
 	  var _remove = null;
 	  var _css = '';
-	  var _graph = {};
-	  var _queries = {};
 	  var _scope = '';
 	
 	  var ruleExists = function (rules, selector, parent) {
@@ -358,17 +353,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (result !== false) return result;
 	      if (rule.selector === selector) {
 	        if (parent) {
-	          return parent.id === rule.parent.id ? rule : false;
-	        } else {
-	          return rule;
+	          return rule.parent && parent.selector === rule.parent.selector ? rule : false;
 	        }
+	        return rule;
 	      }
 	      return false;
 	    }, false);
 	  };
 	  var registerRule = function (rule, addAt) {
-	    var tmp;
-	
 	    if (typeof addAt !== 'undefined') {
 	      _rules.splice(addAt, 0, rule);
 	    } else {
@@ -381,8 +373,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return _id;
 	  };
 	  _api.add = _api.update = function (rawRules, parent, addAt) {
-	    var rule, prop, tmpRawRules, cssProps, props, nestedRules;
+	    var rule, prop, tmpRawRules, cssProps, props, nestedRules, selector, tmp;
 	    var created = [];
+	
+	    if (typeof rawRules === 'string') {
+	      tmp = {};
+	      tmp[rawRules] = {};
+	      rawRules = tmp;
+	    }
 	
 	    if (typeof rawRules === 'function') {
 	      rawRules = rawRules();
@@ -396,23 +394,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      // new rule
 	      if (!rule) {
-	        rule = CSSRule(selector, cssProps);
-	
 	        props = rawRules[selector];
 	        for (prop in props) {
-	          if (typeof props[prop] !== 'object') {
+	          if (typeof props[prop] !== 'object' || isArray(props[prop])) {
 	            cssProps[prop] = props[prop];
 	          } else {
 	            tmpRawRules = {};
 	            tmpRawRules[prop] = props[prop];
 	            nestedRules.push(tmpRawRules);
 	          }
-	        }  
+	        }
 	
-	        rule.stylesheet = _api;
+	        rule = CSSRule(selector, this.resolveCustomProps(cssProps), _api);
+	
 	        if (!parent) {
 	          registerRule(rule, addAt);
 	        } else {
+	          rule.parent = parent;
 	          parent.registerNested(rule);
 	        }
 	        nestedRules.forEach(function (rawRulesNested) {
@@ -465,38 +463,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.compileImmediate();
 	    return _css;
 	  };
-	  _api.query = function (selector) {
-	    var rule;
-	
-	    selector = resolveSelector(selector);
-	
-	    if (_queries[selector]) return _queries[selector];
-	    (function find(node) {
-	      var sel;
-	
-	      if (!rule) {
-	        for (sel in node) {
-	          if (sel === selector && sel !== graphRulePropName) {
-	            rule = node[selector][graphRulePropName];
-	            break;
-	          } else {
-	            if (typeof node[sel][graphRulePropName] !== 'undefined') {
-	              find(node[sel]);
-	            }
-	          }
-	        }
-	      }
-	    })(_graph);
-	
-	    if (rule) {
-	      _queries[selector] = rule;
-	    }
-	
-	    return rule;
-	  };
-	  _api.graph = function () {
-	    return _graph;
-	  };
 	  _api.define = function (prop, func) {
 	    _customProperties[prop] = func;
 	  };
@@ -505,6 +471,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	  };
 	  _api._getCustomProps = function () {
 	    return _customProperties;
+	  };
+	  _api.resolveCustomProps = function (actual) {
+	    var result = actual, prop, newProp, value;
+	    var custom = _customProperties;
+	
+	    for (prop in custom) {
+	      if (typeof actual[prop] !== 'undefined') {
+	        value = custom[prop](actual[prop]);
+	        delete actual[prop];
+	        for (newProp in value) {
+	          actual[newProp] = value[newProp];
+	        }
+	      }
+	    }
+	    return result;
 	  };
 	
 	  return _api;
@@ -517,22 +498,30 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 6 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ function(module, exports) {
 
-	var isArray = __webpack_require__(7);
-	
-	module.exports = function CSSRule(selector, props) {
+	module.exports = function CSSRule(selector, props, stylesheet) {
 	  var _api = {
-	    index: null,
-	    stylesheet: null,
 	    selector: selector,
 	    props: props,
+	    stylesheet: stylesheet,
+	    index: null,
 	    nestedRules: null,
 	    parent: null
 	  };
 	
+	  _api.clone = function () {
+	    var rule = CSSRule(this.selector, this.props, this.stylesheet);
+	
+	    rule.index = this.index;
+	    rule.nestedRules = this.nestedRules;
+	    rule.parent = this.parent;
+	
+	    return rule;
+	  };
+	
 	  _api.descendant = _api.d = function (rawRules) {
-	    var selector, tmp, newRule;
+	    var selector;
 	
 	    if (typeof rawRules === 'function') rawRules = rawRules();
 	
@@ -541,16 +530,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	      delete rawRules[selector];
 	    }
 	    return _api.stylesheet.add(rawRules, this.parent, this.index);
-	  }
+	  };
 	  _api.nested = _api.n = function (rawRules) {
-	    return _api.stylesheet.add(rawRules, this.parent);
+	    return _api.stylesheet.add(rawRules, this);
 	  };
 	  _api.update = function (props) {
-	    var prop, selector, areThereNestedRules = this.nestedRules !== null;
+	    var prop, areThereNestedRules = this.nestedRules !== null;
 	
 	    if (typeof props === 'function') {
 	      props = props();
 	    }
+	
+	    props = this.stylesheet.resolveCustomProps(props);
 	
 	    for (prop in props) {
 	      if (typeof props[prop] !== 'object') {
@@ -562,12 +553,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	    return this;
-	  }
+	  };
 	  _api.registerNested = function (rule) {
 	    if (this.nestedRules === null) this.nestedRules = {};
 	    this.nestedRules[rule.selector] = rule;
 	    return this;
-	  }
+	  };
 	
 	  return _api;
 	};
@@ -575,15 +566,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 7 */
-/***/ function(module, exports) {
-
-	module.exports = function (v) {
-	  return Object.prototype.toString.call(v) === '[object Array]';
-	};
-
-
-/***/ },
-/* 8 */
 /***/ function(module, exports) {
 
 	var cache = {};
@@ -637,12 +619,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 9 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {var cache = {};
 	
-	__webpack_require__(12);
+	__webpack_require__(11);
 	
 	module.exports = function (work, id) {
 	  if (!cache[id]) {
@@ -654,13 +636,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	};
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate))
 
 /***/ },
-/* 10 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(11).nextTick;
+	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(10).nextTick;
 	var apply = Function.prototype.apply;
 	var slice = Array.prototype.slice;
 	var immediateIds = {};
@@ -736,10 +718,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).setImmediate, __webpack_require__(10).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate, __webpack_require__(9).clearImmediate))
 
 /***/ },
-/* 11 */
+/* 10 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -836,7 +818,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 12 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, clearImmediate, process) {(function (global, undefined) {
@@ -1015,36 +997,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    attachTo.clearImmediate = clearImmediate;
 	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(10).clearImmediate, __webpack_require__(11)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(9).clearImmediate, __webpack_require__(10)))
 
 /***/ },
-/* 13 */
-/***/ function(module, exports) {
-
-	module.exports = function (selector) {
-	  return typeof selector === 'function' ? selector() : selector;
-	};
-
-
-/***/ },
-/* 14 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isEmpty = __webpack_require__(15);
-	var resolveSelector = __webpack_require__(13);
-	var prefix = __webpack_require__(16);
-	var isArray = __webpack_require__(7);
-	
-	var hasRules = function (rule) {
-	  var prop;
-	
-	  for (prop in rule.props) {
-	    if (rule.props.hasOwnProperty(prop)) {
-	      return true;
-	    }
-	  }
-	  return false;
-	};
+	var isEmpty = __webpack_require__(13);
+	var isArray = __webpack_require__(14);
 	
 	module.exports = function (topRules, minify, plugins, scope) {
 	  var scopeTheSelector = function (selector) {
@@ -1060,32 +1020,38 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    return props;
 	  };
-	  
-	  var areThereAnyPlugins = plugins && plugins.length > 0, sel, nestedRules;
+	
 	  var newLine = minify ? '' : '\n';
 	  var interval = minify ? '' : ' ';
 	  var tab = minify ? '' : '  ';
 	
 	  var process = function (rules, indent) {
-	    var css = '', r, prop, props;
-	    var addLine = function (line) {
-	      css += line + newLine;
-	    }
+	    var css = '', r, prop, props, value;
+	    var addLine = function (line, noNewLine) {
+	      css += line + (noNewLine ? '' : newLine);
+	    };
 	    var processRule = function (rule) {
-	      if (hasRules(rule) || rule.nestedRules !== null) {
+	      if (!isEmpty(rule.props) || rule.nestedRules !== null) {
 	        addLine(indent + scopeTheSelector(rule.selector) + interval + '{');
 	        props = applyPlugins(rule.props);
 	        for (prop in props) {
-	          addLine(indent + tab + prop + ':' + interval + props[prop] + ';');
+	          value = typeof props[prop] === 'function' ? props[prop]() : props[prop];
+	          if (isArray(value)) {
+	            value.forEach(function (v) {
+	              addLine(indent + tab + prop + ':' + interval + v + ';');
+	            });
+	          } else {
+	            addLine(indent + tab + prop + ':' + interval + value + ';');
+	          }
 	        }
 	        if (rule.nestedRules !== null) {
-	          addLine(indent + process(rule.nestedRules, indent + tab));
+	          addLine(process(rule.nestedRules, indent + tab), true);
 	        }
 	        addLine(indent + '}');
 	      }
-	    }
+	    };
 	
-	    indent = minify ? indent : '';
+	    indent = minify ? '' : indent;
 	
 	    if (isArray(rules)) {
 	      rules.forEach(processRule);
@@ -1096,13 +1062,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	
 	    return css;
-	  }
+	  };
+	
 	  return process(topRules, '');
 	};
 
 
 /***/ },
-/* 15 */
+/* 13 */
 /***/ function(module, exports) {
 
 	module.exports = function (obj) {
@@ -1118,88 +1085,16 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var resolveSelector = __webpack_require__(13);
-	var SELECTORS = {
-	  '@keyframes': [
-	    '@-webkit-keyframes',
-	    '@-moz-keyframes',
-	    '@-o-keyframes'
-	  ]
-	};
-	var prefixProperty = function (list) {
-	  return list.split('').map(function (ch) {
-	    if (ch === 's') return '-ms-'; // Microsoft
-	    if (ch === 'z') return 'mso- '; // icrosoft Office
-	    if (ch === 'm') return '-moz-'; // Mozilla Foundation (Gecko-based browsers)
-	    if (ch === 'o') return '-o-'; //  -xv- Opera Software
-	    if (ch === 't') return '-atsc-'; // Advanced Television Standards Committee
-	    if (ch === 'p') return '-wap-'; // The WAP Forum
-	    if (ch === 'w') return '-webkit-'; // Safari, Chrome (and other WebKit-based browsers)
-	    if (ch === 'k') return '-khtml-'; // Konqueror browser
-	    if (ch === 'a') return '-apple-'; // Webkit supports properties using the -apple- prefixes as well
-	    if (ch === 'e') return 'prince- '; // esLogic
-	    if (ch === 'n') return '-ah-'; // Antenna House
-	    if (ch === 'h') return '-hp-'; // Hewlett Packard
-	    if (ch === 'r') return '-ro-'; // Real Objects
-	    if (ch === 'i') return '-rim-'; // Research In Motion
-	    if (ch === 'c') return '-tc-'; // Tall Components
-	    return [];
-	  });
-	};
-	
-	module.exports = {
-	  selector: function (rules) {
-	    var result = [], keyword, newRule, sel;
-	
-	    rules.forEach(function (rule) {
-	      sel = resolveSelector(rule.selector);
-	      result.push(rule);
-	      if (sel) keyword = resolveSelector(rule.selector).split(' ')[0];
-	      if (SELECTORS[keyword]) {
-	        SELECTORS[keyword].forEach(function (prefixed) {
-	          newRule = rule.clone();
-	          newRule.selector = rule.selector.replace(keyword, prefixed);
-	          result.push(newRule);
-	        });
-	      }
-	    });
-	    return result;
-	  },
-	  property: function (props) {
-	    var prop, match, cleanProp;
-	
-	    for (prop in props) {
-	      match = prop.match(/^\(([szmotpwkaenhric]+)\)/);
-	      if (match) {
-	        cleanProp = prop.replace(match[0], '');
-	        props[cleanProp] = props[prop];
-	        prefixProperty(match[1]).forEach(function (prefix) {
-	          props[prefix + cleanProp] = props[prop];
-	        });
-	        delete props[prop];
-	      }
-	    }
-	    return props;
-	  }
-	};
-
-
-/***/ },
-/* 17 */
+/* 14 */
 /***/ function(module, exports) {
 
-	module.exports = function (message) {
-	  if (typeof console !== 'undefined' && console.warn) {
-	    console.warn(message);
-	  }
+	module.exports = function (v) {
+	  return Object.prototype.toString.call(v) === '[object Array]';
 	};
 
 
 /***/ },
-/* 18 */
+/* 15 */
 /***/ function(module, exports) {
 
 	/* WEBPACK VAR INJECTION */(function(global) {module.exports = function (api) {
@@ -1214,7 +1109,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }())))
 
 /***/ },
-/* 19 */
+/* 16 */
 /***/ function(module, exports) {
 
 	var ids = 0;

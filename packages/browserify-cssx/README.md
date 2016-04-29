@@ -13,7 +13,6 @@ var browserify = require('browserify');
 var cssxTransform = require('../../packages/browserify-cssx');
 
 var CSSXTranspilerOptions = {
-  format: 'object',
   minify: false
 };
 

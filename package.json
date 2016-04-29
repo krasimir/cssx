@@ -2,7 +2,8 @@
   "description": "CSS in JavaScript",
   "scripts": {
     "test": "mocha --colors ./test/*.spec.js",
-    "test-watch": "mocha --colors -w ./test/*.spec.js --watch-extensions css",
+    "test-watch": "mocha --colors -w ./test/*.spec.js",
+    "test-watch-with-css": "mocha --colors -w ./test/*.spec.js --watch-extensions css",
     "test-debug": "mocha debug ./test/*.spec.js",
     "dev": "webpack --progress --colors --watch --mode=dev",
     "make": "webpack --mode=dev && webpack --mode=build && npm run test",

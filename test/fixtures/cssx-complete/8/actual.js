@@ -1,6 +1,6 @@
 var sheet = <style></style>;
 
-var scope = sheet.add('#something');
+var scope = sheet.add({ '#something': {}});
 
 scope.d(
   <style>

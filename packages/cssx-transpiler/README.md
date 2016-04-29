@@ -1,6 +1,6 @@
 # CSSX-Transpiler
 
-> Transpile `<style>` tags to valid JavaScript
+> Transpile `<style>` tags to valid JavaScript.
 
 ---
 
@@ -16,7 +16,7 @@
 var cssxTranspiler = require('cssx-transpiler');
 
 var code = require('fs').readFileSync('./file.js', { encoding: 'utf8' }).toString();
-/* let's say that code =
+/* let's say that the file contains =
 
   var styles = function (margin) {
     return <style>
@@ -35,10 +35,10 @@ console.log(transpiled);
 
   var styles = function (margin) {
     return (function () {
-      var _2 = {};
-      var _3 = {};
-      _3['padding'] = '0';
+      var _2 = {},
+          _3 = {};
       _3['margin'] = margin + "px";
+      _3['padding'] = '0';
       _2['body'] = _3;
       return _2;
     }.apply(this));
@@ -87,8 +87,8 @@ is transformed to
 ```json
 {
   ".container": {
-    "padding": "20px",
-    "margin": "10px"
+    "margin": "10px",
+    "padding": "20px"
   }
 }
 ```
@@ -105,12 +105,34 @@ Nested styles like media queries:
 
 results to:
 
-```js
+```json
 {
   "@media (max-width: 450px)": {
     ".container": {
       "width": "100%"
     }
+  }
+}
+```
+
+The libraries deals with same name properties in the following way:
+
+```css
+body {
+  background: red;
+  background: url(../img/image.png);
+}
+```
+
+results to:
+
+```json
+{
+  "body": {
+    "background": [
+      "red",
+      "url(../img/image.png)"
+    ]
   }
 }
 ```
