@@ -16,7 +16,7 @@ Language:
 
 Integration with other tools:
 
-* [JSS](./playground/jss) or alternatively [CSSX client-side library](./packages/cssx) ([download](./packages/cssx/lib) or `npm i cssx`)
+* [JSS](https://github.com/jsstyles/jss) or alternatively [CSSX client-side library](./packages/cssx) ([download](./packages/cssx/lib) or `npm i cssx`)
 * [CSSX-transpiler](./packages/cssx-transpiler) ([download](./packages/cssx-transpiler/lib) or `npm i cssx-transpiler`)
 * [CSSX-CLI](./packages/cssx-cli) (`npm i cssx-cli -g`)
 * [Gulp plugin](./packages/gulp-cssx) (`npm i gulp-cssx -D`)
