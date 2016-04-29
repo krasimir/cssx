@@ -77,52 +77,30 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	
 	exports.default = function () {
-	  var _22 = {},
-	      _23 = {},
-	      _24 = {},
-	      _25 = {},
-	      _26 = {},
-	      _27 = {},
-	      _28 = {};
-	  _23['background'] = 'blue';
-	  _24['&:hover'] = _23;
-	  _24['font-size'] = '12';
-	  _25['background'] = 'red';
-	  _26['&:hover'] = _25;
-	  _26['extend'] = 'button';
-	  _27['minWidth'] = '200';
-	  _28['button'] = _27;
-	  _22['button'] = _24;
-	  _22['ctaButton'] = _26;
-	  _22['@media (min-width: 1024px)'] = _28;
-	  return _22;
+	    var _1 = {},
+	        _2 = {},
+	        _3 = {},
+	        _4 = {},
+	        _5 = {},
+	        _6 = {},
+	        _7 = {};
+	    _2['background'] = 'blue';
+	    _3['&:hover'] = _2;
+	    _3['font-size'] = '12';
+	    _4['background'] = 'red';
+	    _5['&:hover'] = _4;
+	    _5['extend'] = 'button';
+	    _6['minWidth'] = '200';
+	    _7['button'] = _6;
+	    _1['button'] = _3;
+	    _1['ctaButton'] = _5;
+	    _1['@media (min-width: 1024px)'] = _7;
+	    return _1;
 	}.apply(undefined);
-	
-	/*
-	export default {
-	  button: {
-	    fontSize: 12,
-	    '&:hover': {
-	      background: 'blue'
-	    }
-	  },
-	  ctaButton: {
-	    extend: 'button',
-	    '&:hover': {
-	      background: 'red'
-	    }
-	  },
-	  '@media (min-width: 1024px)': {
-	    button: {
-	      minWidth: 200
-	    }
-	  }
-	}
-	*/
 
 /***/ },
 /* 2 */
