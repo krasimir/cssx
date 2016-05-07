@@ -66,7 +66,7 @@ System.register('lib/index.js', ['lib/styles.js!cssx.js'], function (_export) {
 //# sourceMappingURL=build.js.map
 ```
 
-So every file that contains CSSX code should be processed by a plugin. For example:
+So, every file that contains CSSX code should be processed by a plugin. For example:
 
 ```
 import styles from './styles.js!cssx';
