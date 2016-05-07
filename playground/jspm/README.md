@@ -65,3 +65,23 @@ System.register('lib/index.js', ['lib/styles.js!cssx.js'], function (_export) {
 });
 //# sourceMappingURL=build.js.map
 ```
+
+So every file that contains CSSX code should be processed by a plugin. For example:
+
+```
+import styles from './styles.js!cssx';
+```
+*(Notice the `!cssx` at the end of the import)*
+
+The plugin is really simple. It's a file in the main project directory
+
+```js
+// cssx.js
+var cssxTranspiler = require('./vendor/cssx-transpiler');
+
+exports.translate = function (load) {
+  return cssxTranspiler(load.source);
+};
+```
+
+and `vendor/cssx-transpiler` is a direct copy of [`cssx-transpiler.js`](https://github.com/krasimir/cssx/tree/master/packages/cssx-transpiler) file.
