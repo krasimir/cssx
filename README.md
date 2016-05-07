@@ -23,6 +23,7 @@ Integration with other tools:
 * [Webpack loader](./packages/cssx-loader) (`npm i cssx-loader -D`)
 * [Browserify transform](./packages/browserify-cssx) (`npm i browserify-cssx -D`)
 * [CSSX component for React](https://github.com/krasimir/react-cssx)
+* [jspm integration](./playground/jspm)
 
 Plugins:
 
@@ -40,6 +41,7 @@ Examples:
 * [Using with jss](./playground/jss)
 * [(at build time) CSSX together with PostCSS and Autoprefixer](./playground/postcss)
 * [(at runtime in a browser) CSSX together with PostCSS and a plugin](./playground/postcss-in-browser)
+* [Bundling with jspm](./playground/jspm)
 
 ---
 
