@@ -81,41 +81,43 @@
 	});
 	
 	exports.default = function () {
-	    var _92 = {},
-	        _93 = {},
-	        _94 = {},
-	        _95 = {},
-	        _96 = {},
-	        _97 = {},
-	        _98 = {},
-	        _99 = {},
-	        _100 = {},
-	        _101 = {};
-	    _93['font-family'] = '\'Raleway\'';
-	    _93['font-style'] = 'normal';
-	    _93['font-weight'] = '400';
-	    _93['src'] = 'local(\'Raleway\'), local(\'Raleway-Regular\'), url(https://fonts.gstatic.com/s/raleway/v10/YZaO6llzOP57DpTBv2GnyFKPGs1ZzpMvnHX-7fPOuAc.woff2) format(\'woff2\')';
-	    _94['font-family'] = '\'Lobster\'';
-	    _94['font-style'] = 'normal';
-	    _94['font-weight'] = '400';
-	    _94['src'] = 'local(\'Lobster\'), local(\'Lobster-Regular\'), url(https://fonts.gstatic.com/s/lobster/v16/MeFZ5NpSE1j8mC06Jh1miFKPGs1ZzpMvnHX-7fPOuAc.woff2) format(\'woff2\')';
-	    _95['background'] = 'blue';
-	    _96['&:hover'] = _95;
-	    _96['font-family'] = '\'Raleway\'';
-	    _96['font-size'] = '12px';
-	    _97['background'] = 'red';
-	    _98['&:hover'] = _97;
-	    _98['extend'] = 'button';
-	    _99['font-family'] = '\'Lobster\'';
-	    _100['button'] = _99;
-	    _101['font-family'] = '\'Lobster\'';
-	    _101['font-size'] = '20px';
-	    _92['@font-face'] = [_93, _94];
-	    _92['button'] = _96;
-	    _92['ctaButton'] = _98;
-	    _92['@media (max-width: 800px)'] = _100;
-	    _92['p'] = _101;
-	    return _92;
+	    var _1 = {},
+	        _2 = {},
+	        _3 = {},
+	        _4 = {},
+	        _5 = {},
+	        _6 = {},
+	        _7 = {},
+	        _8 = {},
+	        _9 = {},
+	        _10 = {};
+	    _2['font-family'] = '\'Raleway\'';
+	    _2['font-style'] = 'normal';
+	    _2['font-weight'] = '400';
+	    _2['src'] = 'url(https://fonts.gstatic.com/s/raleway/v10/YZaO6llzOP57DpTBv2GnyFKPGs1ZzpMvnHX-7fPOuAc.woff2) format(\'woff2\')';
+	    _2['unicode-range'] = 'U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF';
+	    _3['font-family'] = '\'Lobster\'';
+	    _3['font-style'] = 'normal';
+	    _3['font-weight'] = '400';
+	    _3['src'] = 'url(https://fonts.gstatic.com/s/lobster/v16/MeFZ5NpSE1j8mC06Jh1miFKPGs1ZzpMvnHX-7fPOuAc.woff2) format(\'woff2\')';
+	    _3['unicode-range'] = 'U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116';
+	    _4['background'] = 'blue';
+	    _5['&:hover'] = _4;
+	    _5['font-family'] = '\'Raleway\'';
+	    _5['font-size'] = '12px';
+	    _6['background'] = 'red';
+	    _7['&:hover'] = _6;
+	    _7['extend'] = 'button';
+	    _8['font-family'] = '\'Lobster\'';
+	    _9['button'] = _8;
+	    _10['font-family'] = '\'Lobster\'';
+	    _10['font-size'] = '20px';
+	    _1['@font-face'] = [_2, _3];
+	    _1['button'] = _5;
+	    _1['ctaButton'] = _7;
+	    _1['@media (max-width: 800px)'] = _9;
+	    _1['p'] = _10;
+	    return _1;
 	}.apply(undefined);
 
 /***/ },
