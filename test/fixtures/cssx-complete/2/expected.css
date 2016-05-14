@@ -503,7 +503,7 @@ body {
 }
 @media (min-width:40rem) {
   .a-diabetesCircle {
-    opacity: .3;
+    opacity: 0.3;
   }
   .a-diabetesHeading {
     text-align: left;
@@ -1099,7 +1099,7 @@ input[type=text],input[type=tel],input[type=url],input[type=email],input[type=pa
   box-shadow: 0 1px 3px -2px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);
 }
 .c-button.is-disabled,.c-button:disabled {
-  opacity: .6;
+  opacity: 0.6;
   box-shadow: 0 3px 6px -4px rgba(0,0,0,.16),0 3px 6px rgba(0,0,0,.23);
   cursor: not-allowed;
 }
@@ -1951,7 +1951,7 @@ input[type=text],input[type=tel],input[type=url],input[type=email],input[type=pa
   left: -110%;
   right: 0;
   margin: auto;
-  opacity: .2;
+  opacity: 0.2;
   max-width: none;
   width: 320%;
   height: auto;

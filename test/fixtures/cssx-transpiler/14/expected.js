@@ -18,7 +18,7 @@ sheet.add((function () {
       _7 = {};
   _6['font-size'] = '10px';
   _6['line-height'] = '12px';
-  _7['margin'] = '0';
+  _7['margin'] = 0;
   _7['padding'] = '2em';
   _5['p'] = _6;
   _5['ul > foo'] = _7;

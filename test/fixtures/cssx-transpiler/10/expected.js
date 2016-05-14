@@ -15,8 +15,8 @@
   _5['transform'] = 'translateX(-10px) rotateY(-2deg)';
   _6['transform'] = 'translateX(4px) rotateY(1deg)';
   _7['transform'] = 'translateX(0)';
-  _8['a'] = '1';
-  _9['b'] = '2';
+  _8['a'] = 1;
+  _9['b'] = 2;
   _10['0%'] = _2;
   _10['12.5%'] = _3;
   _10['37.5%'] = _4;

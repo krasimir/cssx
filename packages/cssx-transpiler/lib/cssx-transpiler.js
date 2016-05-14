@@ -49209,12 +49209,22 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 427 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
+	var t = __webpack_require__(42);
+	
+	var isNumeric = function (num) {
+	  return !isNaN(num);
+	};
+	
 	module.exports = {
 	  enter: function (node, parent, index) {},
 	  exit: function (node, parent, index) {
-	    parent[index] = { key: node.label, value: node.body };
+	    if (isNumeric(node.body.value)) {
+	      parent[index] = { key: node.label, value: t.numericLiteral(Number(node.body.value)) };
+	    } else {
+	      parent[index] = { key: node.label, value: node.body };
+	    }
 	  }
 	};
 
