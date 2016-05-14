@@ -73,6 +73,7 @@ module.exports = {
     var funcCallExpr;
     var result;
     var options = this.options;
+    var rulesBuffer;
 
     var isASingleObject = objectLiterals.length >= 1 &&
       (typeof objectLiterals[0].selector === 'object' ?
@@ -119,6 +120,32 @@ module.exports = {
       }
       return line;
     });
+
+    // checking for duplicated selectors (like multiple @font-face for example)
+    rulesBuffer = {};
+    rulesRegistration = rulesRegistration.reduce(function (result, current) {
+      var name;
+
+      if (current.expression && current.expression.left) {
+        name = current.expression.left.property.value;
+        if (name && rulesBuffer[name]) {
+          if (result[rulesBuffer[name].index].expression.right.type === 'ArrayExpression') {
+            result[rulesBuffer[name].index].expression.right.elements.push(
+              t.identifier(current.expression.right.name)
+            );
+          } else {
+            result[rulesBuffer[name].index].expression.right = t.arrayExpression([
+              t.identifier(rulesBuffer[name].rule.expression.right.name),
+              t.identifier(current.expression.right.name)
+            ]);
+          }
+        } else {
+          rulesBuffer[name] = { index: result.length, rule: current };
+          result.push(current);
+        }
+      }
+      return result;
+    }, []);
 
     // putting the variables in one line
     variables = t.variableDeclaration('var', variables.map(function (v) {

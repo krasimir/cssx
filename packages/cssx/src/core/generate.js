@@ -26,6 +26,7 @@ module.exports = function (topRules, minify, plugins, scope) {
       css += line + (noNewLine ? '' : newLine);
     };
     var processRule = function (rule) {
+      // console.log(rule);
       if (!isEmpty(rule.props) || rule.nestedRules !== null) {
         addLine(indent + scopeTheSelector(rule.selector) + interval + '{');
         props = applyPlugins(rule.props);
@@ -39,7 +40,7 @@ module.exports = function (topRules, minify, plugins, scope) {
             addLine(indent + tab + prop + ':' + interval + value + ';');
           }
         }
-        if (rule.nestedRules !== null) {
+        if (rule.nestedRules) {
           addLine(process(rule.nestedRules, indent + tab), true);
         }
         addLine(indent + '}');
@@ -47,12 +48,15 @@ module.exports = function (topRules, minify, plugins, scope) {
     };
 
     indent = minify ? '' : indent;
-
     if (isArray(rules)) {
       rules.forEach(processRule);
     } else {
       for (r in rules) {
-        processRule(rules[r]);
+        if (isArray(rules[r])) {
+          rules[r].forEach(processRule);
+        } else {
+          processRule(rules[r]);
+        }
       }
     };
 

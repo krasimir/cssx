@@ -36,11 +36,19 @@ module.exports = function (id, plugins) {
     }
     rule.index = _rules.length - 1;
   };
+  var isNested = function (obj) {
+    if (typeof obj !== 'object') {
+      return true;
+    } else if (isArray(obj)) {
+      return typeof obj[0] === 'string';
+    }
+    return false;
+  };
 
   _api.id = function () {
     return _id;
   };
-  _api.add = _api.update = function (rawRules, parent, addAt) {
+  _api.add = _api.update = function (rawRules, parent, addAt, considerAsNew) {
     var rule, prop, tmpRawRules, cssProps, props, nestedRules, selector, tmp;
     var created = [];
 
@@ -55,43 +63,51 @@ module.exports = function (id, plugins) {
     }
 
     for (selector in rawRules) {
-      rule = ruleExists(_rules, selector, parent);
-      cssProps = {};
-      props = {};
-      nestedRules = [];
-
-      // new rule
-      if (!rule) {
-        props = rawRules[selector];
-        for (prop in props) {
-          if (typeof props[prop] !== 'object' || isArray(props[prop])) {
-            cssProps[prop] = props[prop];
-          } else {
-            tmpRawRules = {};
-            tmpRawRules[prop] = props[prop];
-            nestedRules.push(tmpRawRules);
-          }
-        }
-
-        rule = CSSRule(selector, this.resolveCustomProps(cssProps), _api);
-
-        if (!parent) {
-          registerRule(rule, addAt);
-        } else {
-          rule.parent = parent;
-          parent.registerNested(rule);
-        }
-        nestedRules.forEach(function (rawRulesNested) {
-          _api.add(rawRulesNested, rule);
+      if (isArray(rawRules[selector])) {
+        rawRules[selector].forEach(function (r) {
+          tmp = {};
+          tmp[selector] = r;
+          _api.add(tmp, parent, undefined, true);
         });
-
-      // existing rule
       } else {
-        rule.update(rawRules[selector]);
-      }
+        rule = ruleExists(_rules, selector, parent);
+        cssProps = {};
+        props = {};
+        nestedRules = [];
 
-      this.compile();
-      created.push(rule);
+        // new rule
+        if (considerAsNew || !rule) {
+          props = rawRules[selector];
+          for (prop in props) {
+            if (isNested(props[prop])) {
+              cssProps[prop] = props[prop];
+            } else {
+              tmpRawRules = {};
+              tmpRawRules[prop] = props[prop];
+              nestedRules.push(tmpRawRules);
+            }
+          }
+
+          rule = CSSRule(selector, this.resolveCustomProps(cssProps), _api);
+
+          if (!parent) {
+            registerRule(rule, addAt);
+          } else {
+            rule.parent = parent;
+            parent.registerNested(rule);
+          }
+          nestedRules.forEach(function (rawRulesNested) {
+            _api.add(rawRulesNested, rule);
+          });
+
+        // existing rule
+        } else {
+          rule.update(rawRules[selector]);
+        }
+
+        this.compile();
+        created.push(rule);
+      }
     }
 
     return created.length === 1 ? created[0] : created;

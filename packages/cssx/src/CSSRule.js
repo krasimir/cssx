@@ -1,3 +1,5 @@
+var isArray = require('./helpers/isArray');
+
 module.exports = function CSSRule(selector, props, stylesheet) {
   var _api = {
     selector: selector,
@@ -53,8 +55,21 @@ module.exports = function CSSRule(selector, props, stylesheet) {
     return this;
   };
   _api.registerNested = function (rule) {
+    var nestedRule;
+
     if (this.nestedRules === null) this.nestedRules = {};
-    this.nestedRules[rule.selector] = rule;
+
+    nestedRule = this.nestedRules[rule.selector];
+
+    if (nestedRule) {
+      if (isArray(nestedRule)) {
+        nestedRule.push(rule);
+      } else {
+        this.nestedRules[rule.selector] = [ nestedRule, rule ];
+      }
+    } else {
+      this.nestedRules[rule.selector] = rule;
+    }
     return this;
   };
 

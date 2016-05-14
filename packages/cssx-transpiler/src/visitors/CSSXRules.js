@@ -6,8 +6,11 @@ module.exports = {
   enter: function (node, parent, index, context) {},
   exit: function (node, parent, index, context) {
     var propAssignment, addToContext, processRule, key;
-    var rules = node.body, nested = node.nested || [], normalizedRules = {};
+    var rules = node.body;
+    var nestedGrouped = [];
+    var normalizedRules = {};
     var id = randomId();
+    var rulesBuffer, bufferItem, selector;
 
     addToContext = function (item) {
       if (context && context.addToCSSXSelfInvoke) {
@@ -39,7 +42,6 @@ module.exports = {
       [
         t.variableDeclarator(
           t.identifier(id),
-          // nested.length === 0 || options.format === 'object' ? t.objectExpression([]) : t.arrayExpression()
           t.objectExpression([])
         )
       ]
@@ -62,19 +64,52 @@ module.exports = {
     }, {});
 
     // processing nested rules (if any)
-    nested.forEach(function (cssxElementNode, index) {
-      addToContext(t.expressionStatement(
-        t.assignmentExpression(
-          '=',
-          t.memberExpression(
-            t.identifier(id),
-            t.stringLiteral(cssxElementNode.expression.left.property.value),
-            true
-          ),
-          t.identifier(cssxElementNode.expression.right.name)
-        )
-      ));
+    rulesBuffer = {};
+    (node.nested || []).forEach(function (cssxElementNode, index) {
+      selector = cssxElementNode.expression.left.property.value;
+      bufferItem = rulesBuffer[selector];
+      if (!bufferItem) {
+        rulesBuffer[selector] = { type: 'single', el: cssxElementNode };
+      } else {
+        if (bufferItem.type === 'single') {
+          rulesBuffer[selector] = { type: 'multiple', els: [ bufferItem.el, cssxElementNode ] };
+        } else {
+          bufferItem.els.push(cssxElementNode);
+        }
+      }
     });
+
+    for (selector in rulesBuffer) {
+      bufferItem = rulesBuffer[selector];
+      if (bufferItem.type === 'single') {
+        addToContext(t.expressionStatement(
+          t.assignmentExpression(
+            '=',
+            t.memberExpression(
+              t.identifier(id),
+              t.stringLiteral(selector),
+              true
+            ),
+            t.identifier(bufferItem.el.expression.right.name)
+          )
+        ));
+      } else {
+        nestedGrouped = bufferItem.els.map(function (bufferItem) {
+          return t.identifier(bufferItem.expression.right.name);
+        });
+        addToContext(t.expressionStatement(
+          t.assignmentExpression(
+            '=',
+            t.memberExpression(
+              t.identifier(id),
+              t.stringLiteral(selector),
+              true
+            ),
+            t.arrayExpression(nestedGrouped)
+          )
+        ));
+      }
+    }
 
     for (key in normalizedRules) {
       processRule(normalizedRules[key]);

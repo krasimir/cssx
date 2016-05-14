@@ -331,10 +331,10 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	var CSSRule = __webpack_require__(6);
-	var applyToDOM = __webpack_require__(7);
-	var nextTick = __webpack_require__(8);
-	var generate = __webpack_require__(12);
-	var isArray = __webpack_require__(14);
+	var applyToDOM = __webpack_require__(8);
+	var nextTick = __webpack_require__(9);
+	var generate = __webpack_require__(13);
+	var isArray = __webpack_require__(7);
 	
 	var ids = 0;
 	var getId = function () { return 'x' + (++ids); };
@@ -368,11 +368,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	    rule.index = _rules.length - 1;
 	  };
+	  var isNested = function (obj) {
+	    if (typeof obj !== 'object') {
+	      return true;
+	    } else if (isArray(obj)) {
+	      return typeof obj[0] === 'string';
+	    }
+	    return false;
+	  };
 	
 	  _api.id = function () {
 	    return _id;
 	  };
-	  _api.add = _api.update = function (rawRules, parent, addAt) {
+	  _api.add = _api.update = function (rawRules, parent, addAt, considerAsNew) {
 	    var rule, prop, tmpRawRules, cssProps, props, nestedRules, selector, tmp;
 	    var created = [];
 	
@@ -387,43 +395,51 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	
 	    for (selector in rawRules) {
-	      rule = ruleExists(_rules, selector, parent);
-	      cssProps = {};
-	      props = {};
-	      nestedRules = [];
-	
-	      // new rule
-	      if (!rule) {
-	        props = rawRules[selector];
-	        for (prop in props) {
-	          if (typeof props[prop] !== 'object' || isArray(props[prop])) {
-	            cssProps[prop] = props[prop];
-	          } else {
-	            tmpRawRules = {};
-	            tmpRawRules[prop] = props[prop];
-	            nestedRules.push(tmpRawRules);
-	          }
-	        }
-	
-	        rule = CSSRule(selector, this.resolveCustomProps(cssProps), _api);
-	
-	        if (!parent) {
-	          registerRule(rule, addAt);
-	        } else {
-	          rule.parent = parent;
-	          parent.registerNested(rule);
-	        }
-	        nestedRules.forEach(function (rawRulesNested) {
-	          _api.add(rawRulesNested, rule);
+	      if (isArray(rawRules[selector])) {
+	        rawRules[selector].forEach(function (r) {
+	          tmp = {};
+	          tmp[selector] = r;
+	          _api.add(tmp, parent, undefined, true);
 	        });
-	
-	      // existing rule
 	      } else {
-	        rule.update(rawRules[selector]);
-	      }
+	        rule = ruleExists(_rules, selector, parent);
+	        cssProps = {};
+	        props = {};
+	        nestedRules = [];
 	
-	      this.compile();
-	      created.push(rule);
+	        // new rule
+	        if (considerAsNew || !rule) {
+	          props = rawRules[selector];
+	          for (prop in props) {
+	            if (isNested(props[prop])) {
+	              cssProps[prop] = props[prop];
+	            } else {
+	              tmpRawRules = {};
+	              tmpRawRules[prop] = props[prop];
+	              nestedRules.push(tmpRawRules);
+	            }
+	          }
+	
+	          rule = CSSRule(selector, this.resolveCustomProps(cssProps), _api);
+	
+	          if (!parent) {
+	            registerRule(rule, addAt);
+	          } else {
+	            rule.parent = parent;
+	            parent.registerNested(rule);
+	          }
+	          nestedRules.forEach(function (rawRulesNested) {
+	            _api.add(rawRulesNested, rule);
+	          });
+	
+	        // existing rule
+	        } else {
+	          rule.update(rawRules[selector]);
+	        }
+	
+	        this.compile();
+	        created.push(rule);
+	      }
 	    }
 	
 	    return created.length === 1 ? created[0] : created;
@@ -498,8 +514,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 6 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
+	var isArray = __webpack_require__(7);
+	
 	module.exports = function CSSRule(selector, props, stylesheet) {
 	  var _api = {
 	    selector: selector,
@@ -555,8 +573,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return this;
 	  };
 	  _api.registerNested = function (rule) {
+	    var nestedRule;
+	
 	    if (this.nestedRules === null) this.nestedRules = {};
-	    this.nestedRules[rule.selector] = rule;
+	
+	    nestedRule = this.nestedRules[rule.selector];
+	
+	    if (nestedRule) {
+	      if (isArray(nestedRule)) {
+	        nestedRule.push(rule);
+	      } else {
+	        this.nestedRules[rule.selector] = [ nestedRule, rule ];
+	      }
+	    } else {
+	      this.nestedRules[rule.selector] = rule;
+	    }
 	    return this;
 	  };
 	
@@ -566,6 +597,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ },
 /* 7 */
+/***/ function(module, exports) {
+
+	module.exports = function (v) {
+	  return Object.prototype.toString.call(v) === '[object Array]';
+	};
+
+
+/***/ },
+/* 8 */
 /***/ function(module, exports) {
 
 	var cache = {};
@@ -619,12 +659,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(setImmediate) {var cache = {};
 	
-	__webpack_require__(11);
+	__webpack_require__(12);
 	
 	module.exports = function (work, id) {
 	  if (!cache[id]) {
@@ -636,13 +676,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	};
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).setImmediate))
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(10).nextTick;
+	/* WEBPACK VAR INJECTION */(function(setImmediate, clearImmediate) {var nextTick = __webpack_require__(11).nextTick;
 	var apply = Function.prototype.apply;
 	var slice = Array.prototype.slice;
 	var immediateIds = {};
@@ -718,10 +758,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.clearImmediate = typeof clearImmediate === "function" ? clearImmediate : function(id) {
 	  delete immediateIds[id];
 	};
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9).setImmediate, __webpack_require__(9).clearImmediate))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(10).setImmediate, __webpack_require__(10).clearImmediate))
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports) {
 
 	// shim for using process in browser
@@ -818,7 +858,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(global, clearImmediate, process) {(function (global, undefined) {
@@ -997,14 +1037,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    attachTo.clearImmediate = clearImmediate;
 	}(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(9).clearImmediate, __webpack_require__(10)))
+	/* WEBPACK VAR INJECTION */}.call(exports, (function() { return this; }()), __webpack_require__(10).clearImmediate, __webpack_require__(11)))
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var isEmpty = __webpack_require__(13);
-	var isArray = __webpack_require__(14);
+	var isEmpty = __webpack_require__(14);
+	var isArray = __webpack_require__(7);
 	
 	module.exports = function (topRules, minify, plugins, scope) {
 	  var scopeTheSelector = function (selector) {
@@ -1031,6 +1071,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      css += line + (noNewLine ? '' : newLine);
 	    };
 	    var processRule = function (rule) {
+	      // console.log(rule);
 	      if (!isEmpty(rule.props) || rule.nestedRules !== null) {
 	        addLine(indent + scopeTheSelector(rule.selector) + interval + '{');
 	        props = applyPlugins(rule.props);
@@ -1044,7 +1085,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            addLine(indent + tab + prop + ':' + interval + value + ';');
 	          }
 	        }
-	        if (rule.nestedRules !== null) {
+	        if (rule.nestedRules) {
 	          addLine(process(rule.nestedRules, indent + tab), true);
 	        }
 	        addLine(indent + '}');
@@ -1052,12 +1093,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	
 	    indent = minify ? '' : indent;
-	
 	    if (isArray(rules)) {
 	      rules.forEach(processRule);
 	    } else {
 	      for (r in rules) {
-	        processRule(rules[r]);
+	        if (isArray(rules[r])) {
+	          rules[r].forEach(processRule);
+	        } else {
+	          processRule(rules[r]);
+	        }
 	      }
 	    };
 	
@@ -1069,7 +1113,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports) {
 
 	module.exports = function (obj) {
@@ -1081,15 +1125,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 	  return true;
-	};
-
-
-/***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	module.exports = function (v) {
-	  return Object.prototype.toString.call(v) === '[object Array]';
 	};
 
 

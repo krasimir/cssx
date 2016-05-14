@@ -18,6 +18,3 @@ body {
   margin: 10px;
 }
 </style>;
-
-var sheet = cssx();
-sheet.add(s);
