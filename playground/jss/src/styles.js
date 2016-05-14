@@ -1,6 +1,19 @@
 export default <style>
+  @font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Raleway'), local('Raleway-Regular'), url(https://fonts.gstatic.com/s/raleway/v10/YZaO6llzOP57DpTBv2GnyFKPGs1ZzpMvnHX-7fPOuAc.woff2) format('woff2');
+  }
+  @font-face {
+    font-family: 'Lobster';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lobster'), local('Lobster-Regular'), url(https://fonts.gstatic.com/s/lobster/v16/MeFZ5NpSE1j8mC06Jh1miFKPGs1ZzpMvnHX-7fPOuAc.woff2) format('woff2');
+  }
   button {
-    font-size: 12;
+    font-family: 'Raleway';
+    font-size: 12px;
     &:hover {
       background: blue;
     }
@@ -11,9 +24,13 @@ export default <style>
       background: red;
     }
   }
-  @media (min-width: 1024px) {
+  @media (max-width: 800px) {
     button {
-      minWidth: 200;
+      font-family: 'Lobster';
     }
+  }
+  p {
+    font-family: 'Lobster';
+    font-size: 20px;
   }
 </style>;

@@ -10,5 +10,7 @@ const { classes } = jss.createStyleSheet(styles).attach();
 
 document.body.innerHTML = `
   <button class="${classes.button}">Button</button>
+  <br />
   <button class="${classes.ctaButton}">CTA Button</button>
+  <p class="${classes.p}">Grumpy wizards make toxic brew for the evil Queen and Jack.</p>
 `;

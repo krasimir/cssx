@@ -68,7 +68,7 @@
 	
 	// classes // {button: '.button--jss-0-0 ', ctaButton: '.ctaButton--jss-0-2'}
 	
-	document.body.innerHTML = '\n  <button class="' + classes.button + '">Button</button>\n  <button class="' + classes.ctaButton + '">CTA Button</button>\n';
+	document.body.innerHTML = '\n  <button class="' + classes.button + '">Button</button>\n  <br />\n  <button class="' + classes.ctaButton + '">CTA Button</button>\n  <p class="' + classes.p + '">Grumpy wizards make toxic brew for the evil Queen and Jack.</p>\n';
 
 /***/ },
 /* 1 */
@@ -81,25 +81,41 @@
 	});
 	
 	exports.default = function () {
-	    var _1 = {},
-	        _2 = {},
-	        _3 = {},
-	        _4 = {},
-	        _5 = {},
-	        _6 = {},
-	        _7 = {};
-	    _2['background'] = 'blue';
-	    _3['&:hover'] = _2;
-	    _3['font-size'] = '12';
-	    _4['background'] = 'red';
-	    _5['&:hover'] = _4;
-	    _5['extend'] = 'button';
-	    _6['minWidth'] = '200';
-	    _7['button'] = _6;
-	    _1['button'] = _3;
-	    _1['ctaButton'] = _5;
-	    _1['@media (min-width: 1024px)'] = _7;
-	    return _1;
+	    var _92 = {},
+	        _93 = {},
+	        _94 = {},
+	        _95 = {},
+	        _96 = {},
+	        _97 = {},
+	        _98 = {},
+	        _99 = {},
+	        _100 = {},
+	        _101 = {};
+	    _93['font-family'] = '\'Raleway\'';
+	    _93['font-style'] = 'normal';
+	    _93['font-weight'] = '400';
+	    _93['src'] = 'local(\'Raleway\'), local(\'Raleway-Regular\'), url(https://fonts.gstatic.com/s/raleway/v10/YZaO6llzOP57DpTBv2GnyFKPGs1ZzpMvnHX-7fPOuAc.woff2) format(\'woff2\')';
+	    _94['font-family'] = '\'Lobster\'';
+	    _94['font-style'] = 'normal';
+	    _94['font-weight'] = '400';
+	    _94['src'] = 'local(\'Lobster\'), local(\'Lobster-Regular\'), url(https://fonts.gstatic.com/s/lobster/v16/MeFZ5NpSE1j8mC06Jh1miFKPGs1ZzpMvnHX-7fPOuAc.woff2) format(\'woff2\')';
+	    _95['background'] = 'blue';
+	    _96['&:hover'] = _95;
+	    _96['font-family'] = '\'Raleway\'';
+	    _96['font-size'] = '12px';
+	    _97['background'] = 'red';
+	    _98['&:hover'] = _97;
+	    _98['extend'] = 'button';
+	    _99['font-family'] = '\'Lobster\'';
+	    _100['button'] = _99;
+	    _101['font-family'] = '\'Lobster\'';
+	    _101['font-size'] = '20px';
+	    _92['@font-face'] = [_93, _94];
+	    _92['button'] = _96;
+	    _92['ctaButton'] = _98;
+	    _92['@media (max-width: 800px)'] = _100;
+	    _92['p'] = _101;
+	    return _92;
 	}.apply(undefined);
 
 /***/ },
