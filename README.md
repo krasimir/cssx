@@ -4,17 +4,21 @@
 
 ---
 
-Demos
+## Demos
 
 * [Transpilation process](http://krasimir.github.io/cssx/playground/try-it-out/) - you write JavaScript that contains CSSX and see AST, transpiled JavaScript and the produced CSS
 * [JS + HTML + output](http://krasimir.github.io/cssx/playground/try-it-out-bin/) - you write JavaScript that contains CSSX + HTML markup and see the result when the CSS is applied to the DOM
 * [JS + output](http://krasimir.github.io/cssx/) - same as a above but without changing the markup
 
-Language:
+## Language:
 
 * [CSSX language](./docs/cssx-lang.md)
 
-Integration with other tools:
+## Editor Integration
+
+* [Vote for JetBrains integration](https://youtrack.jetbrains.com/issue/RUBY-18179)
+
+## Integration with other tools:
 
 * [JSS](https://github.com/jsstyles/jss) or alternatively [CSSX client-side library](./packages/cssx) ([download](./packages/cssx/lib) or `npm i cssx`)
 * [CSSX-transpiler](./packages/cssx-transpiler) ([download](./packages/cssx-transpiler/lib) or `npm i cssx-transpiler`)
@@ -25,11 +29,11 @@ Integration with other tools:
 * [CSSX component for React](https://github.com/krasimir/react-cssx)
 * [jspm integration](./playground/jspm)
 
-Plugins:
+## Plugins:
 
 * [CSSX plugins](./docs/plugins.md) - See how to create CSSX plugins or use PostCSS plugin collection together with CSSX.
 
-Examples:
+## Examples:
 
 * [Try it out](./playground/try-it-out-bin)
 * [Try it out (developer edition)](./playground/try-it-out)
@@ -44,6 +48,8 @@ Examples:
 * [Bundling with jspm](./playground/jspm)
 
 ---
+
+## Premise
 
 CSSX is not only about writing vanilla CSS in JavaScript. Even though you get this the main idea here is to have a good API for managing styles. CSSX doesn't inline styles so you keep your markup clean. It works directly with injected stylesheets. Here is a short example:
 
