@@ -24,6 +24,7 @@ Integration with other tools:
 * [Browserify transform](./packages/browserify-cssx) (`npm i browserify-cssx -D`)
 * [CSSX component for React](https://github.com/krasimir/react-cssx)
 * [jspm integration](./playground/jspm)
+* [ESLint plugin](https://github.com/krasimir/eslint-plugin-cssx)
 
 Plugins:
 
