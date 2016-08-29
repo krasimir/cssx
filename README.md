@@ -25,6 +25,7 @@
 * [CSSX-CLI](./packages/cssx-cli) (`npm i cssx-cli -g`)
 * [Gulp plugin](./packages/gulp-cssx) (`npm i gulp-cssx -D`)
 * [Webpack loader](./packages/cssx-loader) (`npm i cssx-loader -D`)
+* [Meteor package](https://github.com/Quadric/meteor-cssx) (`meteor add quadric:cssx`)
 * [Browserify transform](./packages/browserify-cssx) (`npm i browserify-cssx -D`)
 * [CSSX component for React](https://github.com/krasimir/react-cssx)
 * [jspm integration](./playground/jspm)
