@@ -1,0 +1,45 @@
+{
+  "name": "rollup-plugin-cssx",
+  "version": "1.0.0",
+  "description": "Rollup transform plugin that transpiles CSSX",
+  "main": "dist/rollup-plugin-cssx.cjs.js",
+  "jsnext:main": "dist/rollup-plugin-cssx.es.js",
+  "scripts": {
+    "build": "rollup -c",
+    "lint": "eslint src",
+    "prepublish": "npm run lint && npm build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/krasimir/cssx/tree/master/packages/rollup-plugin-cssx"
+  },
+  "keywords": [
+    "css",
+    "cssx",
+    "transpiler",
+    "rollup"
+  ],
+  "author": {
+    "name": "Krasimir Tsonev",
+    "email": "info@krasimirtsonev.com",
+    "url": "http://krasimirtsonev.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/krasimir/cssx/issues"
+  },
+  "homepage": "https://github.com/krasimir/cssx",
+  "dependencies": {
+    "cssx-transpiler": "^5.2.0",
+    "magic-string": "^0.15.0",
+    "rollup-pluginutils": "^1.3.1"
+  },
+  "devDependencies": {
+    "eslint": "^2.11.1",
+    "rollup": "^0.30.0",
+    "rollup-plugin-buble": "^0.10.0"
+  },
+  "files": [
+    "dist"
+  ]
+}
