@@ -2,7 +2,15 @@ var readline = require('readline');
 var fs = require('fs');
 
 var currentVersion;
-var packages = ['cssx', 'cssx-transpiler', 'gulp-cssx', 'cssx-loader', 'cssx-cli', 'browserify-cssx'].map(function (p) {
+var packages = [
+  'cssx',
+  'cssx-transpiler',
+  'gulp-cssx',
+  'cssx-loader',
+  'cssx-cli',
+  'browserify-cssx',
+  'rollup-plugin-cssx'
+].map(function (p) {
   var pJSONPath = __dirname + '/../packages/' + p + '/package.json';
 
   return {
