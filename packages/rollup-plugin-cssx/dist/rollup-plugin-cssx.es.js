@@ -2,19 +2,21 @@ import cssxTranspiler from 'cssx-transpiler';
 import MagicString from 'magic-string';
 import { createFilter } from 'rollup-pluginutils';
 
-export default function cssx(options = {}) {
-  const filter = createFilter(options.include, options.exclude);
+function cssx(options) {
+  if ( options === void 0 ) options = {};
+
+  var filter = createFilter(options.include, options.exclude);
 
   return {
     name: 'cssx',
 
-    transform(code, id) {
+    transform: function transform(code, id) {
       if (!filter(id)) {
         return null;
       }
 
-      let s = new MagicString(code);
-      let out = cssxTranspiler(code, options);
+      var s = new MagicString(code);
+      var out = cssxTranspiler(code, options);
 
       s.overwrite(0, code.length, out.toString());
 
@@ -25,3 +27,5 @@ export default function cssx(options = {}) {
     }
   };
 }
+
+export default cssx;
