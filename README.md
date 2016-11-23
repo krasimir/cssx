@@ -30,6 +30,7 @@
 * [CSSX component for React](https://github.com/krasimir/react-cssx)
 * [jspm integration](./playground/jspm)
 * [ESLint plugin](https://github.com/krasimir/eslint-plugin-cssx)
+* [Rollup plugin](https://github.com/krasimir/rollup-plugin-cssx)
 
 ## Plugins:
 

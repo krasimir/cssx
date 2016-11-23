@@ -25,8 +25,12 @@
   },
 
   "plugins": [
-    
+
   ],
+
+  "parserOptions": {
+      "sourceType": "module"
+  },
 
   "rules": {
     "block-scoped-var": 2,
