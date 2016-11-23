@@ -1,6 +1,6 @@
 {
   "name": "gulp-cssx",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "Gulp plugin for transpiling CSSX syntax",
   "main": "index.js",
   "repository": {
@@ -25,9 +25,9 @@
   "homepage": "https://github.com/krasimir/cssx",
   "dependencies": {
     "browserify": "13.0.0",
-    "browserify-cssx": "5.2.0",
-    "cssx": "5.2.0",
-    "cssx-transpiler": "5.2.0",
+    "browserify-cssx": "5.2.1",
+    "cssx": "5.2.1",
+    "cssx-transpiler": "5.2.1",
     "gulp": "3.9.0",
     "gulp-util": "3.0.7",
     "into-stream": "2.0.0",

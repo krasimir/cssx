@@ -1,6 +1,6 @@
 {
   "name": "cssx-loader",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "Webpack loader for CSSX",
   "main": "index.js",
   "repository": {
@@ -25,6 +25,6 @@
   },
   "homepage": "https://github.com/krasimir/cssx",
   "dependencies": {
-    "cssx-transpiler": "5.2.0"
+    "cssx-transpiler": "5.2.1"
   }
 }

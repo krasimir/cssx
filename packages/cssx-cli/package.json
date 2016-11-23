@@ -1,6 +1,6 @@
 {
   "name": "cssx-cli",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "Command line tool for transpiling/preprocessing CSSX",
   "main": "index.js",
   "repository": {
@@ -26,13 +26,13 @@
   "homepage": "https://github.com/krasimir/cssx",
   "dependencies": {
     "browserify": "13.0.0",
-    "browserify-cssx": "5.2.0",
-    "cssx": "5.2.0",
+    "browserify-cssx": "5.2.1",
+    "cssx": "5.2.1",
     "fs-extra": "0.26.7",
     "glob": "7.0.3",
     "gulp": "3.9.1",
     "gulp-callback": "0.0.3",
-    "gulp-cssx": "5.2.0",
+    "gulp-cssx": "5.2.1",
     "gulp-plumber": "1.1.0",
     "minimist": "1.2.0"
   },

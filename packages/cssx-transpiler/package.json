@@ -1,6 +1,6 @@
 {
   "name": "cssx-transpiler",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "Transpiler for CSSX syntax",
   "main": "lib/cssx-transpiler.js",
   "repository": {

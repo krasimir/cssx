@@ -8,7 +8,7 @@
     "dev": "webpack --progress --colors --watch --mode=dev",
     "make": "webpack --mode=dev && webpack --mode=build && npm run test",
     "update-site": "git checkout gh-pages && git merge origin/master && git push origin gh-pages && git checkout master",
-    "release": "npm run make && node ./scripts/release.js && cd ./packages/cssx && npm publish && cd ../cssx-transpiler && npm publish && cd ../gulp-cssx && npm publish && cd ../cssx-loader && npm publish && cd ../cssx-cli && npm publish && cd ../browserify-cssx && npm publish && cd ../../ && git add . && git commit -m \"Version updated\" && git push origin master && npm run update-site"
+    "release": "npm run make && node ./scripts/release.js && cd ./packages/cssx && npm publish && cd ../cssx-transpiler && npm publish && cd ../gulp-cssx && npm publish && cd ../cssx-loader && npm publish && cd ../cssx-cli && npm publish && cd ../browserify-cssx && npm publish && cd ../rollup-plugin-cssx && npm publish && cd ../../ && git add . && git commit -m \"Version updated\" && git push origin master && npm run update-site"
   },
   "repository": {
     "type": "git",
